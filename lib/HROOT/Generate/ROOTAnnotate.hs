@@ -2,8 +2,8 @@
 
 module HROOT.Generate.ROOTAnnotate where
 
-import HROOT.Generate.Type.Annotate 
-import HROOT.Generate.QQ.Verbatim
+import Bindings.Cxx.Generate.Type.Annotate 
+import Bindings.Cxx.Generate.QQ.Verbatim
 
 
 import qualified Data.Map as M

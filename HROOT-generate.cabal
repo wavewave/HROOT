@@ -8,55 +8,59 @@ Author:		Ian-Woo Kim
 Maintainer: 	Ian-Woo Kim <ianwookim@gmail.com>
 Build-Type: 	Simple
 Cabal-Version:  >= 1.8
-Data-files: template/*.h.st
-            template/*.hs.st
-            template/*.hsc.st
-            template/*.cpp.st
+Data-files: 
             template/HROOT.cabal.st
-            template/TypeCast.hs
+            -- template/TypeCast.hs
+            -- template/*.h.st
+            -- template/*.hs.st
+            -- template/*.hsc.st
+            -- template/*.cpp.st
 
 Executable HROOT-generate
   Main-is: HROOT-generate.hs
-  hs-source-dirs: src
+  hs-source-dirs: exe
   ghc-options: 	-Wall -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
   ghc-prof-options: -caf-all -auto-all
   Build-Depends: base>4, mtl>2, containers, filepath>1, directory, process, 
                  HStringTemplate, HSH, safe, strict, filemanip, split,
-                 parsec>3, cmdargs, transformers, template-haskell, Cabal
+                 parsec>3, cmdargs, transformers, template-haskell, Cabal,
+                 fficxx, HROOT-generate
 
 Library
-  hs-source-dirs: src
+  hs-source-dirs: lib
   ghc-options: 	-Wall -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
   ghc-prof-options: -caf-all -auto-all
   Build-Depends: base>4, mtl>2, containers, filepath>1, directory, process, 
                  HStringTemplate, HSH, safe, strict, filemanip, split,
-                 parsec>3, cmdargs, transformers, template-haskell, Cabal 
+                 parsec>3, cmdargs, transformers, template-haskell, Cabal, 
+                 fficxx
 
   Exposed-Modules: 
-                   Text.StringTemplate.Helpers
-                   HEP.Parser.Config
-                   HROOT.Generate.Type.CType
-                   HROOT.Generate.Type.Class
-                   HROOT.Generate.Type.Method
-                   HROOT.Generate.Type.Module
-                   HROOT.Generate.Code.MethodDef
-                   HROOT.Generate.Code.Cpp
-                   HROOT.Generate.Code.HsFrontEnd
-                   HROOT.Generate.Code.HsFFI
-                   HROOT.Generate.Code.Cabal
-                   HROOT.Generate.Generator.Command
-                   HROOT.Generate.Generator.Driver
-                   HROOT.Generate.Generator.ContentMaker
-                   HROOT.Generate.Util
                    HROOT.Generate.ROOT
                    HROOT.Generate.ROOTAnnotate
                    HROOT.Generate.ROOTModule
                    HROOT.Generate.ROOTsmall
                    HROOT.Generate.ROOTAnnotatesmall
                    HROOT.Generate.ROOTModulesmall
+
+--                   Text.StringTemplate.Helpers
+--                   HEP.Parser.Config
+--                   HROOT.Generate.Type.CType
+--                   HROOT.Generate.Type.Class
+--                   HROOT.Generate.Type.Method
+--                   HROOT.Generate.Type.Module
+--                   HROOT.Generate.Code.MethodDef
+--                   HROOT.Generate.Code.Cpp
+--                   HROOT.Generate.Code.HsFrontEnd
+--                   HROOT.Generate.Code.HsFFI
+--                   HROOT.Generate.Code.Cabal
+--                   HROOT.Generate.Generator.Command
+--                   HROOT.Generate.Generator.Driver
+--                   HROOT.Generate.Generator.ContentMaker
+--                   HROOT.Generate.Util
                 
 
   Other-Modules: 
-                   HROOT.Generate.QQ.Verbatim
-                   HROOT.Generate.Type.Annotate
-                   HEP.Util.File
+--                   HROOT.Generate.QQ.Verbatim
+--                   HROOT.Generate.Type.Annotate
+--                   HEP.Util.File

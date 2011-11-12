@@ -20,27 +20,40 @@ import System.Console.CmdArgs
 
 import Text.StringTemplate hiding (render)
 
-import HROOT.Generate.ROOT
-import HROOT.Generate.ROOTAnnotate
-import HROOT.Generate.ROOTModule
+-- import HROOT.Generate.ROOT
+-- import HROOT.Generate.ROOTAnnotate
+-- import HROOT.Generate.ROOTModule
 
--- import HROOT.Generate.ROOTsmall
--- import HROOT.Generate.ROOTAnnotatesmall
--- import HROOT.Generate.ROOTModulesmall
+import HROOT.Generate.ROOTsmall
+import HROOT.Generate.ROOTAnnotatesmall
+import HROOT.Generate.ROOTModulesmall
 
-import HROOT.Generate.Generator.Driver
-import HROOT.Generate.Generator.Command hiding (config)
+import Bindings.Cxx.Generate.Generator.Driver
+import Bindings.Cxx.Generate.Generator.Command hiding (config)
 
 import Text.Parsec
-import Paths_HROOT_generate
 
-import HROOT.Generate.Config
-import HROOT.Generate.Type.Class
-import HROOT.Generate.Code.Dependency
-import HROOT.Generate.Generator.ContentMaker 
+import Bindings.Cxx.Generate.Config
+import Bindings.Cxx.Generate.Type.Class
+import Bindings.Cxx.Generate.Code.Dependency
+import Bindings.Cxx.Generate.Generator.ContentMaker 
+import Bindings.Cxx.Generate.Code.Cabal
+import Bindings.Cxx.Generate.Code.Cpp
 
+import Distribution.Package
+import Distribution.PackageDescription hiding (exposedModules)
+import Distribution.PackageDescription.Parse
+import Distribution.Verbosity
+import Distribution.Version 
+
+import Text.StringTemplate.Helpers
+
+import Data.List 
 import qualified Data.Map as M
 import Data.Maybe
+
+import Paths_HROOT_generate
+import qualified Paths_fficxx as F
 
 main :: IO () 
 main = do 
@@ -49,28 +62,59 @@ main = do
   commandLineProcess param 
   -- putStrLn $ show $ mkModuleDepHigh tKey
 
+mkCabalFile :: FFICXXConfig -> Handle -> [ClassModule] -> IO () 
+mkCabalFile config h classmodules = do 
+  version <- getHROOTVersion config
+  templateDir <- getDataDir >>= return . (</> "template")
+  (templates :: STGroup String) <- directoryGroup templateDir 
+  let str = renderTemplateGroup 
+              templates 
+              [ ("version", version) 
+              , ("csrcFiles", genCsrcFiles classmodules)
+              , ("includeFiles", genIncludeFiles classmodules) 
+              , ("cppFiles", genCppFiles classmodules)
+              , ("exposedModules", genExposedModules classmodules) 
+              , ("otherModules", genOtherModules classmodules)
+              , ("cabalIndentation", cabalIndentation)
+              ]
+              cabalTemplate 
+  hPutStrLn h str
+
+getHROOTVersion :: FFICXXConfig -> IO String 
+getHROOTVersion conf = do 
+  let hrootgeneratecabal = fficxxconfig_scriptBaseDir conf </> "HROOT-generate.cabal"
+  gdescs <- readPackageDescription normal hrootgeneratecabal
+  
+  let vnums = versionBranch . pkgVersion . package . packageDescription $ gdescs 
+  return $ intercalate "." (map show vnums)
+--  putStrLn $ "version = " ++ show vnum
+
+
 
 commandLineProcess :: HROOT_Generate -> IO () 
 commandLineProcess (Generate conf) = do 
   putStrLn "Automatic HROOT binding generation" 
   str <- readFile conf 
-  let config = case (parse hrootconfigParse "" str) of 
+  let config = case (parse fficxxconfigParse "" str) of 
                  Left msg -> error (show msg)
                  Right ans -> ans
-  templateDir <- getDataDir >>= return . (</> "template")
-  (templates :: STGroup String) <- directoryGroup templateDir 
   
-  let workingDir = hrootConfig_workingDir config 
-      ibase = hrootConfig_installBaseDir config
+  let workingDir = fficxxconfig_workingDir config 
+      ibase = fficxxconfig_installBaseDir config
       cabalFileName = "HROOT.cabal"
 
       (root_all_modules,root_all_classes_imports) = mkAllClassModulesAndCIH root_all_classes 
+  
   
   putStrLn "cabal file generation" 
   getHROOTVersion config
   withFile (workingDir </> cabalFileName) WriteMode $ 
     \h -> do 
-      mkCabalFile config templates h root_all_modules 
+      mkCabalFile config h root_all_modules 
+
+  templateDir <- F.getDataDir >>= return . (</> "template")
+  (templates :: STGroup String) <- directoryGroup templateDir 
+
 
   let cglobal = mkGlobal root_all_classes
    
@@ -111,6 +155,7 @@ commandLineProcess (Generate conf) = do
   copyPredefined templateDir (srcDir ibase)
   mapM_ (copyCppFiles workingDir (csrcDir ibase)) root_all_classes_imports
   mapM_ (copyModule workingDir (srcDir ibase)) root_all_modules 
+  
 
   return ()
 

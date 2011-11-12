@@ -12,10 +12,10 @@
 
 module HROOT.Generate.ROOTsmall where
 
-import HROOT.Generate.Type.CType
-import HROOT.Generate.Type.Method
-import HROOT.Generate.Type.Class
-import HROOT.Generate.Type.Module
+import Bindings.Cxx.Generate.Type.CType
+import Bindings.Cxx.Generate.Type.Method
+import Bindings.Cxx.Generate.Type.Class
+import Bindings.Cxx.Generate.Type.Module
 
 
 moduleInterface :: Module
