@@ -55,6 +55,9 @@ tObject =
   -- SavePrimitive
   , Virtual void_    "UseCurrentStyle" [] 
   , Virtual int_     "Write"   [cstring "name", int "option", int "bufsize" ]
+  -- omit.. 
+  , Static  bool_ "GetObjectStat" [] 
+  , Static  void_ "SetObjectStat" [bool "stat"]
   ]
 
 
@@ -286,6 +289,7 @@ tF1 =
   , Virtual double_ "Derivative" [double "x", doublep "params", double "epsilon"] 
   , Virtual double_ "Derivative2" [double "x", doublep "params", double "epsilon"] 
   , Virtual double_ "Derivative3" [double "x", doublep "params", double "epsilon"]
+  , Static  double_ "DerivativeError" []
   -- DerivativeError
   , AliasVirtual self_ "DrawCopy" [cstring "option"] "drawCopyTF1"
   , Virtual (cppclass_ "TObject") "DrawDerivative" [cstring "option"]
@@ -320,7 +324,7 @@ tF1 =
   , NonVirtual (cppclass_ "TAxis") "GetZaxis" [] 
   , Virtual double_ "GradientPar" [int "ipar", doublep "x", double "eps"] 
   , Virtual void_ "InitArgs" [doublep "x", doublep "params"] 
-  -- InitStandardFunctions
+  , Static  void_ "InitStandardFunctions" []
   , AliasVirtual double_ "Integral" [double "a", double "b", doublep "params", double "epsilon"] "IntegralTF1"
   , Virtual double_ "IntegralError" [double "a", double "b", doublep "params", doublep "covmat", double "epsilon"]
   , Virtual double_ "IntegralFast" [int "num", doublep "x", doublep "w", double "a", double "b", doublep "params", double "epsilon"] 
@@ -343,8 +347,11 @@ tF1 =
   , AliasVirtual void_ "SetRange" [double "xmin", double "xmax", double "ymin", double "ymax", double "zmin", double "zmax"] "setRange3"
   , Virtual void_ "SetSavedPoint" [int "point", double "value"] 
 
-  -- GetCurrent
-  -- AbsValue
+  , Static  (cppclass_ "TF1") "GetCurrent" []
+  , Static  void_ "AbsValue" [bool "reject"]
+  , Static  void_ "RejectPoint" [bool "reject"]
+  , Static  bool_ "RejectedPoint" []
+  , Static  void_ "SetCurrent" [cppclass "TF1" "f1"]
   -- RejectPoint 
   -- RejectedPoint 
   -- SetCurrent 
@@ -352,7 +359,7 @@ tF1 =
   , Virtual double_ "CentralMoment" [double "n", double "a", double "b", doublep "params", double "epsilon"] 
   , Virtual double_ "Mean" [double "a", double "b", doublep "params", double "epsilon"]
   , Virtual double_ "Variance" [double "a", double "b", doublep "params", double "epsilon"] 
-  -- CalcGaussLegendreSamplingPoints
+  , Static  void_ "CalcGaussLegendreSamplingPoints" [int "num", doublep "x", doublep "w", double "eps"]
   ]
 
 tGraph :: Class
@@ -744,12 +751,48 @@ tLatex = Class "TLatex" [tText, tAttLine]
 
 tDirectory :: Class
 tDirectory = Class "TDirectory" [tNamed] 
-             [ Virtual void_ "Append" [cppclass "TObject" "obj", bool "replace"]
+             [ Static  void_ "AddDirectory" [bool "add"]
+             , Static  bool_ "AddDirectoryStatus" []
+             , Virtual void_ "Append" [cppclass "TObject" "obj", bool "replace"]
              , AliasVirtual void_ "Add" [cppclass "TObject" "obj", bool "replace"] "addD"
              , Virtual int_ "AppendKey" [cppclass "TKey" "key" ]
              , Virtual void_ "Close"    [ cstring "option" ] 
              , Virtual (cppclass_ "TObject") "Get" [ cstring "namecycle" ] 
              ]
+
+tROOT :: Class 
+tROOT = 
+  Class "TROOT" [tDirectory]
+  [ NonVirtual (cppclass_ "TSeqCollection") "GetListOfColors" []
+  , NonVirtual (cppclass_ "TCollection") "GetListOfTypes" [bool "load"] 
+  , NonVirtual (cppclass_ "TCollection") "GetListOfGlobals" [bool "load"]
+  , NonVirtual (cppclass_ "TCollection") "GetListOfGlobalFunctions" [bool "load"]
+  , NonVirtual (cppclass_ "TSeqCollection") "GetListOfClosedObjects" []
+  , NonVirtual (cppclass_ "TSeqCollection") "GetListOfFiles" []
+  , NonVirtual (cppclass_ "TSeqCollection") "GetListOfMappedFiles" []
+  , NonVirtual (cppclass_ "TSeqCollection") "GetListOfSockets" [] 
+  , NonVirtual (cppclass_ "TSeqCollection") "GetListOfCanvases" [] 
+  , NonVirtual (cppclass_ "TSeqCollection") "GetListOfStyles" [] 
+  , NonVirtual (cppclass_ "TCollection") "GetListOfFunctions" []
+  , NonVirtual (cppclass_ "TSeqCollection") "GetListOfGeometries" []
+  , NonVirtual (cppclass_ "TSeqCollection") "GetListOfBrowsers" []
+  , NonVirtual (cppclass_ "TSeqCollection") "GetListOfSpecials" [] 
+  , NonVirtual (cppclass_ "TSeqCollection") "GetListOfTasks" []
+  , NonVirtual (cppclass_ "TSeqCollection") "GetListOfCleanups" [] 
+  , NonVirtual (cppclass_ "TSeqCollection") "GetListOfStreamerInfo" [] 
+  , Static     int_ "DecreaseDirLevel" [] 
+  , Static     int_ "GetDirLevel" [] 
+  , Static     cstring_ "GetMacroPath" [] 
+  , Static     void_ "SetMacroPath" [cstring "newpath"]
+  , Static     int_ "IncreaseDirLevel" [] 
+  , Static     void_ "IndentLevel" [] 
+  , Static     bool_ "Initialized" [] 
+  , Static     bool_ "MemCheck" [] 
+  , Static     void_ "SetDirLevel" [int "level"]
+  , Static     int_ "ConvertVersionCode2Int" [int "code"]
+  , Static     int_ "ConvertVersionInt2Code" [int "v"]
+  , Static     int_ "RootVersionCode" [] 
+  ] 
 
 tKey :: Class
 tKey = Class "TKey" [tNamed]
@@ -1253,7 +1296,7 @@ root_all_classes =
   , tNtuple, tNtupleD, tTreeSQL
   , tPolyLine, tCurlyLine, tCurlyArc, tEfficiency
   , tAxis, tLatex, tText
-  , tDirectory, tDirectoryFile, tFile
+  , tDirectory, tROOT, tDirectoryFile, tFile
   , tBranch, tVirtualTreePlayer, tTreePlayer
   , tArray, tArrayC, tArrayD, tArrayF, tArrayI, tArrayL, tArrayL64
   , tArrayS
