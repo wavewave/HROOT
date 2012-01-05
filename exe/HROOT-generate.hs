@@ -119,7 +119,7 @@ commandLineProcess (Generate conf) = do
       prefix = "HROOT.Class"
    
   putStrLn "header file generation"
-  writeTypeDeclHeaders templates cglobal workingDir root_all_classes_imports
+  writeTypeDeclHeaders templates cglobal workingDir "HROOT" root_all_classes_imports
   mapM_ (writeDeclHeaders templates cglobal workingDir) root_all_classes_imports
 
   putStrLn "cpp file generation" 
@@ -153,8 +153,8 @@ commandLineProcess (Generate conf) = do
   
   copyFile (workingDir </> cabalFileName)  ( ibase </> cabalFileName ) 
   copyPredefined templateDir (srcDir ibase)
-  mapM_ (copyCppFiles workingDir (csrcDir ibase)) root_all_classes_imports
-  mapM_ (copyModule workingDir (srcDir ibase) prefix) root_all_modules 
+  mapM_ (copyCppFiles workingDir (csrcDir ibase) "HROOT") root_all_classes_imports
+  mapM_ (copyModule workingDir (srcDir ibase) prefix "HROOT") root_all_modules 
   
 
   return ()
