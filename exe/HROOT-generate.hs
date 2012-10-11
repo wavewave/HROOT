@@ -1,4 +1,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
+
+-----------------------------------------------------------------------------
 -- |
 -- Executable  : HROOT-generate
 -- Copyright   : (c) 2011, 2012 Ian-Woo Kim
@@ -10,6 +12,7 @@
 --
 -- Generate source code for HROOT  
 --
+-----------------------------------------------------------------------------
 
 module Main where
 
