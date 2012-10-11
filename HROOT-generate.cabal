@@ -1,5 +1,5 @@
 Name:		HROOT-generate
-Version:	0.7.1
+Version:	0.7.999
 Synopsis:	automatic HROOT binding generation
 Description: 	automatic HROOT binding generation 
 License:        GPL-3
@@ -21,10 +21,25 @@ Executable HROOT-generate
   hs-source-dirs: exe
   ghc-options: 	-Wall -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
   ghc-prof-options: -caf-all -auto-all
-  Build-Depends: base>4, mtl>2, containers, filepath>1, directory, process, 
-                 HStringTemplate, HSH, safe, strict, filemanip, split,
-                 parsec>3, cmdargs, transformers, template-haskell, Cabal,
-                 fficxx, HROOT-generate
+  Build-Depends: base>4, 
+                 mtl>2, 
+                 containers, 
+                 filepath>1, 
+                 directory, 
+                 process, 
+                 HStringTemplate, 
+                 HSH, 
+                 safe,
+                 strict, 
+                 filemanip, 
+                 split,
+                 parsec>3, 
+                 cmdargs, 
+                 transformers, 
+                 template-haskell,
+                 Cabal,
+                 fficxx, 
+                 HROOT-generate
 
 Library
   hs-source-dirs: lib
@@ -33,7 +48,7 @@ Library
   Build-Depends: base>4, mtl>2, containers, filepath>1, directory, process, 
                  HStringTemplate, HSH, safe, strict, filemanip, split,
                  parsec>3, cmdargs, transformers, template-haskell, Cabal, 
-                 fficxx
+                 fficxx >= 0.1.0.999 && < 0.1.2
 
   Exposed-Modules: 
                    HROOT.Generate.ROOT
@@ -42,8 +57,8 @@ Library
                    HROOT.Generate.ROOTsmall
                    HROOT.Generate.ROOTAnnotatesmall
                    HROOT.Generate.ROOTModulesmall
-
---                   Text.StringTemplate.Helpers
+                   Text.StringTemplate.Helpers
+  Other-Modules: 
 --                   HEP.Parser.Config
 --                   HROOT.Generate.Type.CType
 --                   HROOT.Generate.Type.Class

@@ -1,7 +1,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 -- |
 -- Executable  : HROOT-generate
--- Copyright   : (c) 2011 Ian-Woo Kim
+-- Copyright   : (c) 2011, 2012 Ian-Woo Kim
 -- 
 -- License     : GPL-3
 -- Maintainer  : ianwookim@gmail.com
@@ -120,7 +120,7 @@ commandLineProcess (Generate conf) = do
    
   putStrLn "header file generation"
   writeTypeDeclHeaders templates cglobal workingDir "HROOT" root_all_classes_imports
-  mapM_ (writeDeclHeaders templates cglobal workingDir) root_all_classes_imports
+  mapM_ (writeDeclHeaders templates cglobal workingDir "HROOT") root_all_classes_imports
 
   putStrLn "cpp file generation" 
   mapM_ (writeCppDef templates workingDir) root_all_classes_imports
