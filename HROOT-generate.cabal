@@ -45,9 +45,23 @@ Library
   hs-source-dirs: lib
   ghc-options: 	-Wall -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
   ghc-prof-options: -caf-all -auto-all
-  Build-Depends: base>4, mtl>2, containers, filepath>1, directory, process, 
-                 HStringTemplate, HSH, safe, strict, filemanip, split,
-                 parsec>3, cmdargs, transformers, template-haskell, Cabal, 
+  Build-Depends: base>4, 
+                 mtl>2,
+                 containers, 
+                 filepath>1, 
+                 directory, 
+                 process, 
+                 HStringTemplate, 
+                 HSH, 
+                 safe, 
+                 strict, 
+                 filemanip, 
+                 split,
+                 parsec>3, 
+                 cmdargs, 
+                 transformers, 
+                 template-haskell, 
+                 Cabal, 
                  fficxx >= 0.1.0.999 && < 0.1.2
 
   Exposed-Modules: 

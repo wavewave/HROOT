@@ -155,7 +155,7 @@ commandLineProcess (Generate conf) = do
   writeHROOTHs templates workingDir root_all_modules
   
   copyFile (workingDir </> cabalFileName)  ( ibase </> cabalFileName ) 
-  copyPredefined templateDir (srcDir ibase)
+  copyPredefined templateDir (srcDir ibase) "HROOT"
   mapM_ (copyCppFiles workingDir (csrcDir ibase) "HROOT") root_all_classes_imports
   mapM_ (copyModule workingDir (srcDir ibase) prefix "HROOT") root_all_modules 
   
