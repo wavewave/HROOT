@@ -23,13 +23,13 @@ import System.Console.CmdArgs
 
 import Text.StringTemplate hiding (render)
 
-import HROOT.Generate.ROOT
-import HROOT.Generate.ROOTAnnotate
-import HROOT.Generate.ROOTModule
+-- import HROOT.Generate.ROOT
+-- import HROOT.Generate.ROOTAnnotate
+-- import HROOT.Generate.ROOTModule
 
--- import HROOT.Generate.ROOTsmall
--- import HROOT.Generate.ROOTAnnotatesmall
--- import HROOT.Generate.ROOTModulesmall
+import HROOT.Generate.ROOTsmall
+import HROOT.Generate.ROOTAnnotatesmall
+import HROOT.Generate.ROOTModulesmall
 
 import Bindings.Cxx.Generate.Generator.Driver
 -- import Bindings.Cxx.Generate.Generator.Command hiding (config)
@@ -76,6 +76,18 @@ pkgname = "HROOT"
 -- cprefix :: String 
 -- cprefix = "HROOT"
 
+
+
+
+mkCROOTIncludeHeaders :: Class 
+                      -> [String] 
+mkCROOTIncludeHeaders c = 
+  case class_name c of
+    "Deletable" -> [] 
+    _ -> [(class_name c) ++ ".h"]
+
+
+
 mkCabalFile :: FFICXXConfig -> Handle -> [ClassModule] -> IO () 
 mkCabalFile config h classmodules = do 
   version <- getHROOTVersion config
@@ -118,7 +130,7 @@ commandLineProcess (Generate conf) = do
       cabalFileName = "HROOT.cabal"
 
       (root_all_modules,root_all_classes_imports) = 
-        mkAllClassModulesAndCIH pkgname root_all_classes 
+        mkAllClassModulesAndCIH (pkgname,mkCROOTIncludeHeaders) root_all_classes
   
   
   putStrLn "cabal file generation" 
