@@ -68,6 +68,9 @@ main = do
 cabalTemplate :: String 
 cabalTemplate = "HROOT.cabal"
 
+hprefix :: String 
+hprefix = "HROOT.Class"
+
 mkCabalFile :: FFICXXConfig -> Handle -> [ClassModule] -> IO () 
 mkCabalFile config h classmodules = do 
   version <- getHROOTVersion config
@@ -81,8 +84,8 @@ mkCabalFile config h classmodules = do
               , ("csrcFiles", genCsrcFiles classmodules)
               , ("includeFiles", genIncludeFiles classmodules) 
               , ("cppFiles", genCppFiles classmodules)
-              , ("exposedModules", genExposedModules classmodules) 
-              , ("otherModules", genOtherModules classmodules)
+              , ("exposedModules", genExposedModules hprefix classmodules) 
+              , ("otherModules", genOtherModules hprefix classmodules)
               , ("cabalIndentation", cabalIndentation)
               ]
               cabalTemplate 
@@ -124,7 +127,7 @@ commandLineProcess (Generate conf) = do
   (templates :: STGroup String) <- directoryGroup templateDir 
 
   let cglobal = mkGlobal root_all_classes
-      prefix = "HROOT.Class"
+      -- prefix = hprefix
    
   putStrLn "header file generation"
   writeTypeDeclHeaders templates cglobal workingDir "HROOT" root_all_classes_imports
@@ -134,27 +137,22 @@ commandLineProcess (Generate conf) = do
   mapM_ (writeCppDef templates workingDir) root_all_classes_imports
 
   putStrLn "RawType.hs file generation" 
-  mapM_ (writeRawTypeHs templates workingDir prefix) root_all_modules 
+  mapM_ (writeRawTypeHs templates workingDir hprefix) root_all_modules 
 
   putStrLn "FFI.hsc file generation"
-  mapM_ (writeFFIHsc templates workingDir prefix) root_all_modules
+  mapM_ (writeFFIHsc templates workingDir hprefix) root_all_modules
 
   putStrLn "Interface.hs file generation" 
-  mapM_ (writeInterfaceHs annotateMap templates workingDir prefix) root_all_modules
+  mapM_ (writeInterfaceHs annotateMap templates workingDir hprefix) root_all_modules
 
   putStrLn "Cast.hs file generation"
-  mapM_ (writeCastHs templates workingDir prefix) root_all_modules
+  mapM_ (writeCastHs templates workingDir hprefix) root_all_modules
 
   putStrLn "Implementation.hs file generation"
-  mapM_ (writeImplementationHs annotateMap templates workingDir prefix) root_all_modules
+  mapM_ (writeImplementationHs annotateMap templates workingDir hprefix) root_all_modules
 
-  {-
-  putStrLn "Existential.hs generation"
-  mapM_ (writeExistentialHs templates cglobal workingDir prefix) root_all_modules
-  -}
-  
   putStrLn "module file generation" 
-  mapM_ (writeModuleHs templates workingDir prefix) root_all_modules
+  mapM_ (writeModuleHs templates workingDir hprefix) root_all_modules
 
   putStrLn "HROOT.hs file generation"
   writePkgHs templates workingDir root_all_modules
@@ -162,7 +160,7 @@ commandLineProcess (Generate conf) = do
   copyFile (workingDir </> cabalFileName)  ( ibase </> cabalFileName ) 
   copyPredefined templateDir (srcDir ibase) "HROOT"
   mapM_ (copyCppFiles workingDir (csrcDir ibase) "HROOT") root_all_classes_imports
-  mapM_ (copyModule workingDir (srcDir ibase) prefix "HROOT") root_all_modules 
+  mapM_ (copyModule workingDir (srcDir ibase) hprefix "HROOT") root_all_modules 
   
 
   return ()
