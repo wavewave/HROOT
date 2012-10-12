@@ -113,20 +113,3 @@ root_all_classes :: [Class]
 root_all_classes = 
   [ deletable, tObject, tClass, tDictionary, tNamed ] 
 
-{-
-root_all_classes_imports :: [ClassImportHeader]
-root_all_classes_imports = 
-  [ deletableH
-  , tObjectH
-  , tClassH 
-  , tDictionaryH 
-  , tNamedH ] 
-
-root_all_modules :: [ClassModule]
-root_all_modules = 
-  [ deletableM
-  , tObjectM
-  , tClassM
-  , tDictionaryM
-  , tNamedM ] 
--}

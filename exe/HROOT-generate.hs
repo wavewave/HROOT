@@ -23,13 +23,13 @@ import System.Console.CmdArgs
 
 import Text.StringTemplate hiding (render)
 
--- import HROOT.Generate.ROOT
--- import HROOT.Generate.ROOTAnnotate
--- import HROOT.Generate.ROOTModule
+import HROOT.Generate.ROOT
+import HROOT.Generate.ROOTAnnotate
+import HROOT.Generate.ROOTModule
 
-import HROOT.Generate.ROOTsmall
-import HROOT.Generate.ROOTAnnotatesmall
-import HROOT.Generate.ROOTModulesmall
+-- import HROOT.Generate.ROOTsmall
+-- import HROOT.Generate.ROOTAnnotatesmall
+-- import HROOT.Generate.ROOTModulesmall
 
 import Bindings.Cxx.Generate.Generator.Driver
 -- import Bindings.Cxx.Generate.Generator.Command hiding (config)
@@ -71,18 +71,21 @@ cabalTemplate = "HROOT.cabal"
 hprefix :: String 
 hprefix = "HROOT.Class"
 
+pkgname :: String 
+pkgname = "HROOT"
+-- cprefix :: String 
+-- cprefix = "HROOT"
+
 mkCabalFile :: FFICXXConfig -> Handle -> [ClassModule] -> IO () 
 mkCabalFile config h classmodules = do 
   version <- getHROOTVersion config
-  -- dir <- F.getDataDir 
-  -- putStrLn $ " mkCabalFile : dir = " ++  dir 
   templateDir <- getDataDir >>= return . (</> "template")
   (templates :: STGroup String) <- directoryGroup templateDir 
   let str = renderTemplateGroup 
               templates 
               [ ("version", version) 
               , ("csrcFiles", genCsrcFiles classmodules)
-              , ("includeFiles", genIncludeFiles classmodules) 
+              , ("includeFiles", genIncludeFiles pkgname classmodules) 
               , ("cppFiles", genCppFiles classmodules)
               , ("exposedModules", genExposedModules hprefix classmodules) 
               , ("otherModules", genOtherModules hprefix classmodules)
@@ -114,7 +117,8 @@ commandLineProcess (Generate conf) = do
       ibase = fficxxconfig_installBaseDir config
       cabalFileName = "HROOT.cabal"
 
-      (root_all_modules,root_all_classes_imports) = mkAllClassModulesAndCIH root_all_classes 
+      (root_all_modules,root_all_classes_imports) = 
+        mkAllClassModulesAndCIH pkgname root_all_classes 
   
   
   putStrLn "cabal file generation" 
@@ -130,8 +134,8 @@ commandLineProcess (Generate conf) = do
       -- prefix = hprefix
    
   putStrLn "header file generation"
-  writeTypeDeclHeaders templates cglobal workingDir "HROOT" root_all_classes_imports
-  mapM_ (writeDeclHeaders templates cglobal workingDir "HROOT") root_all_classes_imports
+  writeTypeDeclHeaders templates cglobal workingDir pkgname root_all_classes_imports
+  mapM_ (writeDeclHeaders templates cglobal workingDir pkgname) root_all_classes_imports
 
   putStrLn "cpp file generation" 
   mapM_ (writeCppDef templates workingDir) root_all_classes_imports
@@ -155,13 +159,11 @@ commandLineProcess (Generate conf) = do
   mapM_ (writeModuleHs templates workingDir hprefix) root_all_modules
 
   putStrLn "HROOT.hs file generation"
-  writePkgHs templates workingDir root_all_modules
+  writePkgHs (pkgname,hprefix) templates workingDir root_all_modules
   
   copyFile (workingDir </> cabalFileName)  ( ibase </> cabalFileName ) 
-  copyPredefined templateDir (srcDir ibase) "HROOT"
-  mapM_ (copyCppFiles workingDir (csrcDir ibase) "HROOT") root_all_classes_imports
-  mapM_ (copyModule workingDir (srcDir ibase) hprefix "HROOT") root_all_modules 
-  
+  copyPredefined templateDir (srcDir ibase) pkgname
+  mapM_ (copyCppFiles workingDir (csrcDir ibase) pkgname) root_all_classes_imports
+  mapM_ (copyModule workingDir (srcDir ibase) hprefix pkgname) root_all_modules 
 
-  return ()
 

@@ -58,7 +58,6 @@ $otherModules$
 -- default-extensions:	      ForeignFunctionInterface
   Include-dirs:       csrc
   Install-includes:   
-$cabalIndentation$addon.h
 $includeFiles$
   C-sources:          
 $cppFiles$
