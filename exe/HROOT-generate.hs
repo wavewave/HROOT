@@ -23,13 +23,13 @@ import System.Console.CmdArgs
 
 import Text.StringTemplate hiding (render)
 
-import HROOT.Generate.ROOT
-import HROOT.Generate.ROOTAnnotate
-import HROOT.Generate.ROOTModule
+-- import HROOT.Generate.ROOT
+-- import HROOT.Generate.ROOTAnnotate
+-- import HROOT.Generate.ROOTModule
 
--- import HROOT.Generate.ROOTsmall
--- import HROOT.Generate.ROOTAnnotatesmall
--- import HROOT.Generate.ROOTModulesmall
+import HROOT.Generate.ROOTsmall
+import HROOT.Generate.ROOTAnnotatesmall
+import HROOT.Generate.ROOTModulesmall
 
 import Bindings.Cxx.Generate.Generator.Driver
 -- import Bindings.Cxx.Generate.Generator.Command hiding (config)
@@ -64,11 +64,15 @@ main = do
   param <- cmdArgs mode
   putStrLn $ show param 
   commandLineProcess param 
-  -- putStrLn $ show $ mkModuleDepHigh tKey
+
+cabalTemplate :: String 
+cabalTemplate = "HROOT.cabal"
 
 mkCabalFile :: FFICXXConfig -> Handle -> [ClassModule] -> IO () 
 mkCabalFile config h classmodules = do 
   version <- getHROOTVersion config
+  -- dir <- F.getDataDir 
+  -- putStrLn $ " mkCabalFile : dir = " ++  dir 
   templateDir <- getDataDir >>= return . (</> "template")
   (templates :: STGroup String) <- directoryGroup templateDir 
   let str = renderTemplateGroup 
