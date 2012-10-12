@@ -40,6 +40,7 @@ Executable HROOT-generate
                  Cabal,
                  fficxx, 
                  HROOT-generate
+  Other-Modules: Command
 
 Library
   hs-source-dirs: lib

@@ -32,7 +32,8 @@ import HROOT.Generate.ROOTModule
 -- import HROOT.Generate.ROOTModulesmall
 
 import Bindings.Cxx.Generate.Generator.Driver
-import Bindings.Cxx.Generate.Generator.Command hiding (config)
+-- import Bindings.Cxx.Generate.Generator.Command hiding (config)
+import Command
 
 import Text.Parsec
 
@@ -94,7 +95,7 @@ getHROOTVersion conf = do
 
 
 
-commandLineProcess :: HROOT_Generate -> IO () 
+commandLineProcess :: HROOTGenerate -> IO () 
 commandLineProcess (Generate conf) = do 
   putStrLn "Automatic HROOT binding generation" 
   str <- readFile conf 
@@ -152,7 +153,7 @@ commandLineProcess (Generate conf) = do
   mapM_ (writeModuleHs templates workingDir prefix) root_all_modules
 
   putStrLn "HROOT.hs file generation"
-  writeHROOTHs templates workingDir root_all_modules
+  writePkgHs templates workingDir root_all_modules
   
   copyFile (workingDir </> cabalFileName)  ( ibase </> cabalFileName ) 
   copyPredefined templateDir (srcDir ibase) "HROOT"
