@@ -52,7 +52,7 @@ import           HROOT.Generate.ROOTsmall
 import           HROOT.Generate.ROOTAnnotatesmall
 import           HROOT.Generate.ROOTModulesmall
 -- 
-import           Paths_HROOT_generate
+-- import           Paths_HROOT_generate
 import qualified Paths_fficxx as F
 
 main :: IO () 
@@ -62,7 +62,8 @@ main = do
   commandLineProcess param 
 
 cabalTemplate :: String 
-cabalTemplate = "HROOT.cabal"
+cabalTemplate = "Pkg.cabal"
+
 
 hprefix :: String 
 hprefix = "HROOT.Class"
@@ -71,9 +72,6 @@ pkgname :: String
 pkgname = "HROOT"
 -- cprefix :: String 
 -- cprefix = "HROOT"
-
-
-
 
 mkCROOTIncludeHeaders :: Class 
                       -> [String] 
@@ -87,11 +85,12 @@ mkCROOTIncludeHeaders c =
 mkCabalFile :: FFICXXConfig -> Handle -> [ClassModule] -> IO () 
 mkCabalFile config h classmodules = do 
   version <- getHROOTVersion config
-  templateDir <- getDataDir >>= return . (</> "template")
+  templateDir <- F.getDataDir >>= return . (</> "template")
   (templates :: STGroup String) <- directoryGroup templateDir 
   let str = renderTemplateGroup 
               templates 
-              [ ("version", version) 
+              [ ("pkgname", pkgname) 
+              , ("version", version) 
               , ("csrcFiles", genCsrcFiles classmodules)
               , ("includeFiles", genIncludeFiles pkgname classmodules) 
               , ("cppFiles", genCppFiles classmodules)
@@ -102,17 +101,15 @@ mkCabalFile config h classmodules = do
               cabalTemplate 
   hPutStrLn h str
 
+-- | 
 getHROOTVersion :: FFICXXConfig -> IO String 
 getHROOTVersion conf = do 
   let hrootgeneratecabal = fficxxconfig_scriptBaseDir conf </> "HROOT-generate.cabal"
   gdescs <- readPackageDescription normal hrootgeneratecabal
-  
   let vnums = versionBranch . pkgVersion . package . packageDescription $ gdescs 
   return $ intercalate "." (map show vnums)
---  putStrLn $ "version = " ++ show vnum
 
-
-
+-- | 
 commandLineProcess :: HROOTGenerate -> IO () 
 commandLineProcess (Generate conf) = do 
   putStrLn "Automatic HROOT binding generation" 
@@ -126,7 +123,7 @@ commandLineProcess (Generate conf) = do
     Just config -> do 
       let workingDir = fficxxconfig_workingDir config 
           ibase = fficxxconfig_installBaseDir config
-          cabalFileName = cabalTemplate -- "HROOT.cabal"
+          cabalFileName = pkgname <.> "cabal" -- cabalTemplate -- "HROOT.cabal"
           (root_all_modules,root_all_classes_imports) = 
             mkAllClassModulesAndCIH (pkgname,mkCROOTIncludeHeaders) root_all_classes
       putStrLn "cabal file generation" 
@@ -172,7 +169,3 @@ commandLineProcess (Generate conf) = do
       mapM_ (copyModule workingDir (srcDir ibase) hprefix pkgname) root_all_modules 
 
 
-  -- str <- readFile conf 
-  -- let config = case (parse fficxxconfigParse "" str) of 
-  --               Left msg -> error (show msg)
-  --               Right ans -> ans
