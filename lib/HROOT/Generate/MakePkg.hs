@@ -54,6 +54,10 @@ import           HROOT.Generate.ROOTModulesmall
 import qualified Paths_HROOT_generate as H
 import qualified Paths_fficxx as F
 
+
+data PackageConfig  = PkgCfg { hprefix :: String 
+                             , pkgname :: String } 
+
 {- 
 main :: IO () 
 main = do 
@@ -65,7 +69,7 @@ main = do
 cabalTemplate :: String 
 cabalTemplate = "Pkg.cabal"
 
-
+{- 
 hprefix :: String 
 hprefix = "HROOT"
 
@@ -74,18 +78,21 @@ pkgname :: String
 pkgname = "HROOT"
 -- cprefix :: String 
 -- cprefix = "HROOT"
+-}
+
 
 -- | 
-copyPredefinedFiles :: FilePath -> IO () 
-copyPredefinedFiles ibase = do 
+copyPredefinedFiles :: PackageConfig -> FilePath -> IO () 
+copyPredefinedFiles pkgcfg ibase = do 
     tmpldir <- H.getDataDir >>= return . (</> "template") 
-    mapM_ (\x->copyFile (tmpldir </> pkgname </> x) (ibase </> x))
+    mapM_ (\x->copyFile (tmpldir </> pkgname pkgcfg </> x) (ibase </> x))
       [ "CHANGES", "Config.hs", "LICENSE", "README.md", "Setup.lhs" ]
     notExistThenCreate (ibase </> "example") 
     notExistThenCreate (ibase </> "src") 
     notExistThenCreate (ibase </> "csrc")
-    contents <- getDirectoryContents (tmpldir </> pkgname </> "example")
-    mapM_ (f (tmpldir </> pkgname </> "example") (ibase </> "example")) contents 
+    contents <- getDirectoryContents (tmpldir </> pkgname pkgcfg </> "example")
+    mapM_ (f (tmpldir </> pkgname pkgcfg </> "example") 
+          (ibase </> "example")) contents 
   where 
     f src dest s = if s /= "." && s /= ".."
                    then copyFile (src</>s) (dest</>s) 
@@ -100,20 +107,20 @@ mkCROOTIncludeHeaders c =
     _ -> [(class_name c) ++ ".h"]
 
 -- | 
-mkCabalFile :: FFICXXConfig -> Handle -> [ClassModule] -> IO () 
-mkCabalFile config h classmodules = do 
+mkCabalFile :: FFICXXConfig -> PackageConfig -> Handle -> [ClassModule] -> IO () 
+mkCabalFile config pkgcfg h classmodules = do 
   version <- getHROOTVersion config
   templateDir <- F.getDataDir >>= return . (</> "template")
   (templates :: STGroup String) <- directoryGroup templateDir 
   let str = renderTemplateGroup 
               templates 
-              [ ("pkgname", pkgname) 
+              [ ("pkgname", pkgname pkgcfg) 
               , ("version", version) 
               , ("csrcFiles", genCsrcFiles classmodules)
-              , ("includeFiles", genIncludeFiles pkgname classmodules) 
+              , ("includeFiles", genIncludeFiles (pkgname pkgcfg) classmodules) 
               , ("cppFiles", genCppFiles classmodules)
-              , ("exposedModules", genExposedModules hprefix classmodules) 
-              , ("otherModules", genOtherModules hprefix classmodules)
+              , ("exposedModules", genExposedModules (hprefix pkgcfg) classmodules) 
+              , ("otherModules", genOtherModules (hprefix pkgcfg) classmodules)
               , ("cabalIndentation", cabalIndentation)
               ]
               cabalTemplate 
@@ -128,54 +135,54 @@ getHROOTVersion conf = do
   return $ intercalate "." (map show vnums)
 
 
-makePackage :: FFICXXConfig -> IO () 
-makePackage config = do 
+makePackage :: FFICXXConfig -> PackageConfig -> IO () 
+makePackage config pkgcfg = do 
     let workingDir = fficxxconfig_workingDir config 
         ibase = fficxxconfig_installBaseDir config
-        cabalFileName = pkgname <.> "cabal" -- cabalTemplate -- "HROOT.cabal"
+        cabalFileName = pkgname pkgcfg <.> "cabal" -- cabalTemplate -- "HROOT.cabal"
         (root_all_modules,root_all_classes_imports) = 
-          mkAllClassModulesAndCIH (pkgname,mkCROOTIncludeHeaders) root_all_classes
+          mkAllClassModulesAndCIH (pkgname pkgcfg,mkCROOTIncludeHeaders) root_all_classes
     putStrLn "cabal file generation" 
     getHROOTVersion config
-    copyPredefinedFiles ibase 
+    copyPredefinedFiles pkgcfg ibase 
     withFile (workingDir </> cabalFileName) WriteMode $ 
       \h -> do 
-        mkCabalFile config h root_all_modules 
+        mkCabalFile config pkgcfg h root_all_modules 
     templateDir <- F.getDataDir >>= return . (</> "template")
     (templates :: STGroup String) <- directoryGroup templateDir 
     let cglobal = mkGlobal root_all_classes
     -- 
     putStrLn "header file generation"
-    writeTypeDeclHeaders templates cglobal workingDir pkgname root_all_classes_imports
-    mapM_ (writeDeclHeaders templates cglobal workingDir pkgname) root_all_classes_imports
+    writeTypeDeclHeaders templates cglobal workingDir (pkgname pkgcfg) root_all_classes_imports
+    mapM_ (writeDeclHeaders templates cglobal workingDir (pkgname pkgcfg)) root_all_classes_imports
     -- 
     putStrLn "cpp file generation" 
     mapM_ (writeCppDef templates workingDir) root_all_classes_imports
     -- 
     putStrLn "RawType.hs file generation" 
-    mapM_ (writeRawTypeHs templates workingDir hprefix) root_all_modules 
+    mapM_ (writeRawTypeHs templates workingDir (hprefix pkgcfg)) root_all_modules 
     -- 
     putStrLn "FFI.hsc file generation"
-    mapM_ (writeFFIHsc templates workingDir hprefix) root_all_modules
+    mapM_ (writeFFIHsc templates workingDir (hprefix pkgcfg)) root_all_modules
     -- 
     putStrLn "Interface.hs file generation" 
-    mapM_ (writeInterfaceHs annotateMap templates workingDir hprefix) root_all_modules
+    mapM_ (writeInterfaceHs annotateMap templates workingDir (hprefix pkgcfg)) root_all_modules
     -- 
     putStrLn "Cast.hs file generation"
-    mapM_ (writeCastHs templates workingDir hprefix) root_all_modules
+    mapM_ (writeCastHs templates workingDir (hprefix pkgcfg)) root_all_modules
     -- 
     putStrLn "Implementation.hs file generation"
-    mapM_ (writeImplementationHs annotateMap templates workingDir hprefix) root_all_modules
+    mapM_ (writeImplementationHs annotateMap templates workingDir (hprefix pkgcfg)) root_all_modules
     -- 
     putStrLn "module file generation" 
-    mapM_ (writeModuleHs templates workingDir hprefix) root_all_modules
+    mapM_ (writeModuleHs templates workingDir (hprefix pkgcfg)) root_all_modules
     -- 
     putStrLn "HROOT.hs file generation"
-    writePkgHs (pkgname,hprefix) templates workingDir root_all_modules
+    writePkgHs (pkgname pkgcfg,hprefix pkgcfg) templates workingDir root_all_modules
     -- 
     copyFile (workingDir </> cabalFileName)  ( ibase </> cabalFileName ) 
-    copyPredefined templateDir (srcDir ibase) pkgname
-    mapM_ (copyCppFiles workingDir (csrcDir ibase) pkgname) root_all_classes_imports
-    mapM_ (copyModule workingDir (srcDir ibase) hprefix pkgname) root_all_modules 
+    copyPredefined templateDir (srcDir ibase) (pkgname pkgcfg)
+    mapM_ (copyCppFiles workingDir (csrcDir ibase) (pkgname pkgcfg)) root_all_classes_imports
+    mapM_ (copyModule workingDir (srcDir ibase) (hprefix pkgcfg) (pkgname pkgcfg)) root_all_modules 
 
 

@@ -83,7 +83,9 @@ commandLineProcess (Generate conf) = do
                 <*> C.lookup cfg "installbase"  
   case mfficxxcfg of 
     Nothing -> error "config file is not parsed well"
-    Just config -> makePackage config 
+    Just config -> do 
+      let pkgcfg = PkgCfg "HROOT" "HROOT"
+      makePackage config pkgcfg 
 
 
 {-
