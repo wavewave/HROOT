@@ -8,7 +8,12 @@ Author:		Ian-Woo Kim
 Maintainer: 	Ian-Woo Kim <ianwookim@gmail.com>
 Build-Type: 	Simple
 Cabal-Version:  >= 1.8
-Data-files: 
+Data-files:     template/HROOT/CHANGES
+                template/HROOT/Config.hs
+                template/HROOT/LICENSE
+                template/HROOT/README.md 
+                template/HROOT/Setup.lhs
+                template/HROOT/example/*.hs
 
 Executable HROOT-generate
   Main-is: HROOT-generate.hs
@@ -24,7 +29,6 @@ Executable HROOT-generate
                  HStringTemplate, 
                  split,
                  configurator >= 0.2,
-                 -- parsec>3, 
                  cmdargs, 
                  transformers, 
                  template-haskell,
@@ -45,7 +49,6 @@ Library
                  process, 
                  HStringTemplate, 
                  split,
-                 -- parsec>3, 
                  cmdargs, 
                  transformers, 
                  template-haskell, 
@@ -59,4 +62,3 @@ Library
                    HROOT.Generate.ROOTsmall
                    HROOT.Generate.ROOTAnnotatesmall
                    HROOT.Generate.ROOTModulesmall
-                   -- Text.StringTemplate.Helpers

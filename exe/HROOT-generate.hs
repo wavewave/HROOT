@@ -52,7 +52,7 @@ import           HROOT.Generate.ROOTsmall
 import           HROOT.Generate.ROOTAnnotatesmall
 import           HROOT.Generate.ROOTModulesmall
 -- 
--- import           Paths_HROOT_generate
+import qualified Paths_HROOT_generate as H
 import qualified Paths_fficxx as F
 
 main :: IO () 
@@ -66,22 +66,39 @@ cabalTemplate = "Pkg.cabal"
 
 
 hprefix :: String 
-hprefix = "HROOT.Class"
+hprefix = "HROOT"
 
+-- | 
 pkgname :: String 
 pkgname = "HROOT"
 -- cprefix :: String 
 -- cprefix = "HROOT"
 
-mkCROOTIncludeHeaders :: Class 
-                      -> [String] 
+-- | 
+copyPredefinedFiles :: FilePath -> IO () 
+copyPredefinedFiles ibase = do 
+    tmpldir <- H.getDataDir >>= return . (</> "template") 
+    mapM_ (\x->copyFile (tmpldir </> pkgname </> x) (ibase </> x))
+      [ "CHANGES", "Config.hs", "LICENSE", "README.md", "Setup.lhs" ]
+    notExistThenCreate (ibase </> "example") 
+    notExistThenCreate (ibase </> "src") 
+    notExistThenCreate (ibase </> "csrc")
+    contents <- getDirectoryContents (tmpldir </> pkgname </> "example")
+    mapM_ (f (tmpldir </> pkgname </> "example") (ibase </> "example")) contents 
+  where 
+    f src dest s = if s /= "." && s /= ".."
+                   then copyFile (src</>s) (dest</>s) 
+                   else return () 
+
+
+-- | 
+mkCROOTIncludeHeaders :: Class -> [String] 
 mkCROOTIncludeHeaders c = 
   case class_name c of
     "Deletable" -> [] 
     _ -> [(class_name c) ++ ".h"]
 
-
-
+-- | 
 mkCabalFile :: FFICXXConfig -> Handle -> [ClassModule] -> IO () 
 mkCabalFile config h classmodules = do 
   version <- getHROOTVersion config
@@ -128,6 +145,7 @@ commandLineProcess (Generate conf) = do
             mkAllClassModulesAndCIH (pkgname,mkCROOTIncludeHeaders) root_all_classes
       putStrLn "cabal file generation" 
       getHROOTVersion config
+      copyPredefinedFiles ibase 
       withFile (workingDir </> cabalFileName) WriteMode $ 
         \h -> do 
           mkCabalFile config h root_all_modules 
