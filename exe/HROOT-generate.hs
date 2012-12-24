@@ -62,6 +62,9 @@ import           System.Console.CmdArgs
 import           Bindings.Cxx.Generate.Config
 -- 
 import           Command
+import           HROOT.Data.Core.ROOTsmall
+import           HROOT.Data.Core.ROOTAnnotatesmall
+import           HROOT.Data.Core.ROOTModulesmall
 import           HROOT.Generate.MakePkg 
 -- 
 import qualified Paths_HROOT_generate as H
@@ -84,8 +87,11 @@ commandLineProcess (Generate conf) = do
   case mfficxxcfg of 
     Nothing -> error "config file is not parsed well"
     Just config -> do 
-      let pkgcfg = PkgCfg "HROOT.Core" "HROOT-core"
-      makePackage config pkgcfg 
+      -- let pkgcfg = PkgCfg "HROOT.Core" "HROOT-core"
+      --     pkgcfg = PkgCfg "HROOT.Hist" "HROOT-hist"
+      makePackage config (PkgCfg "HROOT.Core" "HROOT-core" root_all_classes annotateMap)
+      -- makePackage config (PkgCfg "HROOT.Hist" "HROOT-hist") 
+
 
 
 {-

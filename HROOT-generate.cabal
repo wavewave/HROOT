@@ -57,11 +57,11 @@ Library
 
   Exposed-Modules: 
                    HROOT.Generate.MakePkg 
-                   HROOT.Generate.ROOT
-                   HROOT.Generate.ROOTAnnotate
-                   HROOT.Generate.ROOTModule
-                   HROOT.Generate.ROOTsmall
-                   HROOT.Generate.ROOTAnnotatesmall
-                   HROOT.Generate.ROOTModulesmall
+                   HROOT.Data.Core.ROOT
+                   HROOT.Data.Core.ROOTAnnotate
+                   HROOT.Data.Core.ROOTModule
+                   HROOT.Data.Core.ROOTsmall
+                   HROOT.Data.Core.ROOTAnnotatesmall
+                   HROOT.Data.Core.ROOTModulesmall
   Other-Modules: 
                    Paths_HROOT_generate

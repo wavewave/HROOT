@@ -1,5 +1,5 @@
 -- |
--- Module      : HROOT.Generate.ROOTsmall
+-- Module      : HROOT.Data.Core.ROOTsmall
 -- Copyright   : (c) 2011 Ian-Woo Kim
 -- 
 -- License     : GPL-3
@@ -10,7 +10,7 @@
 -- conversion data for ROOT classes 
 --
 
-module HROOT.Generate.ROOTsmall where
+module HROOT.Data.Core.ROOTsmall where
 
 import Bindings.Cxx.Generate.Type.CType
 import Bindings.Cxx.Generate.Type.Method

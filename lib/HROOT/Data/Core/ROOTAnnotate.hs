@@ -1,6 +1,6 @@
 {-# LANGUAGE QuasiQuotes #-}
 
-module HROOT.Generate.ROOTAnnotate where
+module HROOT.Data.Core.ROOTAnnotate where
 
 import Bindings.Cxx.Generate.Type.Annotate 
 import Bindings.Cxx.Generate.QQ.Verbatim

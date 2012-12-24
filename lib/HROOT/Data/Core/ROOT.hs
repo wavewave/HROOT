@@ -1,6 +1,6 @@
 -- |
--- Module      : HROOT.Generate.ROOT
--- Copyright   : (c) 2011 Ian-Woo Kim
+-- Module      : HROOT.Data.Core.ROOT
+-- Copyright   : (c) 2011, 2012 Ian-Woo Kim
 -- 
 -- License     : GPL-3
 -- Maintainer  : ianwookim@gmail.com
@@ -10,7 +10,7 @@
 -- conversion data for ROOT classes 
 --
 
-module HROOT.Generate.ROOT where
+module HROOT.Data.Core.ROOT where
 
 import Bindings.Cxx.Generate.Type.CType
 import Bindings.Cxx.Generate.Type.Method

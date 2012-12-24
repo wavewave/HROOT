@@ -1,4 +1,4 @@
-module HROOT.Generate.ROOTModule where
+module HROOT.Data.Core.ROOTModulesmall where
 
 exposedModules :: [String]
 exposedModules = [ "HROOT" 
@@ -25,7 +25,8 @@ classModules :: [String]
 classModules = [ "TObject" 
                , "TNamed" 
                , "TDictionary"
-               , "TClass"
+               , "TClass" ] 
+{-
                , "TFormula"
                , "TAtt3D"
                , "TAttAxis"
@@ -120,4 +121,4 @@ classModules = [ "TObject"
                , "TKey"
                , "TDatime"
                , "TVirtualHistPainter"
-               ]
+               ] -}
