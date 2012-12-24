@@ -78,13 +78,13 @@ commandLineProcess (Generate conf) = do
   putStrLn "Automatic HROOT binding generation" 
   cfg <- load [Required conf] 
   mfficxxcfg <- liftM3 FFICXXConfig  
-                <$> C.lookup cfg "scriptbase" 
-                <*> C.lookup cfg "workingdir"
-                <*> C.lookup cfg "installbase"  
+                <$> C.lookup cfg "HROOT-core.scriptbase" 
+                <*> C.lookup cfg "HROOT-core.workingdir"
+                <*> C.lookup cfg "HROOT-core.installbase"  
   case mfficxxcfg of 
     Nothing -> error "config file is not parsed well"
     Just config -> do 
-      let pkgcfg = PkgCfg "HROOT" "HROOT"
+      let pkgcfg = PkgCfg "HROOT.Core" "HROOT-core"
       makePackage config pkgcfg 
 
 

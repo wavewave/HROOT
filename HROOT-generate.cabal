@@ -8,12 +8,12 @@ Author:		Ian-Woo Kim
 Maintainer: 	Ian-Woo Kim <ianwookim@gmail.com>
 Build-Type: 	Simple
 Cabal-Version:  >= 1.8
-Data-files:     template/HROOT/CHANGES
-                template/HROOT/Config.hs
-                template/HROOT/LICENSE
-                template/HROOT/README.md 
-                template/HROOT/Setup.lhs
-                template/HROOT/example/*.hs
+Data-files:     template/HROOT-core/CHANGES
+                template/HROOT-core/Config.hs
+                template/HROOT-core/LICENSE
+                template/HROOT-core/README.md 
+                template/HROOT-core/Setup.lhs
+                template/HROOT-core/example/*.hs
 
 Executable HROOT-generate
   Main-is: HROOT-generate.hs
