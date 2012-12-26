@@ -1,6 +1,6 @@
 {-# LANGUAGE QuasiQuotes #-}
 
-module HROOT.Data.Core.ROOTAnnotatesmall where
+module HROOT.Data.Hist.Annotate where
 
 import Bindings.Cxx.Generate.Type.Annotate 
 import Bindings.Cxx.Generate.QQ.Verbatim
@@ -9,11 +9,12 @@ import Bindings.Cxx.Generate.QQ.Verbatim
 import qualified Data.Map as M
 
 
-core_ann :: AnnotateMap 
-core_ann = 
-  M.fromList 
+hist_ann :: AnnotateMap 
+hist_ann = M.empty
+{-  M.fromList 
   [ tNamedAnn, tNamedNewAnn, tNamedSetTitleAnn
-  , tObjectGetNameAnn, tObjectDrawAnn, tObjectFindObjectAnn ]
+  , tObjectGetNameAnn, tObjectDrawAnn, tObjectFindObjectAnn ] 
+-}
 {-
   , tH1Ann, tH1AddAnn, tH1AddBinContentAnn, tH1Chi2TestAnn
   , tH1ComputeIntegralAnn, tH1DirectoryAutoAddAnn, tH1DistancetoPrimitiveAnn
@@ -33,6 +34,7 @@ core_ann =
   , ann_setBinContent3                  
   ]  -}
 
+{-
 tNamedAnn = ((PkgClass,"TNamed"),[verbatim|
 Class TNamed
 reference : http://root.cern.ch
@@ -382,3 +384,4 @@ ann_setBinContent3 = ((PkgMethod, "setBinContent3"), [verbatim|
 
 |])
 
+-}

@@ -10,23 +10,23 @@
 -- conversion data for ROOT classes 
 --
 
-module HROOT.Data.Core.ROOTsmall where
+module HROOT.Data.Hist.Class where
 
 import Bindings.Cxx.Generate.Type.CType
 import Bindings.Cxx.Generate.Type.Method
 import Bindings.Cxx.Generate.Type.Class
 import Bindings.Cxx.Generate.Type.Module
 
-
+{-
 moduleInterface :: Module
 moduleInterface = Module { module_name = "HROOT.Class.Interface"
-                         , module_exports = [ "IDeletable" 
-                                            , "TObject"
-                                            , "ITObject"
-                                            , "ITNamed" 
-                                            , "TNamed" ]
+                         , module_exports = [ "ITH1" 
+                                            , "TH1"
+                                            ]
                          }  
+-}
 
+{-
 deletable :: Class 
 deletable = AbstractClass "Deletable" [] 
           [ Destructor ]
@@ -107,15 +107,15 @@ tClassH = ClassImportHeader tClass "HROOTTClass.h" "HROOTTClass.cpp"
                             [ "TClass.h" ]
 
 tClassM = ClassModule "TClass" [tClass] [tClassH] ["TObject"] ["Deletable","TObject","TNamed","TDictionary"] []
+-}
 
+tH1 :: Class
+tH1 = 
+  Class "TH1" [] 
+  [ AliasVirtual int_ "Fill" [double "x"] "fill1"
+  ] 
 
-core_classes :: [Class]
-core_classes = 
-  [ deletable, tObject, tClass, tDictionary, tNamed ] 
+hist_classes :: [Class]
+hist_classes = 
+  [ tH1 ] 
 
-core_cihs :: [ClassImportHeader] 
-core_cihs = [ deletableH, tObjectH, tClassH, tDictionaryH, tNamedH ]
-
-core_modules :: [ClassModule]
-core_modules = [ deletableM, tObjectM, tClassM, tDictionaryM, tNamedM ] 
-               

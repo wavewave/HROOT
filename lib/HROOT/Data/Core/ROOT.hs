@@ -1272,8 +1272,8 @@ root_all_classes = [ deletable, tObject, tNamed, tClass, tDictionary
                    , tGraph]
 -}
 
-root_all_classes :: [Class]
-root_all_classes = 
+core_classes :: [Class]
+core_classes = 
   [ deletable
   , tObject, tNamed, tDictionary, tClass
   , tFormula

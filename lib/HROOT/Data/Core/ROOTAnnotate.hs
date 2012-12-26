@@ -13,8 +13,8 @@ annotateMap :: AnnotateMap
 annotateMap = M.empty 
 -}
 
-annotateMap :: AnnotateMap 
-annotateMap = 
+core_ann :: AnnotateMap 
+core_ann = 
   M.fromList 
   [ tNamedAnn, tNamedNewAnn, tNamedSetTitleAnn
   , tObjectGetNameAnn, tObjectDrawAnn, tObjectFindObjectAnn

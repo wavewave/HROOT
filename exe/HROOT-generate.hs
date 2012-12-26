@@ -16,55 +16,25 @@
 
 module Main where
 
-{-
-
-
-import           Data.Configurator as C
-import           Data.Configurator.Types 
-import           Data.List 
-import qualified Data.Map as M
-import           Data.Maybe
-import           Distribution.Package
-import           Distribution.PackageDescription hiding (exposedModules)
-import           Distribution.PackageDescription.Parse
-import           Distribution.Verbosity
-import           Distribution.Version 
-
-import           System.Directory
-import           System.FilePath 
-import           System.IO
--- import           Text.Parsec
-import           Text.StringTemplate hiding (render)
--- 
-import           Bindings.Cxx.Generate.Code.Cabal
-import           Bindings.Cxx.Generate.Code.Cpp
-import           Bindings.Cxx.Generate.Code.Dependency
-
-import           Bindings.Cxx.Generate.Generator.ContentMaker 
-import           Bindings.Cxx.Generate.Generator.Driver
-import           Bindings.Cxx.Generate.Type.Class
-import           Bindings.Cxx.Generate.Util
--- 
-import           Command
--- import           HROOT.Generate.ROOT
--- import           HROOT.Generate.ROOTAnnotate
--- import           HROOT.Generate.ROOTModule
-import           HROOT.Generate.ROOTsmall
-import           HROOT.Generate.ROOTAnnotatesmall
-import           HROOT.Generate.ROOTModulesmall -}
 
 import           Control.Applicative
 import           Control.Monad
 import           Data.Configurator as C
 import           Data.Configurator.Types 
+import qualified Data.HashMap.Strict as HM
 import           System.Console.CmdArgs
 -- 
 import           Bindings.Cxx.Generate.Config
+import           Bindings.Cxx.Generate.Code.Dependency
+import           Bindings.Cxx.Generate.Generator.ContentMaker
+import           Bindings.Cxx.Generate.Type.PackageInterface
 -- 
 import           Command
 import           HROOT.Data.Core.ROOTsmall
 import           HROOT.Data.Core.ROOTAnnotatesmall
 import           HROOT.Data.Core.ROOTModulesmall
+import           HROOT.Data.Hist.Annotate
+import           HROOT.Data.Hist.Class 
 import           HROOT.Generate.MakePkg 
 -- 
 import qualified Paths_HROOT_generate as H
@@ -80,19 +50,27 @@ commandLineProcess :: HROOTGenerate -> IO ()
 commandLineProcess (Generate conf) = do 
   putStrLn "Automatic HROOT binding generation" 
   cfg <- load [Required conf] 
-  mfficxxcfg <- liftM3 FFICXXConfig  
-                <$> C.lookup cfg "HROOT-core.scriptbase" 
-                <*> C.lookup cfg "HROOT-core.workingdir"
-                <*> C.lookup cfg "HROOT-core.installbase"  
-  case mfficxxcfg of 
+  mfficxxcfg1 <- liftM3 FFICXXConfig  
+                 <$> C.lookup cfg "HROOT-core.scriptbase" 
+                 <*> C.lookup cfg "HROOT-core.workingdir"
+                 <*> C.lookup cfg "HROOT-core.installbase"  
+  mfficxxcfg2 <- liftM3 FFICXXConfig 
+                 <$> C.lookup cfg "HROOT-hist.scriptbase" 
+                 <*> C.lookup cfg "HROOT-hist.workingdir"
+                 <*> C.lookup cfg "HROOT-hist.installbase"
+  case (,) <$> mfficxxcfg1 <*> mfficxxcfg2 of 
     Nothing -> error "config file is not parsed well"
-    Just config -> do 
-      -- let pkgcfg = PkgCfg "HROOT.Core" "HROOT-core"
-      --     pkgcfg = PkgCfg "HROOT.Hist" "HROOT-hist"
-      makePackage config (PkgCfg "HROOT.Core" "HROOT-core" root_all_classes annotateMap)
-      -- makePackage config (PkgCfg "HROOT.Hist" "HROOT-hist") 
+    Just (config1,config2) -> do 
+      let -- (core_modules,core_cihs) = 
+          --   mkAllClassModulesAndCIH ("HROOT-core",mkCROOTIncludeHeaders) core_classes
+          (hist_modules,hist_cihs) = 
+            mkAllClassModulesAndCIH ("HROOT-hist",mkCROOTIncludeHeaders) hist_classes
+      makePackage config1 (PkgCfg "HROOT.Core" "HROOT-core" core_classes core_cihs core_modules core_ann)
+      let pinfc = mkPackageInterface HM.empty (PkgName "HROOT-core") core_cihs 
+      
+      makePackage config2 (PkgCfg "HROOT.Hist" "HROOT-hist" hist_classes hist_cihs hist_modules hist_ann) 
 
-
+      print pinfc 
 
 {-
 cabalTemplate :: String 

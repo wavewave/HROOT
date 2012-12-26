@@ -14,6 +14,12 @@ Data-files:     template/HROOT-core/CHANGES
                 template/HROOT-core/README.md 
                 template/HROOT-core/Setup.lhs
                 template/HROOT-core/example/*.hs
+                template/HROOT-hist/CHANGES
+                template/HROOT-hist/Config.hs
+                template/HROOT-hist/LICENSE
+                template/HROOT-hist/README.md 
+                template/HROOT-hist/Setup.lhs
+                template/HROOT-hist/example/*.hs
 
 Executable HROOT-generate
   Main-is: HROOT-generate.hs
@@ -33,7 +39,8 @@ Executable HROOT-generate
                  transformers, 
                  template-haskell,
                  Cabal,
-                 fficxx, 
+                 fficxx,
+                 unordered-containers, 
                  HROOT-generate
   Other-Modules: Command
 
@@ -53,7 +60,8 @@ Library
                  transformers, 
                  template-haskell, 
                  Cabal, 
-                 fficxx
+                 fficxx, 
+                 unordered-containers
 
   Exposed-Modules: 
                    HROOT.Generate.MakePkg 
@@ -63,5 +71,9 @@ Library
                    HROOT.Data.Core.ROOTsmall
                    HROOT.Data.Core.ROOTAnnotatesmall
                    HROOT.Data.Core.ROOTModulesmall
+                   HROOT.Data.Hist.Annotate
+                   HROOT.Data.Hist.Class
+                   HROOT.Data.Hist.Module 
+                   
   Other-Modules: 
                    Paths_HROOT_generate

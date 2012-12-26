@@ -59,6 +59,8 @@ import qualified Paths_fficxx as F
 data PackageConfig  = PkgCfg { hprefix :: String 
                              , pkgname :: String 
                              , pkg_classes :: [Class] 
+                             , pkg_cihs :: [ClassImportHeader]
+                             , pkg_modules :: [ClassModule]
                              , pkg_annotateMap :: AnnotateMap
                              } 
 
@@ -144,8 +146,8 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     let workingDir = fficxxconfig_workingDir config 
         ibase = fficxxconfig_installBaseDir config
         cabalFileName = pkgname <.> "cabal" -- cabalTemplate -- "HROOT.cabal"
-        (pkg_modules,pkg_classes_imports) = 
-          mkAllClassModulesAndCIH (pkgname,mkCROOTIncludeHeaders) pkg_classes
+        -- (pkg_modules,pkg_cihs) = 
+        --   mkAllClassModulesAndCIH (pkgname,mkCROOTIncludeHeaders) pkg_classes
     putStrLn "cabal file generation" 
     getHROOTVersion config
     copyPredefinedFiles pkgcfg ibase 
@@ -157,11 +159,11 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     let cglobal = mkGlobal pkg_classes
     -- 
     putStrLn "header file generation"
-    writeTypeDeclHeaders templates cglobal workingDir pkgname pkg_classes_imports
-    mapM_ (writeDeclHeaders templates cglobal workingDir pkgname) pkg_classes_imports
+    writeTypeDeclHeaders templates cglobal workingDir pkgname pkg_cihs
+    mapM_ (writeDeclHeaders templates cglobal workingDir pkgname) pkg_cihs
     -- 
     putStrLn "cpp file generation" 
-    mapM_ (writeCppDef templates workingDir) pkg_classes_imports
+    mapM_ (writeCppDef templates workingDir) pkg_cihs
     -- 
     putStrLn "RawType.hs file generation" 
     mapM_ (writeRawTypeHs templates workingDir hprefix) pkg_modules 
@@ -186,7 +188,7 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     -- 
     copyFile (workingDir </> cabalFileName)  ( ibase </> cabalFileName ) 
     copyPredefined templateDir (srcDir ibase) pkgname
-    mapM_ (copyCppFiles workingDir (csrcDir ibase) pkgname) pkg_classes_imports
+    mapM_ (copyCppFiles workingDir (csrcDir ibase) pkgname) pkg_cihs
     mapM_ (copyModule workingDir (srcDir ibase) hprefix pkgname) pkg_modules 
 
 
