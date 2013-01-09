@@ -34,6 +34,8 @@ import           HROOT.Data.Core.Annotate
 import           HROOT.Data.Core.Class
 import           HROOT.Data.Hist.Annotate
 import           HROOT.Data.Hist.Class 
+import           HROOT.Data.Graf.Annotate
+import           HROOT.Data.Graf.Class
 import           HROOT.Generate.MakePkg 
 -- 
 import qualified Paths_HROOT_generate as H
@@ -57,13 +59,20 @@ commandLineProcess (Generate conf) = do
                  <$> C.lookup cfg "HROOT-hist.scriptbase" 
                  <*> C.lookup cfg "HROOT-hist.workingdir"
                  <*> C.lookup cfg "HROOT-hist.installbase"
-  case (,) <$> mfficxxcfg1 <*> mfficxxcfg2 of 
+  mfficxxgraf <- liftM3 FFICXXConfig 
+                 <$> C.lookup cfg "HROOT-graf.scriptbase" 
+                 <*> C.lookup cfg "HROOT-graf.workingdir"
+                 <*> C.lookup cfg "HROOT-graf.installbase"
+  case (,,) <$> mfficxxcfg1 <*> mfficxxcfg2 <*> mfficxxgraf of 
     Nothing -> error "config file is not parsed well"
-    Just (config1,config2) -> do 
+    Just (config1,config2,cfggraf) -> do 
       let (core_modules,core_cihs) = 
             mkAllClassModulesAndCIH ("HROOT-core",mkCROOTIncludeHeaders) core_classes
           (hist_modules,hist_cihs) = 
             mkAllClassModulesAndCIH ("HROOT-hist",mkCROOTIncludeHeaders) hist_classes
+          (graf_modules,graf_cihs) = 
+            mkAllClassModulesAndCIH ("HROOT-graf",mkCROOTIncludeHeaders) graf_classes 
+ 
       let pkg_HROOT_CORE = PkgCfg { pkgname = "HROOT-core"
                                   , pkg_typemacro = "__HROOT_CORE__"
                                   , pkg_classes = core_classes 
@@ -80,11 +89,21 @@ commandLineProcess (Generate conf) = do
                                   , pkg_annotateMap = hist_ann
                                   , pkg_deps = [ "HROOT-core" ]
                                   } 
+          pkg_HROOT_GRAF = PkgCfg { pkgname = "HROOT-graf"
+                                  , pkg_typemacro = "__HROOT_GRAF__"
+                                  , pkg_classes = graf_classes 
+                                  , pkg_cihs = graf_cihs 
+                                  , pkg_modules = graf_modules 
+                                  , pkg_annotateMap = graf_ann
+                                  , pkg_deps = [ "HROOT-core" ]
+                                  } 
 
-      makePackage config1 pkg_HROOT_CORE -- (PkgCfg "HROOT-core" core_classes core_cihs core_modules core_ann  [])
-      let pinfc = mkPackageInterface HM.empty (PkgName "HROOT-core") core_cihs 
+
+      makePackage config1 pkg_HROOT_CORE
+      makePackage config2 pkg_HROOT_HIST
+      makePackage cfggraf pkg_HROOT_GRAF
+      -- let pinfc = mkPackageInterface HM.empty (PkgName "HROOT-core") core_cihs 
       
-      makePackage config2 pkg_HROOT_HIST -- (PkgCfg "HROOT-hist"  hist_classes hist_cihs hist_modules hist_ann ["HROOT-core"]) 
 
-      print pinfc 
+      -- print pinfc 
 

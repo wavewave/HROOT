@@ -28,9 +28,15 @@ histcabal = Cabal { cabal_pkgname = "HROOT-hist"
 
 tH1 :: Class
 tH1 = 
-  Class histcabal  "TH1" [deletable] 
+  Class histcabal  "TH1" [tObject] 
   [ AliasVirtual int_ "Fill" [double "x"] "fill1"
   ] 
+
+tH1F :: Class
+tH1F = Class histcabal "TH1F" [tH1] 
+       [ Constructor [cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"]
+       ] 
+
 
 hist_classes :: [Class]
 hist_classes = 

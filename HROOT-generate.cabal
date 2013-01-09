@@ -20,6 +20,12 @@ Data-files:     template/HROOT-core/CHANGES
                 template/HROOT-hist/README.md 
                 template/HROOT-hist/Setup.lhs
                 template/HROOT-hist/example/*.hs
+                template/HROOT-graf/CHANGES
+                template/HROOT-graf/Config.hs
+                template/HROOT-graf/LICENSE
+                template/HROOT-graf/README.md 
+                template/HROOT-graf/Setup.lhs
+                template/HROOT-graf/example/*.hs
 
 Executable HROOT-generate
   Main-is: HROOT-generate.hs
@@ -70,10 +76,12 @@ Library
                    -- HROOT.Data.Core.ROOTModule
                    HROOT.Data.Core.Annotate 
                    HROOT.Data.Core.Class 
-                   HROOT.Data.Core.Module 
+                   -- HROOT.Data.Core.Module 
                    HROOT.Data.Hist.Annotate
                    HROOT.Data.Hist.Class
-                   HROOT.Data.Hist.Module 
+                   -- HROOT.Data.Hist.Module 
+                   HROOT.Data.Graf.Annotate
+                   HROOT.Data.Graf.Class
                    
   Other-Modules: 
                    Paths_HROOT_generate

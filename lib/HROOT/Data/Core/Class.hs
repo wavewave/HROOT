@@ -77,9 +77,13 @@ tClass = Class corecabal "TClass" [tDictionary]
          [
          ]
 
+tVirtualPad :: Class 
+tVirtualPad = Class corecabal "TVirtualPad" [tObject] 
+              [ 
+              ] 
 
 
 core_classes :: [Class]
 core_classes = 
-  [ deletable, tObject, tClass, tDictionary, tNamed ] 
+  [ deletable, tObject, tClass, tDictionary, tNamed, tVirtualPad ] 
 
