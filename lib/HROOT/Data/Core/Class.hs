@@ -12,8 +12,6 @@
 
 module HROOT.Data.Core.Class where
 
--- import Bindings.Cxx.Generate.Type.CType
--- import Bindings.Cxx.Generate.Type.Method
 import Bindings.Cxx.Generate.Type.Class
 import Bindings.Cxx.Generate.Type.Module
 
@@ -22,6 +20,8 @@ corecabal = Cabal { cabal_pkgname = "HROOT-core"
                   , cabal_cheaderprefix = "HROOTCore" 
                   , cabal_moduleprefix = "HROOT.Core" 
                   } 
+
+coreclass = Class corecabal 
 
 moduleInterface :: Module
 moduleInterface = Module { module_name = "HROOT.Class.Interface"
@@ -56,6 +56,16 @@ tObject =
   , Static  bool_    "GetObjectStat" []
   ]
 
+tDirectory :: Class
+tDirectory = coreclass "TDirectory" [tNamed] 
+             [ Static  void_ "AddDirectory" [bool "add"]
+             , Static  bool_ "AddDirectoryStatus" []
+             , Virtual void_ "Append" [cppclass tObject "obj", bool "replace"]
+             , AliasVirtual void_ "Add" [cppclass tObject "obj", bool "replace"] "addD"
+             {- , Virtual int_ "AppendKey" [cppclass "TKey" "key" ] -}
+             , Virtual void_ "Close"    [ cstring "option" ] 
+             , Virtual (cppclass_ tObject) "Get" [ cstring "namecycle" ] 
+             ]
 
 tDictionary :: Class
 tDictionary = AbstractClass corecabal "TDictionary" [tNamed]
@@ -83,7 +93,56 @@ tVirtualPad = Class corecabal "TVirtualPad" [tObject]
               ] 
 
 
+tQObject :: Class
+tQObject = coreclass "TQObject" [deletable] 
+           []
+
+
+tApplication :: Class
+tApplication = coreclass "TApplication" [tObject, tQObject] 
+               [ Constructor    [ cstring "appClassName", intp "argc", charpp "argv"  ] 
+               , Virtual void_ "Run"    [ bool "retrn"]   
+               ]
+
+tArray :: Class
+tArray = coreclass "TArray" [deletable] 
+         []
+
+tArrayC :: Class 
+tArrayC = coreclass "TArrayC" [tArray]
+          []
+
+tArrayD :: Class
+tArrayD = coreclass "TArrayD" [tArray]
+          []
+
+tArrayF :: Class 
+tArrayF = coreclass "TArrayF" [tArray]
+          []
+
+tArrayI :: Class
+tArrayI = coreclass "TArrayI" [tArray]
+          []
+
+tArrayL :: Class
+tArrayL = coreclass "TArrayL" [tArray]
+          []
+
+tArrayL64 :: Class
+tArrayL64 = coreclass "TArrayL64" [tArray]
+            []
+
+tArrayS :: Class
+tArrayS = coreclass "TArrayS" [tArray]
+          []
+
+
+
 core_classes :: [Class]
 core_classes = 
-  [ deletable, tObject, tClass, tDictionary, tNamed, tVirtualPad ] 
+  [ deletable, tObject, tClass, tDictionary, tNamed, tVirtualPad, tQObject
+  , tApplication 
+  , tArray, tArrayC, tArrayD, tArrayF, tArrayI, tArrayL, tArrayL64, tArrayS
+  , tDirectory 
+  ] 
 

@@ -26,6 +26,18 @@ Data-files:     template/HROOT-core/CHANGES
                 template/HROOT-graf/README.md 
                 template/HROOT-graf/Setup.lhs
                 template/HROOT-graf/example/*.hs
+                template/HROOT-math/CHANGES
+                template/HROOT-math/Config.hs
+                template/HROOT-math/LICENSE
+                template/HROOT-math/README.md 
+                template/HROOT-math/Setup.lhs
+                template/HROOT-math/example/*.hs
+                template/HROOT-io/CHANGES
+                template/HROOT-io/Config.hs
+                template/HROOT-io/LICENSE
+                template/HROOT-io/README.md 
+                template/HROOT-io/Setup.lhs
+                template/HROOT-io/example/*.hs
 
 Executable HROOT-generate
   Main-is: HROOT-generate.hs
@@ -71,17 +83,23 @@ Library
 
   Exposed-Modules: 
                    HROOT.Generate.MakePkg 
-                   -- HROOT.Data.Core.ROOT
-                   -- HROOT.Data.Core.ROOTAnnotate
-                   -- HROOT.Data.Core.ROOTModule
                    HROOT.Data.Core.Annotate 
                    HROOT.Data.Core.Class 
-                   -- HROOT.Data.Core.Module 
                    HROOT.Data.Hist.Annotate
                    HROOT.Data.Hist.Class
-                   -- HROOT.Data.Hist.Module 
                    HROOT.Data.Graf.Annotate
                    HROOT.Data.Graf.Class
+                   HROOT.Data.Math.Annotate
+                   HROOT.Data.Math.Class
+                   HROOT.Data.IO.Annotate
+                   HROOT.Data.IO.Class
                    
   Other-Modules: 
                    Paths_HROOT_generate
+
+
+                   -- HROOT.Data.Core.ROOT
+                   -- HROOT.Data.Core.ROOTAnnotate
+                   -- HROOT.Data.Core.ROOTModule
+                   -- HROOT.Data.Core.Module 
+                   -- HROOT.Data.Hist.Module 
