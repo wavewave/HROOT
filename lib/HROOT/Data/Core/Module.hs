@@ -1,4 +1,4 @@
-module HROOT.Data.Core.ROOTModulesmall where
+module HROOT.Data.Core.Module where
 
 exposedModules :: [String]
 exposedModules = [ "HROOT" 

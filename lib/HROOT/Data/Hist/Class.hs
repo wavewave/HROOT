@@ -12,106 +12,23 @@
 
 module HROOT.Data.Hist.Class where
 
-import Bindings.Cxx.Generate.Type.CType
-import Bindings.Cxx.Generate.Type.Method
+-- 
+-- import Bindings.Cxx.Generate.Type.CType
+-- import Bindings.Cxx.Generate.Type.Method
 import Bindings.Cxx.Generate.Type.Class
 import Bindings.Cxx.Generate.Type.Module
+-- 
+import HROOT.Data.Core.Class
 
-{-
-moduleInterface :: Module
-moduleInterface = Module { module_name = "HROOT.Class.Interface"
-                         , module_exports = [ "ITH1" 
-                                            , "TH1"
-                                            ]
-                         }  
--}
-
-{-
-deletable :: Class 
-deletable = AbstractClass "Deletable" [] 
-          [ Destructor ]
-
-deletableH = ClassImportHeader deletable "HROOTDeletable.h" "HROOTDeletable.cpp"
-                               [] [] 
-        
-deletableM = ClassModule "Deletable" [deletable] [deletableH] [] [] []
+histcabal = Cabal { cabal_pkgname = "HROOT-hist"
+                  , cabal_cheaderprefix = "HROOTHist" 
+                  , cabal_moduleprefix = "HROOT.Hist" } 
 
 
-
-tObject :: Class
-tObject = 
-  Class "TObject" [deletable] 
-  [ Constructor [] 
-  -- , Virtual int_ "DistancetoPrimitive" [int "px", int "py"]
-  , Virtual void_    "Draw"    [cstring "option"] 
-  -- , Virtual void_ "ExecuteEvent" [int "event", int "px", int "py"]
-  , Virtual (cppclass_ "TObject") "FindObject" [cstring "name"]
-  , Virtual  cstring_ "GetName" [] 
-  , Virtual (cppclass_ "TClass") "IsA" [] 
-  , Virtual void_ "Paint" [cstring "option"] 
-  , AliasVirtual void_ "Print" [cstring "option"] "printObj"
-  , Virtual void_    "SaveAs"  [cstring "filename", cstring "option"] 
-  , Virtual int_     "Write"   [cstring "name", int "option", int "bufsize" ]
-
-  , Static  bool_    "GetObjectStat" []
-  ]
-
-tObjectH = ClassImportHeader tObject "HROOTTObject.h" "HROOTTObject.cpp" 
-                             [ "HROOTDeletable.h" ]
-                             [ "TObject.h" ]
-                             
-tObjectM = ClassModule "TObject" [tObject] [tObjectH] ["TClass"] ["Deletable"] []
-
-tDictionary :: Class
-tDictionary = AbstractClass "TDictionary" [tNamed]
-              [
-              ]
-
-tDictionaryH = ClassImportHeader tDictionary "HROOTTDictionary.h" "HROOTTDictionary.cpp" 
-                                 [ "HROOTDeletable.h"
-                                 , "HROOTTObject.h"
-                                 , "HROOTTNamed.h"
-                                 ] 
-                                 [ "TDictionary.h" ]
-
-tDictionaryM = ClassModule "TDictionary" [tDictionary] [tDictionaryH] [] ["Deletable","TObject","TNamed"] []
-
-tNamed :: Class
-tNamed = 
-  Class "TNamed" [tObject] 
-  [ Constructor [cstring "name", cstring "title"] 
-  , Virtual void_  "SetName"      [cstring "name"]
-  , Virtual void_  "SetNameTitle" [cstring "name", cstring "title"]
-  , Virtual void_  "SetTitle"     [cstring "name"]  
-  ]
-
-tNamedH = ClassImportHeader tNamed "HROOTTNamed.h" "HROOTTNamed.cpp"  
-                            [ "HROOTDeletable.h"
-                            , "HROOTTObject.h"
-                            ]
-                            [ "TNamed.h" ]
-                           
-tNamedM = ClassModule "TNamed"  [tNamed] [tNamedH] ["TObject","TClass"] ["Deletable","TObject"] []
-
-tClass :: Class
-tClass = Class "TClass" [tDictionary]
-         [
-         ]
-
-tClassH = ClassImportHeader tClass "HROOTTClass.h" "HROOTTClass.cpp"  
-                            [ "HROOTDeletable.h"
-                            , "HROOTTObject.h"
-                            , "HROOTTNamed.h"
-                            , "HROOTTDictionary.h"
-                            ]
-                            [ "TClass.h" ]
-
-tClassM = ClassModule "TClass" [tClass] [tClassH] ["TObject"] ["Deletable","TObject","TNamed","TDictionary"] []
--}
 
 tH1 :: Class
 tH1 = 
-  Class "TH1" [] 
+  Class histcabal  "TH1" [deletable] 
   [ AliasVirtual int_ "Fill" [double "x"] "fill1"
   ] 
 

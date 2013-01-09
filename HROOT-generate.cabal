@@ -65,12 +65,12 @@ Library
 
   Exposed-Modules: 
                    HROOT.Generate.MakePkg 
-                   HROOT.Data.Core.ROOT
-                   HROOT.Data.Core.ROOTAnnotate
-                   HROOT.Data.Core.ROOTModule
-                   HROOT.Data.Core.ROOTsmall
-                   HROOT.Data.Core.ROOTAnnotatesmall
-                   HROOT.Data.Core.ROOTModulesmall
+                   -- HROOT.Data.Core.ROOT
+                   -- HROOT.Data.Core.ROOTAnnotate
+                   -- HROOT.Data.Core.ROOTModule
+                   HROOT.Data.Core.Annotate 
+                   HROOT.Data.Core.Class 
+                   HROOT.Data.Core.Module 
                    HROOT.Data.Hist.Annotate
                    HROOT.Data.Hist.Class
                    HROOT.Data.Hist.Module 

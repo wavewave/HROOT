@@ -3,7 +3,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      : HROOT.Generate.MakePkg
--- Copyright   : (c) 2011, 2012 Ian-Woo Kim
+-- Copyright   : (c) 2011-2013 Ian-Woo Kim
 -- 
 -- License     : GPL-3
 -- Maintainer  : ianwookim@gmail.com
@@ -56,36 +56,18 @@ import qualified Paths_HROOT_generate as H
 import qualified Paths_fficxx as F
 
 
-data PackageConfig  = PkgCfg { hprefix :: String 
-                             , pkgname :: String 
+data PackageConfig  = PkgCfg { pkgname :: String 
+                             , pkg_typemacro :: String 
                              , pkg_classes :: [Class] 
                              , pkg_cihs :: [ClassImportHeader]
                              , pkg_modules :: [ClassModule]
                              , pkg_annotateMap :: AnnotateMap
+                             , pkg_deps :: [String]
                              } 
 
-{- 
-main :: IO () 
-main = do 
-  param <- cmdArgs mode
-  putStrLn $ show param 
-  commandLineProcess param 
--}
-
+-- | 
 cabalTemplate :: String 
 cabalTemplate = "Pkg.cabal"
-
-{- 
-hprefix :: String 
-hprefix = "HROOT"
-
--- | 
-pkgname :: String 
-pkgname = "HROOT"
--- cprefix :: String 
--- cprefix = "HROOT"
--}
-
 
 -- | 
 copyPredefinedFiles :: PackageConfig -> FilePath -> IO () 
@@ -118,15 +100,18 @@ mkCabalFile config PkgCfg {..} h classmodules = do
   version <- getHROOTVersion config
   templateDir <- F.getDataDir >>= return . (</> "template")
   (templates :: STGroup String) <- directoryGroup templateDir 
+  let deps | null pkg_deps = [] 
+           | otherwise = "," ++ intercalate "," pkg_deps 
   let str = renderTemplateGroup 
               templates 
               [ ("pkgname", pkgname) 
               , ("version", version) 
+              , ("deps", deps) 
               , ("csrcFiles", genCsrcFiles classmodules)
               , ("includeFiles", genIncludeFiles pkgname classmodules) 
               , ("cppFiles", genCppFiles classmodules)
-              , ("exposedModules", genExposedModules hprefix classmodules) 
-              , ("otherModules", genOtherModules hprefix classmodules)
+              , ("exposedModules", genExposedModules classmodules) 
+              , ("otherModules", genOtherModules classmodules)
               , ("cabalIndentation", cabalIndentation)
               ]
               cabalTemplate 
@@ -146,8 +131,6 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     let workingDir = fficxxconfig_workingDir config 
         ibase = fficxxconfig_installBaseDir config
         cabalFileName = pkgname <.> "cabal" -- cabalTemplate -- "HROOT.cabal"
-        -- (pkg_modules,pkg_cihs) = 
-        --   mkAllClassModulesAndCIH (pkgname,mkCROOTIncludeHeaders) pkg_classes
     putStrLn "cabal file generation" 
     getHROOTVersion config
     copyPredefinedFiles pkgcfg ibase 
@@ -159,36 +142,36 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     let cglobal = mkGlobal pkg_classes
     -- 
     putStrLn "header file generation"
-    writeTypeDeclHeaders templates cglobal workingDir pkgname pkg_cihs
+    writeTypeDeclHeaders templates pkg_typemacro workingDir pkgname pkg_cihs
     mapM_ (writeDeclHeaders templates cglobal workingDir pkgname) pkg_cihs
     -- 
     putStrLn "cpp file generation" 
     mapM_ (writeCppDef templates workingDir) pkg_cihs
     -- 
     putStrLn "RawType.hs file generation" 
-    mapM_ (writeRawTypeHs templates workingDir hprefix) pkg_modules 
+    mapM_ (writeRawTypeHs templates workingDir) pkg_modules 
     -- 
     putStrLn "FFI.hsc file generation"
-    mapM_ (writeFFIHsc templates workingDir hprefix) pkg_modules
+    mapM_ (writeFFIHsc templates workingDir) pkg_modules
     -- 
     putStrLn "Interface.hs file generation" 
-    mapM_ (writeInterfaceHs pkg_annotateMap templates workingDir hprefix) pkg_modules
+    mapM_ (writeInterfaceHs pkg_annotateMap templates workingDir) pkg_modules
     -- 
     putStrLn "Cast.hs file generation"
-    mapM_ (writeCastHs templates workingDir hprefix) pkg_modules
+    mapM_ (writeCastHs templates workingDir) pkg_modules
     -- 
     putStrLn "Implementation.hs file generation"
-    mapM_ (writeImplementationHs pkg_annotateMap templates workingDir hprefix) pkg_modules
+    mapM_ (writeImplementationHs pkg_annotateMap templates workingDir) pkg_modules
     -- 
     putStrLn "module file generation" 
-    mapM_ (writeModuleHs templates workingDir hprefix) pkg_modules
+    mapM_ (writeModuleHs templates workingDir) pkg_modules
     -- 
     putStrLn "HROOT.hs file generation"
-    writePkgHs (pkgname,hprefix) templates workingDir pkg_modules
+    writePkgHs pkgname templates workingDir pkg_modules
     -- 
-    copyFile (workingDir </> cabalFileName)  ( ibase </> cabalFileName ) 
+    copyFile (workingDir </> cabalFileName)  (ibase </> cabalFileName) 
     copyPredefined templateDir (srcDir ibase) pkgname
     mapM_ (copyCppFiles workingDir (csrcDir ibase) pkgname) pkg_cihs
-    mapM_ (copyModule workingDir (srcDir ibase) hprefix pkgname) pkg_modules 
+    mapM_ (copyModule workingDir (srcDir ibase) pkgname) pkg_modules 
 
 
