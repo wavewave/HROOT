@@ -74,6 +74,7 @@ commandLineProcess (Generate conf) = do
             mkAllClassModulesAndCIH ("HROOT-graf",mkCROOTIncludeHeaders) graf_classes 
  
       let pkg_HROOT_CORE = PkgCfg { pkgname = "HROOT-core"
+                                  , pkg_summarymodule = "HROOT.Core"
                                   , pkg_typemacro = "__HROOT_CORE__"
                                   , pkg_classes = core_classes 
                                   , pkg_cihs = core_cihs 
@@ -82,6 +83,7 @@ commandLineProcess (Generate conf) = do
                                   , pkg_deps = []
                                   }
           pkg_HROOT_HIST = PkgCfg { pkgname = "HROOT-hist"
+                                  , pkg_summarymodule = "HROOT.Hist"
                                   , pkg_typemacro = "__HROOT_HIST__"
                                   , pkg_classes = hist_classes 
                                   , pkg_cihs = hist_cihs 
@@ -90,6 +92,7 @@ commandLineProcess (Generate conf) = do
                                   , pkg_deps = [ "HROOT-core" ]
                                   } 
           pkg_HROOT_GRAF = PkgCfg { pkgname = "HROOT-graf"
+                                  , pkg_summarymodule = "HROOT.Graf"
                                   , pkg_typemacro = "__HROOT_GRAF__"
                                   , pkg_classes = graf_classes 
                                   , pkg_cihs = graf_cihs 

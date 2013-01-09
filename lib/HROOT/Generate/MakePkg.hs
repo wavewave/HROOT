@@ -57,6 +57,7 @@ import qualified Paths_fficxx as F
 
 
 data PackageConfig  = PkgCfg { pkgname :: String 
+                             , pkg_summarymodule :: String 
                              , pkg_typemacro :: String 
                              , pkg_classes :: [Class] 
                              , pkg_cihs :: [ClassImportHeader]
@@ -110,7 +111,7 @@ mkCabalFile config PkgCfg {..} h classmodules = do
               , ("csrcFiles", genCsrcFiles classmodules)
               , ("includeFiles", genIncludeFiles pkgname classmodules) 
               , ("cppFiles", genCppFiles classmodules)
-              , ("exposedModules", genExposedModules classmodules) 
+              , ("exposedModules", genExposedModules pkg_summarymodule classmodules) 
               , ("otherModules", genOtherModules classmodules)
               , ("cabalIndentation", cabalIndentation)
               ]
@@ -167,11 +168,11 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     mapM_ (writeModuleHs templates workingDir) pkg_modules
     -- 
     putStrLn "HROOT.hs file generation"
-    writePkgHs pkgname templates workingDir pkg_modules
+    writePkgHs pkg_summarymodule templates workingDir pkg_modules
     -- 
     copyFile (workingDir </> cabalFileName)  (ibase </> cabalFileName) 
     copyPredefined templateDir (srcDir ibase) pkgname
     mapM_ (copyCppFiles workingDir (csrcDir ibase) pkgname) pkg_cihs
-    mapM_ (copyModule workingDir (srcDir ibase) pkgname) pkg_modules 
+    mapM_ (copyModule workingDir (srcDir ibase) pkg_summarymodule) pkg_modules 
 
 

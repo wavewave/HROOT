@@ -40,5 +40,5 @@ tH1F = Class histcabal "TH1F" [tH1]
 
 hist_classes :: [Class]
 hist_classes = 
-  [ tH1 ] 
+  [ tH1, tH1F ] 
 
