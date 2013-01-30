@@ -12,6 +12,8 @@
 
 module HROOT.Data.IO.Class where
 
+import Data.Monoid 
+--
 import Bindings.Cxx.Generate.Type.Class
 import Bindings.Cxx.Generate.Type.Module
 -- 
@@ -25,13 +27,13 @@ ioclass = Class iocabal
 
 tDirectoryFile :: Class
 tDirectoryFile = 
-  ioclass "TDirectoryFile" [tDirectory] 
+  ioclass "TDirectoryFile" [tDirectory] mempty
   [ {-  Virtual (cppclass_ "TList") "GetListOfKeys" []  -}
 
   ]
 
 tFile :: Class
-tFile = ioclass "TFile" [tDirectoryFile] 
+tFile = ioclass "TFile" [tDirectoryFile] mempty
         [ Constructor [cstring "fname", cstring "option", cstring "ftitle", int "compress" ] 
         ]
 

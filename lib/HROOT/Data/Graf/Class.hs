@@ -12,6 +12,8 @@
 
 module HROOT.Data.Graf.Class where
 
+import Data.Monoid
+--
 import Bindings.Cxx.Generate.Type.Class
 import Bindings.Cxx.Generate.Type.Module
 -- 
@@ -25,12 +27,12 @@ histcabal = Cabal { cabal_pkgname = "HROOT-graf"
 
 tPad :: Class
 tPad = 
-  Class histcabal  "TPad" [tVirtualPad] 
+  Class histcabal  "TPad" [tVirtualPad] mempty
   [ 
   ] 
 
 tCanvas :: Class
-tCanvas = Class histcabal "TCanvas" [tPad] 
+tCanvas = Class histcabal "TCanvas" [tPad] mempty
           [ Constructor [cstring "name",cstring "title",int "ww",int "wh"] 
           ] 
 

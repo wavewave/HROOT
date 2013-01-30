@@ -12,6 +12,8 @@
 
 module HROOT.Data.Math.Class where
 
+import Data.Monoid
+--
 import Bindings.Cxx.Generate.Type.Class
 import Bindings.Cxx.Generate.Type.Module
 -- 
@@ -25,7 +27,7 @@ mathclass = Class mathcabal
 
 tRandom :: Class 
 tRandom = 
-  mathclass "TRandom" [tNamed]
+  mathclass "TRandom" [tNamed] mempty
   [ Constructor [ int "seed" ] 
   , Virtual double_ "Gaus" [double "mean", double "sigma"]
   , Virtual double_ "Uniform" [double "x1", double "x2"]
