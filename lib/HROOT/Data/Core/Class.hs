@@ -39,121 +39,9 @@ deletable = AbstractClass corecabal "Deletable" [] mempty
           [ Destructor ]
 
 
-
-tAtt3D :: Class
-tAtt3D = coreclass "TAtt3D" [deletable] mempty
-         []
-
-tAttAxis :: Class
-tAttAxis = 
-  coreclass "TAttAxis" [deletable] mempty 
-  [ Constructor [] 
-  , Virtual int_ "GetNdivisions" [] 
-  , Virtual short_ "GetAxisColor" [] 
-  , Virtual short_ "GetLabelColor" []
-  , Virtual short_ "GetLabelFont" [] 
-  , Virtual float_ "GetLabelOffset" [] 
-  , Virtual float_ "GetLabelSize" [] 
-  , Virtual float_ "GetTitleOffset" [] 
-  , Virtual float_ "GetTitleSize" [] 
-  , Virtual float_ "GetTickLength" []
-  , Virtual short_ "GetTitleFont" [] 
-  -- omit..
-  , Virtual void_   "SetNdivisions"   [int "n", bool "optim" ]
-  , Virtual void_   "SetAxisColor"    [short  "color"]
-  , Virtual void_   "SetLabelColor"   [short  "color" ] 
-  , Virtual void_   "SetLabelFont"    [short "font"] 
-  , Virtual void_   "SetLabelOffset"  [float "offset"] 
-  , Virtual void_   "SetLabelSize"    [float  "size"  ] 
-  , Virtual void_   "SetTickLength"   [float  "length" ] 
-  , Virtual void_   "SetTitleOffset"  [float  "offset" ] 
-  , Virtual void_   "SetTitleSize"    [float  "size"]
-  , Virtual void_   "SetTitleColor"   [short  "color"]
-  , Virtual void_   "SetTitleFont"    [short  "font"]
-
-  ] 
-
 ----------------
--- starting C --
+-- starting A --
 ----------------
-
-tCollection :: Class
-tCollection = 
-  coreclass "TCollection" [tObject] mempty []
-
-----------------
--- starting O --
-----------------
-
-tObjArray :: Class 
-tObjArray = 
-  coreclass "TObjArray" [tSeqCollection] mempty []
-
-tObject :: Class
-tObject = 
-  coreclass "TObject" [deletable] mempty
-  [ Constructor [] 
-  -- , Virtual int_ "DistancetoPrimitive" [int "px", int "py"]
-  , Virtual void_    "Draw"    [cstring "option"] 
-  -- , Virtual void_ "ExecuteEvent" [int "event", int "px", int "py"]
-  , Virtual (cppclass_ tObject) "FindObject" [cstring "name"]
-  , Virtual  cstring_ "GetName" [] 
-  , Virtual (cppclass_ tClass) "IsA" [] 
-  , Virtual void_ "Paint" [cstring "option"] 
-  , AliasVirtual void_ "Print" [cstring "option"] "printObj"
-  , Virtual void_    "SaveAs"  [cstring "filename", cstring "option"] 
-  , Virtual int_     "Write"   [cstring "name", int "option", int "bufsize" ]
-
-  , Static  bool_    "GetObjectStat" []
-  ]
-
-
-tSeqCollection :: Class
-tSeqCollection = 
-  coreclass "TSeqCollection" [tCollection] mempty []
-
-
-
-tDirectory :: Class
-tDirectory = coreclass "TDirectory" [tNamed] mempty
-             [ Static  void_ "AddDirectory" [bool "add"]
-             , Static  bool_ "AddDirectoryStatus" []
-             , Virtual void_ "Append" [cppclass tObject "obj", bool "replace"]
-             , AliasVirtual void_ "Add" [cppclass tObject "obj", bool "replace"] "addD"
-             {- , Virtual int_ "AppendKey" [cppclass "TKey" "key" ] -}
-             , Virtual void_ "Close"    [ cstring "option" ] 
-             , Virtual (cppclass_ tObject) "Get" [ cstring "namecycle" ] 
-             ]
-
-tDictionary :: Class
-tDictionary = AbstractClass corecabal "TDictionary" [tNamed] mempty
-              [
-              ]
-
-
-tNamed :: Class
-tNamed = 
-  Class corecabal "TNamed" [tObject] mempty
-  [ Constructor [cstring "name", cstring "title"] 
-  , Virtual void_  "SetName"      [cstring "name"]
-  , Virtual void_  "SetNameTitle" [cstring "name", cstring "title"]
-  , Virtual void_  "SetTitle"     [cstring "name"]  
-  ]
-
-tClass :: Class
-tClass = Class corecabal "TClass" [tDictionary] mempty
-         [
-         ]
-
-tVirtualPad :: Class 
-tVirtualPad = Class corecabal "TVirtualPad" [tObject] mempty
-              [ 
-              ] 
-
-
-tQObject :: Class
-tQObject = coreclass "TQObject" [deletable] mempty
-           []
 
 
 tApplication :: Class
@@ -194,6 +82,38 @@ tArrayS :: Class
 tArrayS = coreclass "TArrayS" [tArray] mempty
           []
 
+tAtt3D :: Class
+tAtt3D = coreclass "TAtt3D" [deletable] mempty
+         []
+
+tAttAxis :: Class
+tAttAxis = 
+  coreclass "TAttAxis" [deletable] mempty 
+  [ Constructor [] 
+  , Virtual int_ "GetNdivisions" [] 
+  , Virtual short_ "GetAxisColor" [] 
+  , Virtual short_ "GetLabelColor" []
+  , Virtual short_ "GetLabelFont" [] 
+  , Virtual float_ "GetLabelOffset" [] 
+  , Virtual float_ "GetLabelSize" [] 
+  , Virtual float_ "GetTitleOffset" [] 
+  , Virtual float_ "GetTitleSize" [] 
+  , Virtual float_ "GetTickLength" []
+  , Virtual short_ "GetTitleFont" [] 
+  -- omit..
+  , Virtual void_   "SetNdivisions"   [int "n", bool "optim" ]
+  , Virtual void_   "SetAxisColor"    [short  "color"]
+  , Virtual void_   "SetLabelColor"   [short  "color" ] 
+  , Virtual void_   "SetLabelFont"    [short "font"] 
+  , Virtual void_   "SetLabelOffset"  [float "offset"] 
+  , Virtual void_   "SetLabelSize"    [float  "size"  ] 
+  , Virtual void_   "SetTickLength"   [float  "length" ] 
+  , Virtual void_   "SetTitleOffset"  [float  "offset" ] 
+  , Virtual void_   "SetTitleSize"    [float  "size"]
+  , Virtual void_   "SetTitleColor"   [short  "color"]
+  , Virtual void_   "SetTitleFont"    [short  "font"]
+
+  ] 
 
 
 tAttBBox :: Class 
@@ -288,6 +208,11 @@ tAttPad =
 
   ]
 
+{-
+tAttParticle :: Class
+tAttParticle = coreclass "TAttParticle" [tNamed] mempty 
+               [] 
+-}
 
 tAttText :: Class
 tAttText = 
@@ -311,12 +236,128 @@ tAttText =
 
 
 
+
+----------------
+-- starting C --
+----------------
+
+tClass :: Class
+tClass = Class corecabal "TClass" [tDictionary] mempty
+         [
+         ]
+
+tCollection :: Class
+tCollection = 
+  coreclass "TCollection" [tObject] mempty []
+
+----------------
+-- starting D --
+----------------
+
+tDirectory :: Class
+tDirectory = coreclass "TDirectory" [tNamed] mempty
+             [ Static  void_ "AddDirectory" [bool "add"]
+             , Static  bool_ "AddDirectoryStatus" []
+             , Virtual void_ "Append" [cppclass tObject "obj", bool "replace"]
+             , AliasVirtual void_ "Add" [cppclass tObject "obj", bool "replace"] "addD"
+             , Virtual int_ "AppendKey" [cppclass tKey "key" ] 
+             , Virtual void_ "Close"    [ cstring "option" ] 
+             , Virtual (cppclass_ tObject) "Get" [ cstring "namecycle" ] 
+             ]
+
+tDictionary :: Class
+tDictionary = AbstractClass corecabal "TDictionary" [tNamed] mempty
+              [
+              ]
+
+----------------
+-- starting K --
+----------------
+
+tKey :: Class
+tKey = coreclass "TKey" [tNamed] mempty
+       [ 
+-- Constructor [cstring "name", cstring "title", cppclass "TClass" "cl", int "nbytes", cppclass "TDirectory" "motherDir"]
+       ] 
+
+
+----------------
+-- starting N --
+----------------
+
+tNamed :: Class
+tNamed = 
+  Class corecabal "TNamed" [tObject] mempty
+  [ Constructor [cstring "name", cstring "title"] 
+  , Virtual void_  "SetName"      [cstring "name"]
+  , Virtual void_  "SetNameTitle" [cstring "name", cstring "title"]
+  , Virtual void_  "SetTitle"     [cstring "name"]  
+  ]
+
+----------------
+-- starting O --
+----------------
+
+tObjArray :: Class 
+tObjArray = 
+  coreclass "TObjArray" [tSeqCollection] mempty []
+
+
+tObject :: Class
+tObject = 
+  coreclass "TObject" [deletable] mempty
+  [ Constructor [] 
+  -- , Virtual int_ "DistancetoPrimitive" [int "px", int "py"]
+  , Virtual void_    "Draw"    [cstring "option"] 
+  -- , Virtual void_ "ExecuteEvent" [int "event", int "px", int "py"]
+  , Virtual (cppclass_ tObject) "FindObject" [cstring "name"]
+  , Virtual  cstring_ "GetName" [] 
+  , Virtual (cppclass_ tClass) "IsA" [] 
+  , Virtual void_ "Paint" [cstring "option"] 
+  , AliasVirtual void_ "Print" [cstring "option"] "printObj"
+  , Virtual void_    "SaveAs"  [cstring "filename", cstring "option"] 
+  , Virtual int_     "Write"   [cstring "name", int "option", int "bufsize" ]
+
+  , Static  bool_    "GetObjectStat" []
+  ]
+
+----------------
+-- starting Q --
+----------------
+
+tQObject :: Class
+tQObject = coreclass "TQObject" [deletable] mempty
+           []
+
+
+----------------
+-- starting S --
+----------------
+
+tSeqCollection :: Class
+tSeqCollection = 
+  coreclass "TSeqCollection" [tCollection] mempty []
+
+
+----------------
+-- starting V --
+----------------
+
+tVirtualPad :: Class 
+tVirtualPad = Class corecabal "TVirtualPad" [tObject] mempty
+              [ 
+              ] 
+
+
+
+
 core_classes :: [Class] 
 core_classes = 
   [ deletable
   , tApplication, tArray, tArrayC, tArrayD, tArrayF, tArrayI, tArrayL, tArrayL64, tArrayS, tAtt3D, tAttAxis, tAttBBox, tAttCanvas, tAttFill, tAttLine, tAttMarker, tAttPad, tAttText
   , tClass, tCollection
-  , tDictionary, tDirectory 
+  , tDictionary, tDirectory
+  , tKey
   , tNamed
   , tObjArray, tObject
   , tQObject

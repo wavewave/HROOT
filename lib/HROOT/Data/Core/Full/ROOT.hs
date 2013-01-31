@@ -27,10 +27,13 @@ moduleInterface = Module { module_name = "HROOT.Class.Interface"
                                             , "TNamed" ]
                          } 
 
+{-
 deletable :: Class 
 deletable = AbstractClass "Deletable" [] 
           [ Destructor ]
+-}
 
+{-
 tObject :: Class
 tObject = 
   Class "TObject" [deletable] 
@@ -59,8 +62,9 @@ tObject =
   , Static  bool_ "GetObjectStat" [] 
   , Static  void_ "SetObjectStat" [bool "stat"]
   ]
+-}
 
-
+{-
 tNamed :: Class
 tNamed = 
   Class "TNamed" [tObject] 
@@ -69,16 +73,21 @@ tNamed =
   , Virtual void_  "SetNameTitle" [cstring "name", cstring "title"]
   , Virtual void_  "SetTitle"     [cstring "name"]  
   ]
+-}
 
+{-
 tDictionary :: Class
 tDictionary = AbstractClass "TDictionary" [tNamed]
               [
               ]
+-}
 
+{-
 tClass :: Class
 tClass = Class "TClass" [tDictionary]
          [
          ]
+-}
 
 {-
 tFormula :: Class
@@ -173,9 +182,11 @@ tAttFill = Class "TAttFill" [deletable]
            ]
 -}
 
+{-
 tAttImage :: Class
 tAttImage = Class "TAttImage" [deletable] 
             []
+-}
 
 {-
 tAttLine :: Class
@@ -284,12 +295,12 @@ tAttText =
   ]  
 -}
 
-
+{-
 tHStack :: Class
 tHStack = Class "THStack" [tNamed] 
           [ Constructor [cstring "name",cstring "title"]  
           ] 
-
+-}
 
 {-
 tF1 :: Class
@@ -441,42 +452,55 @@ tGraph =
   ]
 -}
 
+{-
 tGraphAsymmErrors :: Class
 tGraphAsymmErrors = 
   Class "TGraphAsymmErrors" [tGraph]
   [ Constructor [int "n", doublep "x", doublep "y", doublep "exl", doublep "exh", doublep "eyl", doublep "eyh" ]  
   ]
+-}
 
+{-
 tCutG :: Class
 tCutG = 
   Class "TCutG" [tGraph]
   [ Constructor [cstring "name", int "n", doublep "x", doublep "y"] 
   ]
+-}
 
+{-
 tGraphBentErrors :: Class
 tGraphBentErrors = 
   Class "TGraphBentErrors" [tGraph]
   [ Constructor [int "n", doublep "x", doublep "y", doublep "exl", doublep "exh", doublep "eyl", doublep "eyh", doublep "exld", doublep "exhd", doublep "eyld", doublep "eyhd"] 
   ]
+-}
 
+{-
 tGraphErrors :: Class
 tGraphErrors = 
   Class "TGraphErrors" [tGraph]
   [ Constructor [int "n", doublep "x", doublep "y", doublep "ex", doublep "ey"] 
   ]
+-}
 
+{-
 tGraphPolar :: Class
 tGraphPolar = 
   Class "TGraphPolar" [tGraphErrors]
   [ Constructor [int "n", doublep "x", doublep "y", doublep "ex", doublep "ey"] 
   ]
+-}
 
+{-
 tGraphQQ :: Class
 tGraphQQ = 
   Class "TGraphQQ" [tGraph]
   [ Constructor [int "nx", doublep "x", int "ny", doublep "y"] 
   ]
+-}
 
+{-
 tEllipse :: Class
 tEllipse = 
   Class "TEllipse" [tObject, tAttLine, tAttFill]
@@ -522,36 +546,47 @@ tArrow =
   Class "TArrow" [tLine, tAttFill]
   [ Constructor [double "x1", double "y1", double "x2", double "y2", float "arrowsize", cstring "option" ] 
   ]
+-}
 
+{-
 tGaxis :: Class 
 tGaxis = 
   Class "TGaxis" [tLine, tAttText]
   [ Constructor [double "xmin", double "ymin", double "xmax", double "ymax", double "wmin", double "wmax", int "ndiv", cstring "chopt", double "gridlength" ] 
   ]
+-}
 
+{-
 tShape :: Class 
 tShape = 
   Class "TShape" [tNamed, tAttLine, tAttFill, tAtt3D]
   [ Constructor [cstring "name", cstring "title", cstring "material" ]  
   ]
+-}
 
+{-
 tBRIK :: Class
 tBRIK = 
   Class "TBRIK" [tShape]
   [ Constructor [cstring "name", cstring "title", cstring "material", float "dx", float "dy", float "dz" ] 
   ]
- 
+-}
+
+{-
 tTUBE :: Class
 tTUBE = 
   Class "TTUBE" [tShape]
   [ Constructor [cstring "name", cstring "title", cstring "material", float "rmin", float "rmax", float "dz", float "aspect"] 
   ]
+-}
 
+{-
 tPCON :: Class
 tPCON = 
   Class "TPCON" [tShape]
   [ Constructor [cstring "name", cstring "title", cstring "material", float "phi1", float "dphi1", int "nz"]
   ]
+-}
 
 {-
 tPolyLineShape :: Class
@@ -559,11 +594,13 @@ tPolyLineShape = Class "TPolyLineShape" [tShape, tAttMarker]
                  []
 -}
 
+{-
 tSPHE :: Class
 tSPHE = 
   Class "TSPHE" [tShape]
   [ Constructor [cstring "name", cstring "title", cstring "material", float "rmin", float "rmax", float "themin", float "themax", float "phimin", float "phimax" ]
   ]
+-}
 
 tXTRU :: Class
 tXTRU = 
@@ -762,7 +799,7 @@ tLatex = Class "TLatex" [tText, tAttLine]
          , NonVirtual self_ "DrawLatex" [double "x", double "y", cstring "text"]
          ]
 
-
+{-
 tDirectory :: Class
 tDirectory = Class "TDirectory" [tNamed] 
              [ Static  void_ "AddDirectory" [bool "add"]
@@ -773,6 +810,7 @@ tDirectory = Class "TDirectory" [tNamed]
              , Virtual void_ "Close"    [ cstring "option" ] 
              , Virtual (cppclass_ "TObject") "Get" [ cstring "namecycle" ] 
              ]
+-}
 
 tROOT :: Class 
 tROOT = 
@@ -816,13 +854,14 @@ tKey = Class "TKey" [tNamed]
 
 
 
-
+{-
 tDirectoryFile :: Class
 tDirectoryFile = 
   Class "TDirectoryFile" [tDirectory] 
   [ Virtual (cppclass_ "TList") "GetListOfKeys" [] 
 
   ]
+-}
 
 tList :: Class
 tList = 
@@ -1074,7 +1113,7 @@ tH2 =
   , Virtual void_ "SetShowProjectionY" [int "nbins"]
   ]
 
-
+{-
 tH3 :: Class
 tH3 = 
   Class "TH3" [tH1, tAtt3D]
@@ -1095,6 +1134,7 @@ tH3 =
   , AliasVirtual (cppclass_ "TH3") "RebinZ" [int "ngroup", cstring "newname"] "rebinZ3"
   , Virtual (cppclass_ "TH3") "Rebin3D" [int "nxgroup", int "nygroup", int "nzgroup", cstring "newname"]
   ]
+-}
 
 {- 
 tH1C :: Class 
@@ -1175,26 +1215,35 @@ tH2S = Class "TH2S" [tH2, tArrayS]
        []
 -}
 
-
+{-
 tH3C :: Class 
 tH3C = Class "TH3C" [tH3, tArrayC]
        []
+-}
 
+{-
 tH3D :: Class
 tH3D = Class "TH3D" [tH3, tArrayD] 
        []
+-}
 
+{-
 tH3F :: Class
 tH3F = Class "TH3F" [tH3, tArrayF]
        []
+-}
 
+{-
 tH3I :: Class
 tH3I = Class "TH3I" [tH3, tArrayI]
        []
+-}
 
+{-
 tH3S :: Class
 tH3S = Class "TH3S" [tH3, tArrayS]
        []
+-}
 
 {-
 tQObject :: Class

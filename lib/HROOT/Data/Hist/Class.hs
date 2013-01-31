@@ -27,6 +27,10 @@ histcabal = Cabal { cabal_pkgname = "HROOT-hist"
 
 histclass = Class histcabal
 
+----------------
+-- starting A --
+----------------
+
 tAxis :: Class
 tAxis = 
   histclass "TAxis" [tNamed, tAttAxis] mempty
@@ -46,6 +50,9 @@ tAxis =
   , Virtual void_ "SetTimeOffset" [double "toffset", cstring "option"]
   ]
 
+----------------
+-- starting F --
+----------------
 
 
 tF1 :: Class
@@ -170,6 +177,9 @@ tFormula = histclass "TFormula" [tNamed] mempty
 
 
 
+----------------
+-- starting G --
+----------------
 
 
 tGraph :: Class
@@ -236,6 +246,29 @@ tGraph =
   , Virtual void_ "SetPoint" [int "i", double "x", double "y"] 
   -- Zero
   ]
+
+tGraphAsymmErrors :: Class
+tGraphAsymmErrors = 
+  histclass "TGraphAsymmErrors" [tGraph] mempty
+  [ Constructor [int "n", doublep "x", doublep "y", doublep "exl", doublep "exh", doublep "eyl", doublep "eyh" ]  
+  ]
+
+tGraphBentErrors :: Class
+tGraphBentErrors = 
+  histclass "TGraphBentErrors" [tGraph] mempty
+  [ Constructor [int "n", doublep "x", doublep "y", doublep "exl", doublep "exh", doublep "eyl", doublep "eyh", doublep "exld", doublep "exhd", doublep "eyld", doublep "eyhd"] 
+  ]
+
+tGraphErrors :: Class
+tGraphErrors = 
+  histclass "TGraphErrors" [tGraph] mempty
+  [ Constructor [int "n", doublep "x", doublep "y", doublep "ex", doublep "ey"] 
+  ]
+
+
+----------------
+-- starting H --
+----------------
 
 
 tH1 :: Class
@@ -484,6 +517,51 @@ tH2S :: Class
 tH2S = histclass "TH2S" [tH2, tArrayS] (Protected ["fill1"])
        []
 
+tH3 :: Class
+tH3 = 
+  histclass "TH3" [tH1, tAtt3D] (Protected ["fill1","fill1w"])
+  [ AliasVirtual int_ "Fill" [double "x", double "y", double "z"] "fill3"
+  , AliasVirtual int_ "Fill" [double "x", double "y", double "z", double "w"] "fill3w"
+  , Virtual void_ "FitSlicesZ" [cppclass tF1 "f1", int "binminx", int "binmaxx", int "binminy", int "binmaxy", int "cut", cstring "option" ] 
+  -- GetBinWithContent3
+  , AliasVirtual double_ "GetCorrelationFactor" [int "axis1", int "axis2"] "getCorrelationFactor3"
+  , AliasVirtual double_ "GetCovariance" [int "axis1", int "axis2"] "getCovariance3"
+  -- GetRandom3
+  , NonVirtual (cppclass_ tH1D) "ProjectionX" [cstring "name", int "firstybin", int "lastybin", int "firstzbin", int "lastzbin", cstring "option" ]
+  , NonVirtual (cppclass_ tH1D) "ProjectionY" [cstring "name", int "firstxbin", int "lastxbin", int "firstzbin", int "lastzbin", cstring "option" ]
+  , NonVirtual (cppclass_ tH1D) "ProjectionZ" [cstring "name", int "firstxbin", int "lastxbin", int "firstybin", int "lastybin", cstring "option" ] 
+  , NonVirtual (cppclass_ tH1) "Project3D" [cstring "option"]
+  -- Project3DProfile
+  , AliasVirtual (cppclass_ tH3) "RebinX" [int "ngroup", cstring "newname"] "rebinX3"
+  , AliasVirtual (cppclass_ tH3) "RebinY" [int "ngroup", cstring "newname"] "rebinY3"
+  , AliasVirtual (cppclass_ tH3) "RebinZ" [int "ngroup", cstring "newname"] "rebinZ3"
+  , Virtual (cppclass_ tH3) "Rebin3D" [int "nxgroup", int "nygroup", int "nzgroup", cstring "newname"]
+  ]
+
+tH3C :: Class 
+tH3C = histclass "TH3C" [tH3, tArrayC] (Protected ["fill1","fill1w"])
+       []
+
+tH3D :: Class
+tH3D = histclass "TH3D" [tH3, tArrayD] (Protected ["fill1","fill1w"])
+       []
+
+tH3F :: Class
+tH3F = histclass "TH3F" [tH3, tArrayF] (Protected ["fill1","fill1w"])
+       []
+
+tH3I :: Class
+tH3I = histclass "TH3I" [tH3, tArrayI] (Protected ["fill1","fill1w"])
+       []
+
+tH3S :: Class
+tH3S = histclass "TH3S" [tH3, tArrayS] (Protected ["fill1","fill1w"])
+       []
+
+tHStack :: Class
+tHStack = histclass "THStack" [tNamed] mempty 
+          [ Constructor [cstring "name",cstring "title"]  
+          ] 
 
 
 
@@ -492,6 +570,6 @@ hist_classes :: [Class]
 hist_classes = 
   [ tAxis
   , tF1, tFormula
-  , tGraph
-  , tH1, tH1C, tH1D, tH1F, tH1I, tH1K, tH1S, tH2, tH2C, tH2D, tH2F, tH2I, tH2Poly, tH2S ] 
+  , tGraph, tGraphAsymmErrors, tGraphBentErrors, tGraphErrors
+  , tH1, tH1C, tH1D, tH1F, tH1I, tH1K, tH1S, tH2, tH2C, tH2D, tH2F, tH2I, tH2Poly, tH2S, tH3, tH3C, tH3D, tH3F, tH3I, tH3S, tHStack ] 
 
