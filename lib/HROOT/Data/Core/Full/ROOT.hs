@@ -80,7 +80,7 @@ tClass = Class "TClass" [tDictionary]
          [
          ]
 
-
+{-
 tFormula :: Class
 tFormula = Class "TFormula" [tNamed] 
            [ Constructor [cstring "name", cstring "formula"] 
@@ -118,11 +118,9 @@ tFormula = Class "TFormula" [tNamed]
            , Virtual void_  "Update" [] 
            -- SetMaxima
            ]
+-}
 
-tAtt3D :: Class
-tAtt3D = Class "TAtt3D" [deletable]
-         []
-
+{-
 tAttAxis :: Class
 tAttAxis = 
   Class "TAttAxis" [deletable] 
@@ -151,27 +149,35 @@ tAttAxis =
   , Virtual void_   "SetTitleFont"    [short  "font"]
 
   ] 
+-}
 
+{-
 tAttBBox :: Class 
 tAttBBox = Class "TAttBBox" [deletable] 
            []
+-}
 
+{-
 tAttCanvas :: Class
 tAttCanvas = Class "TAttCanvas" [deletable] 
              [ Constructor []  
              ]
+-}
 
+{-
 tAttFill :: Class
 tAttFill = Class "TAttFill" [deletable] 
            [ Constructor [short "fcolor", short "fstyle"] 
            , Virtual void_   "SetFillColor"    [int "color" ] 
            , Virtual void_   "SetFillStyle"    [int "style" ]  
            ]
+-}
+
 tAttImage :: Class
 tAttImage = Class "TAttImage" [deletable] 
             []
 
-
+{-
 tAttLine :: Class
 tAttLine = 
   Class "TAttLine" [deletable] 
@@ -188,8 +194,9 @@ tAttLine =
   , Virtual void_ "SetLineStyle" [short "lstyle" ]
   , Virtual void_ "SetLineWidth" [short "lwidth" ]
   ]
+-}
 
-
+{-
 tAttMarker :: Class
 tAttMarker = 
   Class "TAttMarker" [deletable] 
@@ -204,8 +211,9 @@ tAttMarker =
   , Virtual void_ "SetMarkerStyle" [short "mstyle"]
   , Virtual void_ "SetMarkerSize" [short "msize"] 
   ]  
-  
+-}
 
+{-  
 tAttPad :: Class
 tAttPad = 
   Class "TAttPad" [deletable]
@@ -248,11 +256,13 @@ tAttPad =
   , NonVirtual void_ "SetFrameBorderMode" [int "mode"]
 
   ]
+-}
+
 
 tAttParticle :: Class
 tAttParticle = Class "TAttParticle" [tNamed]
                [] 
-
+{-
 tAttText :: Class
 tAttText = 
   Class "TAttText" [deletable] 
@@ -272,6 +282,7 @@ tAttText =
   , Virtual void_ "SetTextSize"  [float "tsize"]  
   , Virtual void_ "SetTextSizePixels" [int "npixels"]
   ]  
+-}
 
 
 tHStack :: Class
@@ -280,7 +291,7 @@ tHStack = Class "THStack" [tNamed]
           ] 
 
 
-
+{-
 tF1 :: Class
 tF1 = 
   Class "TF1" [tFormula, tAttLine, tAttFill, tAttMarker] 
@@ -361,7 +372,9 @@ tF1 =
   , Virtual double_ "Variance" [double "a", double "b", doublep "params", double "epsilon"] 
   , Static  void_ "CalcGaussLegendreSamplingPoints" [int "num", doublep "x", doublep "w", double "eps"]
   ]
+-}
 
+{-
 tGraph :: Class
 tGraph = 
   Class "TGraph" [tNamed, tAttLine, tAttFill, tAttMarker] 
@@ -426,6 +439,7 @@ tGraph =
   , Virtual void_ "SetPoint" [int "i", double "x", double "y"] 
   -- Zero
   ]
+-}
 
 tGraphAsymmErrors :: Class
 tGraphAsymmErrors = 
@@ -710,7 +724,7 @@ tEfficiency = Class "TEfficiency" [tNamed, tAttLine, tAttFill, tAttMarker]
 
 
 
-
+{-
 tAxis :: Class
 tAxis = 
   Class "TAxis" [tNamed, tAttAxis] 
@@ -729,7 +743,7 @@ tAxis =
   , Virtual void_ "SetTimeFormat" [ cstring "format" ] 
   , Virtual void_ "SetTimeOffset" [double "toffset", cstring "option"]
   ]
- 
+-}
            
 tText :: Class
 tText = 
@@ -1082,61 +1096,84 @@ tH3 =
   , Virtual (cppclass_ "TH3") "Rebin3D" [int "nxgroup", int "nygroup", int "nzgroup", cstring "newname"]
   ]
 
-
+{- 
 tH1C :: Class 
 tH1C = Class "TH1C" [tH1, tArrayC]
        []
- 
+-} 
+
+{-
 tH1D :: Class
 tH1D = Class "TH1D" [tH1, tArrayD]
        [ Constructor [cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"]
        ]
+-}
 
+{-
 tH1F :: Class
 tH1F = Class "TH1F" [tH1, tArrayF] 
        [ Constructor [cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"]
        ] 
-           
+-}
+
+{-         
 tH1I :: Class 
 tH1I = Class "TH1I" [tH1, tArrayI]
        []
+-}
 
+
+{-
 tH1K :: Class
 tH1K = Class "TH1K" [tH1, tArrayF]
        []
+-}
 
+{-
 tH1S :: Class
 tH1S = Class "TH1S" [tH1, tArrayS]
        []
+-}
 
+{-
 tH2C :: Class
 tH2C = Class "TH2C" [tH2, tArrayC]
        []
+-}
 
+{-
 tH2D :: Class 
 tH2D = Class "TH2D" [tH2, tArrayD] 
        [ Constructor [ cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"
                      , int "nbinsy", double "ylow", double "yup"]
        ]
+-}
 
+{-
 tH2F :: Class
 tH2F = Class "TH2F" [tH2, tArrayF] 
        [ Constructor [cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"
                               ,int "nbinsy", double "ylow", double "yup"] 
        ]
+-}
 
+{-
 tH2I :: Class
 tH2I = Class "TH2I" [tH2, tArrayI]
        []
+-}
 
+{-
 tH2Poly :: Class 
 tH2Poly = Class "TH2Poly" [tH2]
           []
+-}
 
+{-
 tH2S :: Class
 tH2S = Class "TH2S" [tH2, tArrayS]
        []
-
+-}
 
 
 tH3C :: Class 
@@ -1159,10 +1196,11 @@ tH3S :: Class
 tH3S = Class "TH3S" [tH3, tArrayS]
        []
 
-
+{-
 tQObject :: Class
 tQObject = Class "TQObject" [deletable] 
            []
+-}
 
 tVirtualPad :: Class
 tVirtualPad = Class "TVirtualPad" [tObject, tAttLine, tAttFill, tAttPad, tQObject]
@@ -1226,17 +1264,23 @@ tRandom =
   , Virtual double_ "Uniform" [double "x1", double "x2"]
   ]       
 
+{-
 tCollection :: Class
 tCollection = 
   Class "TCollection" [tObject] []
+-}
 
+{-
 tSeqCollection :: Class
 tSeqCollection = 
   Class "TSeqCollection" [tCollection] []
+-}
 
+{-
 tObjArray :: Class 
 tObjArray = 
   Class "TObjArray" [tSeqCollection] []
+-}
 
 tDatime :: Class 
 tDatime = 
