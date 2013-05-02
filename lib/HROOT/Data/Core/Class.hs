@@ -344,8 +344,10 @@ tSeqCollection =
 ----------------
 
 tVirtualPad :: Class 
-tVirtualPad = Class corecabal "TVirtualPad" [tObject] mempty
-              [ 
+tVirtualPad = coreclass "TVirtualPad" [tObject] mempty
+              [ Virtual void_ "SetLogx" [int "value"]  
+              , Virtual void_ "SetLogy" [int "value"]
+              , Virtual void_ "SetLogz" [int "value"]
               ] 
 
 
