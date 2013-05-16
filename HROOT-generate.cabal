@@ -38,6 +38,12 @@ Data-files:     template/HROOT-core/CHANGES
                 template/HROOT-io/README.md 
                 template/HROOT-io/Setup.lhs
                 template/HROOT-io/example/*.hs
+                template/HROOT/CHANGES
+                template/HROOT/Config.hs
+                template/HROOT/LICENSE
+                template/HROOT/README.md 
+                template/HROOT/Setup.lhs
+                template/HROOT/example/*.hs
 
 Executable HROOT-generate
   Main-is: HROOT-generate.hs
