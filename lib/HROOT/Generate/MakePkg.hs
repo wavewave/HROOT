@@ -45,15 +45,10 @@ import           Bindings.Cxx.Generate.Type.Annotate
 import           Bindings.Cxx.Generate.Type.Class
 import           Bindings.Cxx.Generate.Util
 -- 
--- import           HROOT.Generate.ROOT
--- import           HROOT.Generate.ROOTAnnotate
--- import           HROOT.Generate.ROOTModule
--- import           HROOT.Data.Core.ROOTsmall
--- import           HROOT.Data.Core.ROOTAnnotatesmall
--- import           HROOT.Data.Core.ROOTModulesmall
--- 
 import qualified Paths_HROOT_generate as H
 import qualified Paths_fficxx as F
+
+data UmbrellaPackageConfig = UPkgCfg { upkgname :: String } 
 
 
 data PackageConfig  = PkgCfg { pkgname :: String 
@@ -70,9 +65,18 @@ data PackageConfig  = PkgCfg { pkgname :: String
 cabalTemplate :: String 
 cabalTemplate = "Pkg.cabal"
 
+{-
+-- | utility function
+createDirIfNotExist :: FilePath -> IO () 
+createDirIfNotExist dir = doesDirectoryExist dir >>= flip unless (createDirectory dir)
+-}
+
 -- | 
-copyPredefinedFiles :: PackageConfig -> FilePath -> IO () 
-copyPredefinedFiles PkgCfg {..} ibase = do 
+copyPredefinedFiles :: {- PackageConfig -> -}
+                       String 
+                    -> FilePath 
+                    -> IO () 
+copyPredefinedFiles {- PkgCfg {..}  -} pkgname ibase = do 
     tmpldir <- H.getDataDir >>= return . (</> "template") 
     mapM_ (\x->copyFile (tmpldir </> pkgname </> x) (ibase </> x))
       [ "CHANGES", "Config.hs", "LICENSE", "README.md", "Setup.lhs" ]
@@ -96,8 +100,13 @@ mkCROOTIncludeHeaders c =
     _ -> [(class_name c) ++ ".h"]
 
 -- | 
-mkCabalFile :: FFICXXConfig -> PackageConfig -> Handle -> [ClassModule] -> IO () 
-mkCabalFile config PkgCfg {..} h classmodules = do 
+mkCabalFile :: Bool  -- ^ is umbrella 
+            -> FFICXXConfig 
+            -> PackageConfig 
+            -> Handle 
+            -> [ClassModule] 
+            -> IO () 
+mkCabalFile isUmbrella config PkgCfg {..} h classmodules = do 
   version <- getHROOTVersion config
   templateDir <- F.getDataDir >>= return . (</> "template")
   (templates :: STGroup String) <- directoryGroup templateDir 
@@ -108,9 +117,9 @@ mkCabalFile config PkgCfg {..} h classmodules = do
               [ ("pkgname", pkgname) 
               , ("version", version) 
               , ("deps", deps) 
-              , ("csrcFiles", genCsrcFiles classmodules)
-              , ("includeFiles", genIncludeFiles pkgname classmodules) 
-              , ("cppFiles", genCppFiles classmodules)
+              , ("csrcFiles", if isUmbrella then "" else genCsrcFiles classmodules)
+              , ("includeFiles", if isUmbrella then "" else genIncludeFiles pkgname classmodules) 
+              , ("cppFiles", if isUmbrella then "" else genCppFiles classmodules)
               , ("exposedModules", genExposedModules pkg_summarymodule classmodules) 
               , ("otherModules", genOtherModules classmodules)
               , ("cabalIndentation", cabalIndentation)
@@ -131,13 +140,17 @@ makePackage :: FFICXXConfig -> PackageConfig -> IO ()
 makePackage config pkgcfg@(PkgCfg {..}) = do 
     let workingDir = fficxxconfig_workingDir config 
         ibase = fficxxconfig_installBaseDir config
-        cabalFileName = pkgname <.> "cabal" -- cabalTemplate -- "HROOT.cabal"
+        cabalFileName = pkgname <.> "cabal" 
+    -- 
+    putStrLn "======================" 
+    putStrLn ("working on " ++ pkgname) 
+    putStrLn "----------------------"
     putStrLn "cabal file generation" 
-    getHROOTVersion config
-    copyPredefinedFiles pkgcfg ibase 
+    -- getHROOTVersion config
+    copyPredefinedFiles pkgname ibase 
+    notExistThenCreate workingDir 
     withFile (workingDir </> cabalFileName) WriteMode $ 
-      \h -> do 
-        mkCabalFile config pkgcfg h pkg_modules 
+      \h -> mkCabalFile False config pkgcfg h pkg_modules 
     templateDir <- F.getDataDir >>= return . (</> "template")
     (templates :: STGroup String) <- directoryGroup templateDir 
     let cglobal = mkGlobal pkg_classes
@@ -167,12 +180,59 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     putStrLn "module file generation" 
     mapM_ (writeModuleHs templates workingDir) pkg_modules
     -- 
-    putStrLn "HROOT.hs file generation"
+    putStrLn "summary module generation generation"
     writePkgHs pkg_summarymodule templates workingDir pkg_modules
     -- 
+    putStrLn "copying"
     copyFile (workingDir </> cabalFileName)  (ibase </> cabalFileName) 
     copyPredefined templateDir (srcDir ibase) pkgname
     mapM_ (copyCppFiles workingDir (csrcDir ibase) pkgname) pkg_cihs
     mapM_ (copyModule workingDir (srcDir ibase) pkg_summarymodule) pkg_modules 
+    -- 
+    putStrLn "======================"
 
+---------------------------------
+-- for umbrella package 
+---------------------------------
+
+
+
+-- | make an umbrella package for this project
+makeUmbrellaPackage :: FFICXXConfig -> PackageConfig -> [String] -> IO () 
+makeUmbrellaPackage config pkgcfg@(PkgCfg {..}) mods = do 
+    putStrLn "======================"
+    putStrLn "Umbrella Package 'HROOT' generation"
+    putStrLn "----------------------"
+
+    let cabalFileName = pkgname <.> "cabal" 
+        ibase = fficxxconfig_installBaseDir config 
+        workingDir = fficxxconfig_workingDir config 
+    putStrLn "cabal file generation"
+    print ibase
+    print cabalFileName 
+    -- 
+    notExistThenCreate workingDir
+    notExistThenCreate (workingDir </> "src")
+    -- 
+    copyPredefinedFiles pkgname ibase 
+    withFile (workingDir </> cabalFileName) WriteMode $ 
+      \h -> mkCabalFile True config pkgcfg h [] 
+
+    templateDir <- F.getDataDir >>= return . (</> "template")
+    (templates :: STGroup String) <- directoryGroup templateDir 
+
+    putStrLn "umbrella module generation"
+    withFile (workingDir </> pkg_summarymodule <.> "hs" )  WriteMode $ \h -> do 
+      let exportListStr = intercalateWith (conn "\n, ") (\x->"module " ++ x ) mods 
+          importListStr = intercalateWith connRet (\x->"import " ++ x) mods
+          str = renderTemplateGroup 
+                  templates 
+                  [ ("summarymod", pkg_summarymodule)
+                  , ("exportList", exportListStr) 
+                  , ("importList", importListStr) ]
+                  "Pkg.hs"
+      hPutStrLn h str
+    putStrLn "copying"
+    copyFile (workingDir </> cabalFileName)  (ibase </> cabalFileName) 
+    copyFile (workingDir </> pkg_summarymodule <.> "hs") (ibase </> "src" </> pkg_summarymodule <.> "hs")  
 
