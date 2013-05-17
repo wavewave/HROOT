@@ -65,31 +65,31 @@ data PackageConfig  = PkgCfg { pkgname :: String
 cabalTemplate :: String 
 cabalTemplate = "Pkg.cabal"
 
-{-
--- | utility function
-createDirIfNotExist :: FilePath -> IO () 
-createDirIfNotExist dir = doesDirectoryExist dir >>= flip unless (createDirectory dir)
--}
 
 -- | 
-copyPredefinedFiles :: {- PackageConfig -> -}
-                       String 
+copyPredefinedFiles :: String   -- ^ package name 
+                    -> ([String],[String]) -- ^ files in root dir, directories
                     -> FilePath 
                     -> IO () 
-copyPredefinedFiles {- PkgCfg {..}  -} pkgname ibase = do 
+copyPredefinedFiles pkgname (files,dirs) ibase = do 
     tmpldir <- H.getDataDir >>= return . (</> "template") 
-    mapM_ (\x->copyFile (tmpldir </> pkgname </> x) (ibase </> x))
-      [ "CHANGES", "Config.hs", "LICENSE", "README.md", "Setup.lhs" ]
-    notExistThenCreate (ibase </> "example") 
-    notExistThenCreate (ibase </> "src") 
-    notExistThenCreate (ibase </> "csrc")
-    contents <- getDirectoryContents (tmpldir </> pkgname </> "example")
-    mapM_ (f (tmpldir </> pkgname </> "example") 
-          (ibase </> "example")) contents 
+    mapM_ (\x->copyFile (tmpldir </> pkgname </> x) (ibase </> x)) files 
+    forM_ dirs $ \dir -> do 
+      notExistThenCreate (ibase </> dir) 
+      b <- doesDirectoryExist (tmpldir </> pkgname </> dir) 
+      when b $ do 
+        contents <- getDirectoryContents (tmpldir </> pkgname </> dir)
+        mapM_ (f (tmpldir </> pkgname </> dir) (ibase </> dir)) contents 
   where 
     f src dest s = if s /= "." && s /= ".."
                    then copyFile (src</>s) (dest</>s) 
                    else return () 
+
+--      [ "CHANGES", "Config.hs", "LICENSE", "README.md", "Setup.lhs" ]
+{-   
+    notExistThenCreate (ibase </> "example") 
+    notExistThenCreate (ibase </> "src") 
+    notExistThenCreate (ibase </> "csrc") -}
 
 
 -- | 
@@ -147,8 +147,11 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     putStrLn "----------------------"
     putStrLn "cabal file generation" 
     -- getHROOTVersion config
-    copyPredefinedFiles pkgname ibase 
+    notExistThenCreate ibase 
     notExistThenCreate workingDir 
+
+    copyPredefinedFiles pkgname (["Config.hs","LICENSE","Setup.lhs"], ["src","csrc"])   ibase 
+
     withFile (workingDir </> cabalFileName) WriteMode $ 
       \h -> mkCabalFile False config pkgcfg h pkg_modules 
     templateDir <- F.getDataDir >>= return . (</> "template")
@@ -208,13 +211,12 @@ makeUmbrellaPackage config pkgcfg@(PkgCfg {..}) mods = do
         ibase = fficxxconfig_installBaseDir config 
         workingDir = fficxxconfig_workingDir config 
     putStrLn "cabal file generation"
-    print ibase
-    print cabalFileName 
     -- 
+    notExistThenCreate ibase
     notExistThenCreate workingDir
-    notExistThenCreate (workingDir </> "src")
     -- 
-    copyPredefinedFiles pkgname ibase 
+    copyPredefinedFiles pkgname 
+      (["CHANGES","Config.hs","LICENSE","README.md","Setup.lhs"],["example","src","csrc"]) ibase 
     withFile (workingDir </> cabalFileName) WriteMode $ 
       \h -> mkCabalFile True config pkgcfg h [] 
 
