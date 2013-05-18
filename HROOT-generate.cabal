@@ -23,6 +23,12 @@ Data-files:     template/HROOT-core/Config.hs
                 template/HROOT-io/Config.hs
                 template/HROOT-io/LICENSE
                 template/HROOT-io/Setup.lhs
+                template/HROOT-RooFit/Config.hs
+                template/HROOT-RooFit/LICENSE
+                template/HROOT-RooFit/Setup.lhs
+                template/HROOT-RooFit-RooStats/Config.hs
+                template/HROOT-RooFit-RooStats/LICENSE
+                template/HROOT-RooFit-RooStats/Setup.lhs
                 template/HROOT/CHANGES
                 template/HROOT/Config.hs
                 template/HROOT/LICENSE
@@ -84,13 +90,10 @@ Library
                    HROOT.Data.Math.Class
                    HROOT.Data.IO.Annotate
                    HROOT.Data.IO.Class
+                   HROOT.Data.RooFit.Annotate
+                   HROOT.Data.RooFit.Class
+                   HROOT.Data.RooFit.RooStats.Class
                    
   Other-Modules: 
                    Paths_HROOT_generate
 
-
-                   -- HROOT.Data.Core.ROOT
-                   -- HROOT.Data.Core.ROOTAnnotate
-                   -- HROOT.Data.Core.ROOTModule
-                   -- HROOT.Data.Core.Module 
-                   -- HROOT.Data.Hist.Module 

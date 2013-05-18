@@ -42,6 +42,9 @@ import           HROOT.Data.Graf.Class
 import           HROOT.Data.Math.Class
 -- import           HROOT.Data.IO.Annotate
 import           HROOT.Data.IO.Class
+-- 
+import           HROOT.Data.RooFit.Class 
+import           HROOT.Data.RooFit.RooStats.Class
 
 import           HROOT.Generate.MakePkg 
 -- 
@@ -59,7 +62,7 @@ main = do
 mkPkgCfg :: String -> String -> String -> [String] -> [Class] -> PackageConfig 
 mkPkgCfg name summary macro deps cs = 
     let (mods,cihs) = 
-          mkAllClassModulesAndCIH (name,mkCROOTIncludeHeaders) cs
+          mkAllClassModulesAndCIH (name,mkCROOTIncludeHeaders ([],"")) cs
     in PkgCfg { pkgname = name 
               , pkg_summarymodule = summary
               , pkg_typemacro = macro 
@@ -75,6 +78,36 @@ pkg_GRAF = mkPkgCfg "HROOT-graf" "HROOT.Graf" "__HROOT_GRAF__" ["HROOT-core","HR
 pkg_HIST = mkPkgCfg "HROOT-hist" "HROOT.Hist" "__HROOT_HIST__" ["HROOT-core"] hist_classes
 pkg_MATH = mkPkgCfg "HROOT-math" "HROOT.Math" "__HROOT_MATH__" ["HROOT-core"] math_classes
 pkg_IO   = mkPkgCfg "HROOT-io"   "HROOT.IO"   "__HROOT_IO__"   ["HROOT-core"] io_classes
+pkg_RooFit = mkPkgCfg "HROOT-RooFit" "HROOT.RooFit" "__HROOT_ROOFIT__" ["HROOT-core"] roofit_classes
+{-    let (mods,cihs) = 
+          mkAllClassModulesAndCIH ( "HROOT-RooFit"
+                                  , mkCROOTIncludeHeaders ([],"RooStats")) roofit_classes
+    in PkgCfg { pkgname = "HROOT-RooFit"
+              , pkg_summarymodule = "HROOT.RooFit"
+              , pkg_typemacro = "__HROOT_ROOFIT__"
+              , pkg_classes = roofit_classes
+              , pkg_cihs = cihs 
+              , pkg_modules = mods 
+              , pkg_annotateMap = M.empty  -- for the time being 
+              , pkg_deps = [ "HROOT-core" ]
+              } -}
+pkg_RooStats = -- mkPkgCfg "HROOT-RooFit" "HROOT.RooFit" "__HROOT_ROOFIT__" ["HROOT-core"] roofit_classes
+    let (mods,cihs) = 
+          mkAllClassModulesAndCIH ( "HROOT-RooFit-RooStats"
+                                  , mkCROOTIncludeHeaders ([NS "RooStats"],"RooStats")) roostats_classes
+    in PkgCfg { pkgname = "HROOT-RooFit-RooStats"
+              , pkg_summarymodule = "HROOT.RooFit.RooStats"
+              , pkg_typemacro = "__HROOT_ROOFIT_ROOSTATS__"
+              , pkg_classes = roostats_classes
+              , pkg_cihs = cihs 
+              , pkg_modules = mods 
+              , pkg_annotateMap = M.empty  -- for the time being 
+              , pkg_deps = [ "HROOT-core" 
+                           , "HROOT-RooFit"
+                           ]
+              }
+
+
 
 pkg_HROOT = PkgCfg { pkgname = "HROOT" 
                    , pkg_summarymodule = "HROOT"
@@ -83,7 +116,7 @@ pkg_HROOT = PkgCfg { pkgname = "HROOT"
                    , pkg_cihs = [] 
                    , pkg_modules = [] 
                    , pkg_annotateMap = M.empty  -- for the time being 
-                   , pkg_deps = ["HROOT-core","HROOT-graf","HROOT-hist","HROOT-math","HROOT-io"]
+                   , pkg_deps = ["HROOT-core","HROOT-graf","HROOT-hist","HROOT-math","HROOT-io" ]
                    }
 
 
@@ -111,20 +144,42 @@ commandLineProcess (Generate conf) = do
            <$> C.lookup cfg "HROOT-io.scriptbase" 
            <*> C.lookup cfg "HROOT-io.workingdir"
            <*> C.lookup cfg "HROOT-io.installbase"
+  mRooFit <- liftM3 FFICXXConfig 
+             <$> C.lookup cfg "HROOT-RooFit.scriptbase"
+             <*> C.lookup cfg "HROOT-RooFit.workingdir"
+             <*> C.lookup cfg "HROOT-RooFit.installbase"
+  mRooStats <- liftM3 FFICXXConfig 
+               <$> C.lookup cfg "HROOT-RooFit-RooStats.scriptbase"
+               <*> C.lookup cfg "HROOT-RooFit-RooStats.workingdir"
+               <*> C.lookup cfg "HROOT-RooFit-RooStats.installbase"
+
+
+
   mHROOT <- liftM3 FFICXXConfig 
             <$> C.lookup cfg "HROOT.scriptbase"
             <*> C.lookup cfg "HROOT.workingdir"
             <*> C.lookup cfg "HROOT.installbase"
+  
 
-  let mcfg = (,,,,,) <$> mfficxxcfg1 <*> mfficxxcfg2 <*> mgraf <*> mmath <*> mio <*> mHROOT
+  let mcfg = (,,,,,,,) 
+             <$> mfficxxcfg1 
+             <*> mfficxxcfg2 
+             <*> mgraf 
+             <*> mmath 
+             <*> mio 
+             <*> mRooFit
+             <*> mRooStats
+             <*> mHROOT
   case mcfg of 
     Nothing -> error "config file is not parsed well"
-    Just (config1,config2,cfggraf,cfgmath,cfgio,cfgHROOT) -> do 
+    Just (config1,config2,cfggraf,cfgmath,cfgio,cfgRooFit,cfgRooStats,cfgHROOT) -> do 
       makePackage config1 pkg_CORE
       makePackage config2 pkg_HIST
       makePackage cfggraf pkg_GRAF
       makePackage cfgmath pkg_MATH
       makePackage cfgio   pkg_IO
+      makePackage cfgRooFit pkg_RooFit
+      makePackage cfgRooStats pkg_RooStats
     
       makeUmbrellaPackage cfgHROOT pkg_HROOT [ "HROOT.Core" 
                                              , "HROOT.Hist"  

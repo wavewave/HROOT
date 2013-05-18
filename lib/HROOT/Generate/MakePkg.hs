@@ -93,11 +93,11 @@ copyPredefinedFiles pkgname (files,dirs) ibase = do
 
 
 -- | 
-mkCROOTIncludeHeaders :: Class -> [String] 
-mkCROOTIncludeHeaders c = 
+mkCROOTIncludeHeaders :: ([Namespace],String) -> Class -> ([Namespace],[String])
+mkCROOTIncludeHeaders (nss,str) c = 
   case class_name c of
-    "Deletable" -> [] 
-    _ -> [(class_name c) ++ ".h"]
+    "Deletable" -> (nss,[])
+    _ -> (nss,[str </> (class_name c) ++ ".h"])
 
 -- | 
 mkCabalFile :: Bool  -- ^ is umbrella 
