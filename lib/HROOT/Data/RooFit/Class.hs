@@ -29,7 +29,13 @@ roofitcabal = Cabal { cabal_pkgname = "HROOT-RooFit"
 roofitclass = Class roofitcabal 
 
 roofit_classes :: [Class] 
-roofit_classes = [ rooPrintable ]  
+roofit_classes = [ rooPrintable 
+                 , rooAbsArg, rooAbsReal, rooAbsLValue, rooAbsRealLValue, rooRealVar
+                 , rooAbsData, rooDirItem, rooDataHist, rooAbsPdf, rooHistPdf
+                 , rooAddPdf, rooPlot
+                 , rooAbsCollection
+                 , rooArgList 
+                 ]  
 
   
 rooPrintable :: Class 
@@ -37,11 +43,65 @@ rooPrintable = roofitclass "RooPrintable" [deletable] mempty
                            [ Constructor [] ] 
 
 
+rooAbsArg :: Class 
+rooAbsArg = AbstractClass roofitcabal "RooAbsArg" [tNamed, rooPrintable] mempty 
+            [ ] 
+
+rooAbsReal :: Class
+rooAbsReal = AbstractClass roofitcabal "RooAbsReal" [rooAbsArg] mempty 
+             [ ] 
+
+rooAbsLValue :: Class 
+rooAbsLValue = AbstractClass roofitcabal "RooAbsLValue" [] mempty 
+               [ ] 
+
+rooAbsRealLValue :: Class 
+rooAbsRealLValue = AbstractClass roofitcabal "RooAbsRealLValue" [rooAbsReal, rooAbsLValue] mempty 
+                   [ ] 
+
+
+rooRealVar :: Class 
+rooRealVar = roofitclass "RooRealVar" [rooAbsRealLValue] mempty 
+             [ ] 
 
 
 
+rooAbsData :: Class 
+rooAbsData = AbstractClass roofitcabal "RooAbsData" [tNamed, rooPrintable] mempty 
+             [] 
+
+rooDirItem :: Class 
+rooDirItem = roofitclass "RooDirItem" [] mempty 
+             [ ] 
+
+rooDataHist :: Class
+rooDataHist = roofitclass "RooDataHist" [rooAbsData, rooDirItem] mempty 
+              [ ] 
+
+rooAbsPdf :: Class 
+rooAbsPdf = AbstractClass roofitcabal "RooAbsPdf" [rooAbsReal] mempty 
+            [ ] 
+
+rooHistPdf :: Class 
+rooHistPdf = roofitclass "RooHistPdf" [rooAbsPdf] mempty 
+             [ ] 
+
+rooAddPdf :: Class 
+rooAddPdf = roofitclass "RooAddPdf" [rooAbsPdf] mempty 
+            [ ] 
+
+rooPlot :: Class 
+rooPlot = roofitclass "RooPlot" [tNamed, rooPrintable] mempty 
+          [ ] 
 
 
+rooAbsCollection :: Class
+rooAbsCollection = AbstractClass roofitcabal  "RooAbsCollection" [tObject, rooPrintable] mempty 
+                   [ ] 
+
+rooArgList :: Class
+rooArgList = roofitclass "RooArgList" [rooAbsCollection] mempty 
+             [ ] 
 
 
 
