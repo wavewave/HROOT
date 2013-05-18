@@ -62,7 +62,8 @@ rooAbsRealLValue = AbstractClass roofitcabal "RooAbsRealLValue" [rooAbsReal, roo
 
 rooRealVar :: Class 
 rooRealVar = roofitclass "RooRealVar" [rooAbsRealLValue] mempty 
-             [ ] 
+             [ Constructor [ cstring "name", cstring "title", double "value", double "minValue", double "maxValue", cstring "unit" ] 
+             ] 
 
 
 

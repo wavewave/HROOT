@@ -36,11 +36,17 @@ config bInfo = do
                 Just incdir -> 
                   let hbi = emptyBuildInfo { extraLibs = extraLibs buildinfo 
                                                          ++ libs liboptset
+                                                         -- ++ [ "RooFit", "RooFitCore", "RooStats" ]
                                            , extraLibDirs = libdirs liboptset 
                                            , includeDirs = incdir : includeDirs buildinfo
                                            }
                   in Just (Just hbi, []) 
   return r 
+
+preInstHook _ _ = do 
+  -- return (Nothing,[])
+  let hbi = emptyBuildInfo { extraLibs = [ "RooFit", "RooFitCore" ] } 
+  return (Just hbi, [])
 
 
 data LibraryOptionSet = LibraryOptionSet { 
