@@ -1,3 +1,6 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
+import Control.Monad (liftM)
 import HROOT
 import HROOT.RooFit
 import HROOT.RooFit.RooStats
@@ -8,11 +11,11 @@ main = do
   rooRandomrandomGenerator >>= \rg -> setSeed rg 3001
   
   wspace <- newRooWorkspace 
-  factory wspace "Gaussian::normal(x[-10,10],mu[-1,1],sigma[1])"
-  defineSet wspace "poi" "mu" 
+  factory wspace "Gaussian::normal(x[-10,10],muu[-1,1],sigma[1])"
+  defineSet wspace "poi" "muu" 
   defineSet wspace "obs" "x" 
 
-  modelConfig <- newModelConfig "Example G(x|mu,1)" "Example G(x|mu,1)"
+  modelConfig <- newModelConfig "Example G(x|muu,1)" "Example G(x|muu,1)"
   setWorkspace modelConfig wspace
   setPdf modelConfig =<< pdf wspace "normal"
   setParametersOfInterest modelConfig =<< HROOT.RooFit.set wspace "poi"
@@ -22,11 +25,11 @@ main = do
   printObj dat "" 
 
   x <- var wspace "x"
-  mu <- var wspace "mu" 
+  muu <- var wspace "muu" 
 
   let confidenceLevel = 0.95 :: Double 
   plc <- newProfileLikelihoodCalculator (upcastRooAbsData dat) modelConfig 
-  plInt <- getInterval plc 
+  (plInt :: LikelihoodInterval) <- liftM downcastConfInterval (getInterval plc)
 
   printObj plInt "" 
 
