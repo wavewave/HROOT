@@ -20,6 +20,7 @@ import Bindings.Cxx.Generate.Type.Class
 import Bindings.Cxx.Generate.Type.Module
 -- 
 import HROOT.Data.Core.Class
+import HROOT.Data.Math.Class
 
 roofitcabal = Cabal { cabal_pkgname = "HROOT-RooFit"
                      , cabal_cheaderprefix = "HROOTRooFit" 
@@ -35,6 +36,8 @@ roofit_classes = [ rooPrintable
                  , rooAddPdf, rooPlot
                  , rooAbsCollection
                  , rooArgList 
+                 , rooRandom
+                 , rooWorkspace
                  ]  
 
   
@@ -80,7 +83,9 @@ rooDataHist = roofitclass "RooDataHist" [rooAbsData, rooDirItem] mempty
               [ ] 
 
 rooAbsPdf :: Class 
-rooAbsPdf = AbstractClass roofitcabal "RooAbsPdf" [rooAbsReal] mempty 
+rooAbsPdf = -- AbstractClass roofitcabal "RooAbsPdf" [rooAbsReal] mempty 
+            -- [ ] 
+            roofitclass "RooAbsPdf" [rooAbsReal] mempty 
             [ ] 
 
 rooHistPdf :: Class 
@@ -103,6 +108,19 @@ rooAbsCollection = AbstractClass roofitcabal  "RooAbsCollection" [tObject, rooPr
 rooArgList :: Class
 rooArgList = roofitclass "RooArgList" [rooAbsCollection] mempty 
              [ ] 
+
+
+
+rooRandom :: Class 
+rooRandom = roofitclass "RooRandom" [] mempty 
+            [ Static (cppclass_ tRandom) "randomGenerator" [] ] 
+
+rooWorkspace :: Class 
+rooWorkspace = roofitclass "RooWorkspace" [tNamed] mempty 
+               [ Constructor [] 
+               , Virtual void_ "factory" [ cstring "expr" ]  -- very unfortunate painful way
+               , Virtual bool_ "defineSet" [ cstring "name", cstring "contentList" ]  
+               ] 
 
 
 

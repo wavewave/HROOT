@@ -27,19 +27,29 @@ roostatscabal = Cabal { cabal_pkgname = "HROOT-RooFit-RooStats"
                      , cabal_moduleprefix = "HROOT.RooFit.RooStats" 
                      } 
 
-roostatsclass = Class roofitcabal 
+roostatsclass = Class roostatscabal 
 
 roostats_classes :: [Class] 
 roostats_classes = [ testStatistic
-                 , profileLikelihoodTestStat
-                 ]  
+                   , profileLikelihoodTestStat
+                   , modelConfig 
+                   ]  
+
+
+modelConfig :: Class 
+modelConfig = roostatsclass "ModelConfig" [tNamed] mempty 
+              [ Constructor [ cstring "name", cstring "title"] 
+              , Virtual void_ "SetWorkspace" [ cppclassref rooWorkspace "ws" ] 
+              ] 
+
+
 
 testStatistic :: Class 
-testStatistic = AbstractClass roofitcabal "TestStatistic" [deletable] mempty 
+testStatistic = AbstractClass roostatscabal "TestStatistic" [deletable] mempty 
                 [ ] 
 
 profileLikelihoodTestStat :: Class 
-profileLikelihoodTestStat = roofitclass "ProfileLikelihoodTestStat" [testStatistic] mempty 
+profileLikelihoodTestStat = roostatsclass "ProfileLikelihoodTestStat" [testStatistic] mempty 
                             [ Constructor [] ] 
   
 

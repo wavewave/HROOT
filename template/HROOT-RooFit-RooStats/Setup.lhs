@@ -7,7 +7,7 @@
 >
 > import Config
 >
-> myconfigHook = simpleUserHooks { confHook = hookfunction, preInst = preInstHook } 
+> myconfigHook = simpleUserHooks { confHook = hookfunction } --  , preInst = preInstHook } 
 >
 > hookfunction x y = do 
 >   binfo <- confHook simpleUserHooks x y 
