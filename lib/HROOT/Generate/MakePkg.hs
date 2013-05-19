@@ -43,6 +43,7 @@ import           Bindings.Cxx.Generate.Generator.ContentMaker
 import           Bindings.Cxx.Generate.Generator.Driver
 import           Bindings.Cxx.Generate.Type.Annotate
 import           Bindings.Cxx.Generate.Type.Class
+import           Bindings.Cxx.Generate.Type.PackageInterface
 import           Bindings.Cxx.Generate.Util
 -- 
 import qualified Paths_HROOT_generate as H
@@ -53,7 +54,7 @@ data UmbrellaPackageConfig = UPkgCfg { upkgname :: String }
 
 data PackageConfig  = PkgCfg { pkgname :: String 
                              , pkg_summarymodule :: String 
-                             , pkg_typemacro :: String 
+                             , pkg_typemacro :: TypeMacro
                              , pkg_classes :: [Class] 
                              , pkg_cihs :: [ClassImportHeader]
                              , pkg_modules :: [ClassModule]
@@ -159,8 +160,8 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     let cglobal = mkGlobal pkg_classes
     -- 
     putStrLn "header file generation"
-    writeTypeDeclHeaders templates pkg_typemacro workingDir pkgname pkg_cihs
-    mapM_ (writeDeclHeaders templates cglobal workingDir pkgname) pkg_cihs
+    writeTypeDeclHeaders templates workingDir pkg_typemacro pkgname pkg_cihs
+    mapM_ (writeDeclHeaders templates workingDir pkg_typemacro pkgname) pkg_cihs
     -- 
     putStrLn "cpp file generation" 
     mapM_ (writeCppDef templates workingDir) pkg_cihs

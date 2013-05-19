@@ -20,6 +20,7 @@ import Bindings.Cxx.Generate.Type.Class
 import Bindings.Cxx.Generate.Type.Module
 -- 
 import HROOT.Data.Core.Class
+import HROOT.Data.Hist.Class
 import HROOT.Data.Math.Class
 
 roofitcabal = Cabal { cabal_pkgname = "HROOT-RooFit"
@@ -39,6 +40,9 @@ roofit_classes = [ rooPrintable
                  , rooRandom
                  , rooWorkspace
                  , rooDataSet
+                 -- , rooCmdArg 
+                 , rooFitResult
+                 , rooCategory, rooAbsCategoryLValue, rooAbsCategory
                  ]  
 
   
@@ -52,15 +56,23 @@ rooAbsArg = AbstractClass roofitcabal "RooAbsArg" [tNamed, rooPrintable] mempty
             [ ] 
 
 rooAbsReal :: Class
-rooAbsReal = AbstractClass roofitcabal "RooAbsReal" [rooAbsArg] mempty 
-             [ ] 
+rooAbsReal = -- AbstractClass roofitcabal "RooAbsReal" [rooAbsArg] mempty
+             roofitclass "RooAbsReal" [rooAbsArg] mempty 
+             [ Virtual double_ "getVal" [ cppclass rooArgSet "set" ]
+             , Virtual double_ "analyticalIntegral" [ int "code", cstring "rangeName" ] 
+             , Virtual (cppclass_ rooAbsReal) "createProfile" [ cppclassref rooArgSet "paramsOfInterest" ]
+             , Virtual (cppclass_ rooAbsReal) "createIntegral" [ cppclassref rooArgSet "iset" ] 
+             , AliasVirtual (cppclass_ rooPlot) "plotOn" [cppclass rooPlot "frame"] "plotOn_rooAbsReal"
+             -- , Virtual (cppclass_ tH1) "createHistogram" [cstring "name", cppclassref rooAbsRealLValue "xvar" ]
+             ] 
 
 rooAbsLValue :: Class 
 rooAbsLValue = AbstractClass roofitcabal "RooAbsLValue" [] mempty 
                [ ] 
 
 rooAbsRealLValue :: Class 
-rooAbsRealLValue = AbstractClass roofitcabal "RooAbsRealLValue" [rooAbsReal, rooAbsLValue] mempty 
+rooAbsRealLValue = -- AbstractClass roofitcabal "RooAbsRealLValue" [rooAbsReal, rooAbsLValue] mempty
+                   roofitclass "RooAbsRealLValue" [rooAbsReal, rooAbsLValue] mempty 
                    [ Virtual (cppclass_ rooPlot) "frame" []  
                    ] 
 
@@ -91,6 +103,13 @@ rooAbsPdf = -- AbstractClass roofitcabal "RooAbsPdf" [rooAbsReal] mempty
             -- [ ] 
             roofitclass "RooAbsPdf" [rooAbsReal] mempty 
             [ Virtual (cppclass_ rooDataSet) "generate" [ cppclassref rooArgSet "whatVars", int "nEvent" ] 
+            , Virtual (cppclass_ rooDataHist) "generateBinned" [ cppclassref rooArgSet "whatVars", double "nEvents" {-, cppclassref rooCmdArg "arg1" -} ]
+            , Virtual (cppclass_ rooFitResult) "fitTo" [ cppclassref rooAbsData "dat" ]
+            , Virtual (cppclass_ rooAbsReal) "createNLL" [ cppclassref rooAbsData "dat" ] 
+            , Virtual (cppclass_ rooAbsPdf) "createProjection" [cppclassref rooArgSet "iset" ] 
+            , Virtual (cppclass_ rooAbsReal) "createCdf" [cppclassref rooArgSet "iset" ] 
+            -- ExtendMode
+            , Virtual double_ "expectedEvents" [cppclassref rooArgSet "nset" ] 
             ] 
 
 rooHistPdf :: Class 
@@ -126,16 +145,46 @@ rooRandom = roofitclass "RooRandom" [] mempty
 rooWorkspace :: Class 
 rooWorkspace = roofitclass "RooWorkspace" [tNamed] mempty 
                [ Constructor [] 
-               , Virtual void_ "factory" [ cstring "expr" ]  -- very unfortunate painful way
-               , Virtual bool_ "defineSet" [ cstring "name", cstring "contentList" ]  
-               , Virtual (cppclass_ rooAbsPdf) "pdf" [ cstring "name" ] 
-               , Virtual (cppclass_ rooArgSet) "set" [ cstring "name" ] 
-               , Virtual (cppclass_ rooRealVar) "var" [ cstring "name" ] 
+               , NonVirtual bool_ "defineSet" [ cstring "name", cstring "contentList" ]  
+               , NonVirtual bool_ "writeToFile" [ cstring "fileName", bool "recreate" ]
+               , NonVirtual void_ "factory" [ cstring "expr" ]  -- very unfortunate painful way
+               , NonVirtual (cppclass_ rooAbsPdf) "pdf" [ cstring "name" ] 
+               , NonVirtual (cppclass_ rooAbsData) "data" [ cstring "name" ] 
+               , NonVirtual (cppclass_ rooRealVar) "var" [ cstring "name" ] 
+               , NonVirtual (cppclass_ rooArgSet) "set" [ cstring "name" ] 
+               , NonVirtual (cppclass_ rooAbsReal) "function" [cstring "name"]
+               , NonVirtual (cppclass_ rooCategory) "cat" [cstring "name"] 
+               , NonVirtual (cppclass_ rooAbsCategory) "catfunc" [cstring "name"]
+               , NonVirtual (cppclass_ rooAbsArg) "arg" [cstring "name"] 
+               -- components 
+               -- componentIterator
+               , NonVirtual (cppclass_ tObject) "obj" [cstring "name"] 
                ] 
 
 rooDataSet :: Class
 rooDataSet = roofitclass "RooDataSet" [rooAbsData, rooDirItem] mempty 
              [] 
 
+{- 
+rooCmdArg :: Class 
+rooCmdArg = roofitclass "RooCmdArg" [tNamed] mempty 
+            [ Static slecppclass_ rooCmdArg
+            ] 
 
+-}
 
+rooFitResult :: Class 
+rooFitResult = roofitclass "RooFitResult" [tNamed, rooPrintable, rooDirItem] mempty 
+               [ ] 
+
+rooCategory :: Class 
+rooCategory = roofitclass "RooCategory" [rooAbsCategoryLValue] mempty 
+              [ ] 
+
+rooAbsCategoryLValue :: Class
+rooAbsCategoryLValue = roofitclass "RooAbsCategoryLValue" [rooAbsCategory, rooAbsLValue] mempty 
+                       [ ] 
+
+rooAbsCategory :: Class
+rooAbsCategory = roofitclass "RooAbsCategory" [rooAbsArg] mempty 
+                 [ ] 

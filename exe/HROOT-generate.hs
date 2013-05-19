@@ -29,7 +29,7 @@ import           Bindings.Cxx.Generate.Code.Dependency
 import           Bindings.Cxx.Generate.Generator.ContentMaker
 import           Bindings.Cxx.Generate.Type.Class 
 import           Bindings.Cxx.Generate.Type.Module
--- import           Bindings.Cxx.Generate.Type.PackageInterface
+import           Bindings.Cxx.Generate.Type.PackageInterface
 -- 
 import           Command
 -- import           HROOT.Data.Core.Annotate
@@ -65,7 +65,7 @@ mkPkgCfg name summary macro deps cs =
           mkAllClassModulesAndCIH (name,mkCROOTIncludeHeaders ([],"")) cs
     in PkgCfg { pkgname = name 
               , pkg_summarymodule = summary
-              , pkg_typemacro = macro 
+              , pkg_typemacro = TypMcro macro 
               , pkg_classes = cs 
               , pkg_cihs = cihs 
               , pkg_modules = mods 
@@ -78,7 +78,7 @@ pkg_GRAF = mkPkgCfg "HROOT-graf" "HROOT.Graf" "__HROOT_GRAF__" ["HROOT-core","HR
 pkg_HIST = mkPkgCfg "HROOT-hist" "HROOT.Hist" "__HROOT_HIST__" ["HROOT-core"] hist_classes
 pkg_MATH = mkPkgCfg "HROOT-math" "HROOT.Math" "__HROOT_MATH__" ["HROOT-core"] math_classes
 pkg_IO   = mkPkgCfg "HROOT-io"   "HROOT.IO"   "__HROOT_IO__"   ["HROOT-core"] io_classes
-pkg_RooFit = mkPkgCfg "HROOT-RooFit" "HROOT.RooFit" "__HROOT_ROOFIT__" ["HROOT-core", "HROOT-math"] roofit_classes
+pkg_RooFit = mkPkgCfg "HROOT-RooFit" "HROOT.RooFit" "__HROOT_ROOFIT__" ["HROOT-core", "HROOT-hist", "HROOT-math"] roofit_classes
 {-    let (mods,cihs) = 
           mkAllClassModulesAndCIH ( "HROOT-RooFit"
                                   , mkCROOTIncludeHeaders ([],"RooStats")) roofit_classes
@@ -97,7 +97,7 @@ pkg_RooStats = -- mkPkgCfg "HROOT-RooFit" "HROOT.RooFit" "__HROOT_ROOFIT__" ["HR
                                   , mkCROOTIncludeHeaders ([NS "RooStats"],"RooStats")) roostats_classes
     in PkgCfg { pkgname = "HROOT-RooFit-RooStats"
               , pkg_summarymodule = "HROOT.RooFit.RooStats"
-              , pkg_typemacro = "__HROOT_ROOFIT_ROOSTATS__"
+              , pkg_typemacro = TypMcro "__HROOT_ROOFIT_ROOSTATS__"
               , pkg_classes = roostats_classes
               , pkg_cihs = cihs 
               , pkg_modules = mods 
@@ -112,7 +112,7 @@ pkg_RooStats = -- mkPkgCfg "HROOT-RooFit" "HROOT.RooFit" "__HROOT_ROOFIT__" ["HR
 
 pkg_HROOT = PkgCfg { pkgname = "HROOT" 
                    , pkg_summarymodule = "HROOT"
-                   , pkg_typemacro = ""
+                   , pkg_typemacro = TypMcro ""
                    , pkg_classes = [] 
                    , pkg_cihs = [] 
                    , pkg_modules = [] 
