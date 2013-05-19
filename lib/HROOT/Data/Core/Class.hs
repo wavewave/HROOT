@@ -345,7 +345,9 @@ tSeqCollection =
 
 tVirtualPad :: Class 
 tVirtualPad = coreclass "TVirtualPad" [tObject] mempty
-              [ Virtual void_ "SetLogx" [int "value"]  
+              [ Virtual self_ "cd" [int "subpadnumber"] 
+              , AliasVirtual void_ "Divide" [int "nx", int "ny", float "xmargin", float "ymargin", int "color" ] "divide_tvirtualpad"
+              , Virtual void_ "SetLogx" [int "value"]  
               , Virtual void_ "SetLogy" [int "value"]
               , Virtual void_ "SetLogz" [int "value"]
               ] 

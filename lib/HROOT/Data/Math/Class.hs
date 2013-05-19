@@ -29,7 +29,9 @@ tRandom :: Class
 tRandom = 
   mathclass "TRandom" [tNamed] mempty
   [ Constructor [ int "seed" ] 
+  , Virtual int_ "GetSeed" [] 
   , Virtual double_ "Gaus" [double "mean", double "sigma"]
+  , Virtual void_ "SetSeed" [ int "seed" ] 
   , Virtual double_ "Uniform" [double "x1", double "x2"]
   ]       
 
