@@ -11,25 +11,25 @@ main = do
   rooRandomrandomGenerator >>= \rg -> setSeed rg 3001
   
   wspace <- newRooWorkspace 
-  factory wspace "Gaussian::normal(x[-10,10],muu[-1,1],sigma[1])"
-  defineSet wspace "poi" "muu" 
-  defineSet wspace "obs" "x" 
+  rooWorkspacefactory wspace "Gaussian::normal(x[-10,10],muu[-1,1],sigma[1])"
+  rooWorkspacedefineSet wspace "poi" "muu" 
+  rooWorkspacedefineSet wspace "obs" "x" 
 
   modelConfig <- newModelConfig "Example G(x|muu,1)" "Example G(x|muu,1)"
   setWorkspace modelConfig wspace
-  setPdf modelConfig =<< pdf wspace "normal"
-  setParametersOfInterest modelConfig =<< HROOT.RooFit.set wspace "poi"
-  setObservables modelConfig =<< HROOT.RooFit.set wspace "obs"
+  setPdf modelConfig =<< rooWorkspacepdf wspace "normal"
+  setParametersOfInterest modelConfig =<< rooWorkspaceset wspace "poi"
+  setObservables modelConfig =<< rooWorkspaceset wspace "obs"
 
-  dat <- pdf wspace "normal" >>= \p -> HROOT.RooFit.set wspace "obs" >>= \a -> generate p a 100 
+  dat <- rooWorkspacepdf wspace "normal" >>= \p -> rooWorkspaceset wspace "obs" >>= \a -> generate p a 100 
   printObj dat "" 
 
-  x <- var wspace "x"
-  muu <- var wspace "muu" 
+  x <- rooWorkspacevar wspace "x"
+  muu <- rooWorkspacevar wspace "muu" 
 
   let confidenceLevel = 0.95 :: Double 
   plc <- newProfileLikelihoodCalculator (upcastRooAbsData dat) modelConfig 
-  (plInt :: LikelihoodInterval) <- liftM downcastConfInterval (getInterval plc)
+  (plInt :: LikelihoodInterval) <- liftM downcastConfInterval (getInterval_IntervalCalculator plc)
 
   printObj plInt "" 
 
