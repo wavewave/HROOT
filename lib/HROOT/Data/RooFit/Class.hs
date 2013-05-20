@@ -52,7 +52,7 @@ rooPrintable = roofitclass "RooPrintable" [deletable] mempty
 
 
 rooAbsArg :: Class 
-rooAbsArg = AbstractClass roofitcabal "RooAbsArg" [tNamed, rooPrintable] mempty 
+rooAbsArg = roofitclass "RooAbsArg" [tNamed, rooPrintable] mempty 
             [ ] 
 
 rooAbsReal :: Class
@@ -63,7 +63,7 @@ rooAbsReal = -- AbstractClass roofitcabal "RooAbsReal" [rooAbsArg] mempty
              , Virtual (cppclass_ rooAbsReal) "createProfile" [ cppclassref rooArgSet "paramsOfInterest" ]
              , Virtual (cppclass_ rooAbsReal) "createIntegral" [ cppclassref rooArgSet "iset" ] 
              , AliasVirtual (cppclass_ rooPlot) "plotOn" [cppclass rooPlot "frame"] "plotOn_rooAbsReal"
-             -- , Virtual (cppclass_ tH1) "createHistogram" [cstring "name", cppclassref rooAbsRealLValue "xvar" ]
+             , Virtual (cppclass_ tH1) "createHistogram" [cstring "name", cppclassref rooAbsRealLValue "xvar" ]
              ] 
 
 rooAbsLValue :: Class 

@@ -22,6 +22,7 @@ import           Control.Monad
 import           Data.Configurator as C
 import           Data.Configurator.Types 
 import qualified Data.HashMap.Strict as HM
+import qualified Data.Map as M
 import           System.Console.CmdArgs
 -- 
 import           Bindings.Cxx.Generate.Config
@@ -50,8 +51,7 @@ import           HROOT.Generate.MakePkg
 -- 
 import qualified Paths_HROOT_generate as H
 import qualified Paths_fficxx as F
-
-import qualified Data.Map as M
+import Debug.Trace
 
 main :: IO () 
 main = do 
@@ -63,15 +63,20 @@ mkPkgCfg :: String -> String -> String -> [String] -> [Class] -> PackageConfig
 mkPkgCfg name summary macro deps cs = 
     let (mods,cihs) = 
           mkAllClassModulesAndCIH (name,mkCROOTIncludeHeaders ([],"")) cs
-    in PkgCfg { pkgname = name 
-              , pkg_summarymodule = summary
-              , pkg_typemacro = TypMcro macro 
-              , pkg_classes = cs 
-              , pkg_cihs = cihs 
-              , pkg_modules = mods 
-              , pkg_annotateMap = M.empty  -- for the time being 
-              , pkg_deps = deps
-              }
+        hsbootlst = mkHSBOOTCandidateList mods 
+
+    in trace (show hsbootlst) 
+
+       $ PkgCfg { pkgname = name 
+                , pkg_summarymodule = summary
+                , pkg_typemacro = TypMcro macro 
+                , pkg_classes = cs 
+                , pkg_cihs = cihs 
+                , pkg_modules = mods 
+                , pkg_annotateMap = M.empty  -- for the time being 
+                , pkg_deps = deps
+                , pkg_hsbootlst = hsbootlst 
+                }
 
 pkg_CORE = mkPkgCfg "HROOT-core" "HROOT.Core" "__HROOT_CORE__" [] core_classes
 pkg_GRAF = mkPkgCfg "HROOT-graf" "HROOT.Graf" "__HROOT_GRAF__" ["HROOT-core","HROOT-hist"] graf_classes
@@ -95,6 +100,7 @@ pkg_RooStats = -- mkPkgCfg "HROOT-RooFit" "HROOT.RooFit" "__HROOT_ROOFIT__" ["HR
     let (mods,cihs) = 
           mkAllClassModulesAndCIH ( "HROOT-RooFit-RooStats"
                                   , mkCROOTIncludeHeaders ([NS "RooStats"],"RooStats")) roostats_classes
+        hsbootlst = mkHSBOOTCandidateList mods 
     in PkgCfg { pkgname = "HROOT-RooFit-RooStats"
               , pkg_summarymodule = "HROOT.RooFit.RooStats"
               , pkg_typemacro = TypMcro "__HROOT_ROOFIT_ROOSTATS__"
@@ -106,6 +112,7 @@ pkg_RooStats = -- mkPkgCfg "HROOT-RooFit" "HROOT.RooFit" "__HROOT_ROOFIT__" ["HR
                            , "HROOT-math"
                            , "HROOT-RooFit"
                            ]
+              , pkg_hsbootlst = hsbootlst 
               }
 
 
@@ -118,6 +125,7 @@ pkg_HROOT = PkgCfg { pkgname = "HROOT"
                    , pkg_modules = [] 
                    , pkg_annotateMap = M.empty  -- for the time being 
                    , pkg_deps = ["HROOT-core","HROOT-graf","HROOT-hist","HROOT-math","HROOT-io" ]
+                   , pkg_hsbootlst = [] 
                    }
 
 

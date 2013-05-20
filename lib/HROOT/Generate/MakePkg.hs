@@ -60,6 +60,7 @@ data PackageConfig  = PkgCfg { pkgname :: String
                              , pkg_modules :: [ClassModule]
                              , pkg_annotateMap :: AnnotateMap
                              , pkg_deps :: [String]
+                             , pkg_hsbootlst :: [String] 
                              } 
 
 -- | 
@@ -180,6 +181,9 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     -- 
     putStrLn "Implementation.hs file generation"
     mapM_ (writeImplementationHs pkg_annotateMap templates workingDir) pkg_modules
+    -- 
+    putStrLn "hs-boot file generation" 
+    mapM_ (writeInterfaceHSBOOT templates workingDir) pkg_hsbootlst  
     -- 
     putStrLn "module file generation" 
     mapM_ (writeModuleHs templates workingDir) pkg_modules
