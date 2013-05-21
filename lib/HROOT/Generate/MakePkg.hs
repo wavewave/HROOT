@@ -75,7 +75,7 @@ copyPredefinedFiles :: String   -- ^ package name
                     -> IO () 
 copyPredefinedFiles pkgname (files,dirs) ibase = do 
     tmpldir <- H.getDataDir >>= return . (</> "template") 
-    mapM_ (\x->copyFile (tmpldir </> pkgname </> x) (ibase </> x)) files 
+    mapM_ (\x->copyFileWithMD5Check (tmpldir </> pkgname </> x) (ibase </> x)) files 
     forM_ dirs $ \dir -> do 
       notExistThenCreate (ibase </> dir) 
       b <- doesDirectoryExist (tmpldir </> pkgname </> dir) 
@@ -84,7 +84,7 @@ copyPredefinedFiles pkgname (files,dirs) ibase = do
         mapM_ (f (tmpldir </> pkgname </> dir) (ibase </> dir)) contents 
   where 
     f src dest s = if s /= "." && s /= ".."
-                   then copyFile (src</>s) (dest</>s) 
+                   then copyFileWithMD5Check (src</>s) (dest</>s) 
                    else return () 
 
 --      [ "CHANGES", "Config.hs", "LICENSE", "README.md", "Setup.lhs" ]
@@ -192,8 +192,8 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     writePkgHs pkg_summarymodule templates workingDir pkg_modules
     -- 
     putStrLn "copying"
-    copyFile (workingDir </> cabalFileName)  (ibase </> cabalFileName) 
-    copyPredefined templateDir (srcDir ibase) pkgname
+    copyFileWithMD5Check (workingDir </> cabalFileName)  (ibase </> cabalFileName) 
+    -- copyPredefined templateDir (srcDir ibase) pkgname
     mapM_ (copyCppFiles workingDir (csrcDir ibase) pkgname) pkg_cihs
     mapM_ (copyModule workingDir (srcDir ibase) pkg_summarymodule) pkg_modules 
     -- 
@@ -240,6 +240,6 @@ makeUmbrellaPackage config pkgcfg@(PkgCfg {..}) mods = do
                   "Pkg.hs"
       hPutStrLn h str
     putStrLn "copying"
-    copyFile (workingDir </> cabalFileName)  (ibase </> cabalFileName) 
-    copyFile (workingDir </> pkg_summarymodule <.> "hs") (ibase </> "src" </> pkg_summarymodule <.> "hs")  
+    copyFileWithMD5Check (workingDir </> cabalFileName)  (ibase </> cabalFileName) 
+    copyFileWithMD5Check (workingDir </> pkg_summarymodule <.> "hs") (ibase </> "src" </> pkg_summarymodule <.> "hs")  
 

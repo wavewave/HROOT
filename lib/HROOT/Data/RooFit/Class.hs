@@ -43,6 +43,8 @@ roofit_classes = [ rooPrintable
                  -- , rooCmdArg 
                  , rooFitResult
                  , rooCategory, rooAbsCategoryLValue, rooAbsCategory
+                 , rooGaussian
+                 , rooGenericPdf 
                  ]  
 
   
@@ -88,6 +90,7 @@ rooAbsData :: Class
 rooAbsData = roofitclass "RooAbsData" [tNamed, rooPrintable] mempty 
              [ Virtual (cppclass_ rooPlot) "plotOn" [ cppclass rooPlot "frame" ] 
              , Virtual (cppclass_ rooPlot) "statOn" [ cppclass rooPlot "frame" ] 
+             , AliasVirtual (cppclass_ tH1) "createHistogram" [cstring "name", cppclassref rooAbsRealLValue "xvar" ] "createHistogram_RooAbsData"
              ] 
 
 rooDirItem :: Class 
@@ -103,7 +106,10 @@ rooAbsPdf = -- AbstractClass roofitcabal "RooAbsPdf" [rooAbsReal] mempty
             -- [ ] 
             roofitclass "RooAbsPdf" [rooAbsReal] mempty 
             [ Virtual (cppclass_ rooDataSet) "generate" [ cppclassref rooArgSet "whatVars", int "nEvent" ] 
+            , AliasVirtual (cppclass_ rooDataSet) "generate" [ cppclassref rooArgSet "whatVars", cppclassref rooDataSet "prototype", int "nEvents", bool "verbose", bool "randProtoOrder", bool "resampleProto" ] "generate_proto" 
             , Virtual (cppclass_ rooDataHist) "generateBinned" [ cppclassref rooArgSet "whatVars", double "nEvents" {-, cppclassref rooCmdArg "arg1" -} ]
+            , Virtual void_ "generateEvent" [ int "code" ] 
+            , Virtual int_ "getGenerator" [ cppclassref rooArgSet "directVars", cppclassref rooArgSet "generateVars", bool "staticInitOK" ] 
             , Virtual (cppclass_ rooFitResult) "fitTo" [ cppclassref rooAbsData "dat" ]
             , Virtual (cppclass_ rooAbsReal) "createNLL" [ cppclassref rooAbsData "dat" ] 
             , Virtual (cppclass_ rooAbsPdf) "createProjection" [cppclassref rooArgSet "iset" ] 
@@ -118,7 +124,9 @@ rooHistPdf = roofitclass "RooHistPdf" [rooAbsPdf] mempty
 
 rooAddPdf :: Class 
 rooAddPdf = roofitclass "RooAddPdf" [rooAbsPdf] mempty 
-            [ ] 
+            [ Constructor [ cstring "name", cstring "title", cppclassref rooAbsPdf "pdf1", cppclassref rooAbsPdf "pdf2", cppclassref rooAbsReal "coef1"] 
+
+            ] 
 
 rooPlot :: Class 
 rooPlot = roofitclass "RooPlot" [tNamed, rooPrintable] mempty 
@@ -127,7 +135,9 @@ rooPlot = roofitclass "RooPlot" [tNamed, rooPrintable] mempty
 
 rooAbsCollection :: Class
 rooAbsCollection = AbstractClass roofitcabal  "RooAbsCollection" [tObject, rooPrintable] mempty 
-                   [ ] 
+                   [ Virtual bool_ "add" [cppclassref rooAbsArg "var", bool "silent" ]  
+
+                   ] 
 
 rooArgList :: Class
 rooArgList = roofitclass "RooArgList" [rooAbsCollection] mempty 
@@ -135,7 +145,8 @@ rooArgList = roofitclass "RooArgList" [rooAbsCollection] mempty
 
 rooArgSet :: Class 
 rooArgSet = roofitclass "RooArgSet" [rooAbsCollection] mempty 
-            [ ] 
+            [ Constructor [ cstring "name" ]  
+            ] 
 
 
 rooRandom :: Class 
@@ -188,3 +199,12 @@ rooAbsCategoryLValue = roofitclass "RooAbsCategoryLValue" [rooAbsCategory, rooAb
 rooAbsCategory :: Class
 rooAbsCategory = roofitclass "RooAbsCategory" [rooAbsArg] mempty 
                  [ ] 
+
+rooGaussian :: Class 
+rooGaussian = roofitclass "RooGaussian" [rooAbsPdf] mempty 
+              [ Constructor [ cstring "name", cstring "title", cppclassref rooAbsReal "x", cppclassref rooAbsReal "mean", cppclassref rooAbsReal "sigma" ] ] 
+
+rooGenericPdf :: Class 
+rooGenericPdf = roofitclass "RooGenericPdf" [rooAbsPdf] mempty 
+              [ Constructor [ cstring "name", cstring "title", cstring "formula", cppclassref rooArgList "dependents" ] 
+              ] 

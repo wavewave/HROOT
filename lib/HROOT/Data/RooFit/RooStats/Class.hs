@@ -43,6 +43,9 @@ roostats_classes = [ testStatistic
                    , hypoTestResult 
                    -- , testStatSampler
                    , samplingDistribution
+                   , simpleLikelihoodRatioTestStat
+                   , ratioOfProfiledLikelihoodsTestStat 
+                   , numEventsTestStat
                    ]  
 
 
@@ -74,7 +77,7 @@ testStatistic :: Class
 testStatistic = 
     AbstractClass roostatscabal "TestStatistic" [deletable] mempty 
     [ Virtual double_ "Evaluate" [cppclassref rooAbsData "dat", cppclassref rooArgSet "paramsOfInterest"]
-     -- , GetVarName
+    -- , Virtual "GetVarName"
     ] 
 
 profileLikelihoodTestStat :: Class 
@@ -155,5 +158,21 @@ hypoTestResult =
 samplingDistribution :: Class
 samplingDistribution = 
     roostatsclass "SamplingDistribution" [tNamed] mempty 
-    [ 
-    ] 
+    [  ] 
+
+simpleLikelihoodRatioTestStat :: Class
+simpleLikelihoodRatioTestStat = 
+    roostatsclass "SimpleLikelihoodRatioTestStat" [testStatistic] mempty 
+    [  ] 
+
+ratioOfProfiledLikelihoodsTestStat :: Class
+ratioOfProfiledLikelihoodsTestStat = 
+    roostatsclass "RatioOfProfiledLikelihoodsTestStat" [testStatistic] mempty 
+    [  ] 
+
+
+numEventsTestStat :: Class
+numEventsTestStat = 
+    roostatsclass "NumEventsTestStat" [testStatistic] mempty 
+    [  ] 
+

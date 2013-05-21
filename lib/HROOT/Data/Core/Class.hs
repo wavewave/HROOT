@@ -338,6 +338,11 @@ tSeqCollection :: Class
 tSeqCollection = 
   coreclass "TSeqCollection" [tCollection] mempty []
 
+tString :: Class 
+tString = 
+  coreclass "TString" [] mempty 
+  [ Constructor [ cstring "s" ] 
+  ] 
 
 ----------------
 -- starting V --
