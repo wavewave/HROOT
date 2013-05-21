@@ -29,7 +29,6 @@ tDirectoryFile :: Class
 tDirectoryFile = 
   ioclass "TDirectoryFile" [tDirectory] mempty
   [ {-  Virtual (cppclass_ "TList") "GetListOfKeys" []  -}
-
   ]
 
 tFile :: Class

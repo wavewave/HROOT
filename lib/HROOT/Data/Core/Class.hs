@@ -263,6 +263,7 @@ tDirectory = coreclass "TDirectory" [tNamed] mempty
              , Virtual int_ "AppendKey" [cppclass tKey "key" ] 
              , Virtual void_ "Close"    [ cstring "option" ] 
              , Virtual (cppclass_ tObject) "Get" [ cstring "namecycle" ] 
+             , AliasVirtual bool_ "cd" [ cstring "path" ]  "cd_TDirectory"
              ]
 
 tDictionary :: Class

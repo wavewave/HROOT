@@ -65,7 +65,7 @@ rooAbsReal = -- AbstractClass roofitcabal "RooAbsReal" [rooAbsArg] mempty
              , Virtual (cppclass_ rooAbsReal) "createProfile" [ cppclassref rooArgSet "paramsOfInterest" ]
              , Virtual (cppclass_ rooAbsReal) "createIntegral" [ cppclassref rooArgSet "iset" ] 
              , AliasVirtual (cppclass_ rooPlot) "plotOn" [cppclass rooPlot "frame"] "plotOn_rooAbsReal"
-             , Virtual (cppclass_ tH1) "createHistogram" [cstring "name", cppclassref rooAbsRealLValue "xvar" ]
+             , Virtual (cppclass_ tH1) "createHistogram" [cstring "varNameList" {- , cppclassref rooAbsRealLValue "xvar" -} ]
              ] 
 
 rooAbsLValue :: Class 
@@ -82,6 +82,7 @@ rooAbsRealLValue = -- AbstractClass roofitcabal "RooAbsRealLValue" [rooAbsReal, 
 rooRealVar :: Class 
 rooRealVar = roofitclass "RooRealVar" [rooAbsRealLValue] mempty 
              [ Constructor [ cstring "name", cstring "title", double "value", double "minValue", double "maxValue", cstring "unit" ] 
+             , Virtual void_ "setVal" [ double "value" ] 
              ] 
 
 
@@ -90,7 +91,8 @@ rooAbsData :: Class
 rooAbsData = roofitclass "RooAbsData" [tNamed, rooPrintable] mempty 
              [ Virtual (cppclass_ rooPlot) "plotOn" [ cppclass rooPlot "frame" ] 
              , Virtual (cppclass_ rooPlot) "statOn" [ cppclass rooPlot "frame" ] 
-             , AliasVirtual (cppclass_ tH1) "createHistogram" [cstring "name", cppclassref rooAbsRealLValue "xvar" ] "createHistogram_RooAbsData"
+             , AliasVirtual (cppclass_ tH1) "createHistogram" [ cstring "varNameList" ]  "createHistogram_RooAbsData"
+              -- [cstring "name", cppclassref rooAbsRealLValue "xvar" ] "createHistogram_RooAbsData"
              ] 
 
 rooDirItem :: Class 
@@ -134,10 +136,11 @@ rooPlot = roofitclass "RooPlot" [tNamed, rooPrintable] mempty
 
 
 rooAbsCollection :: Class
-rooAbsCollection = AbstractClass roofitcabal  "RooAbsCollection" [tObject, rooPrintable] mempty 
-                   [ Virtual bool_ "add" [cppclassref rooAbsArg "var", bool "silent" ]  
-
-                   ] 
+rooAbsCollection = 
+  roofitclass  "RooAbsCollection" [tObject, rooPrintable] mempty 
+  [ Virtual bool_ "add" [cppclassref rooAbsArg "var", bool "silent" ]  
+  , NonVirtual (cppclass_ rooAbsArg) "find" [cstring "name"]                 
+  ] 
 
 rooArgList :: Class
 rooArgList = roofitclass "RooArgList" [rooAbsCollection] mempty 
