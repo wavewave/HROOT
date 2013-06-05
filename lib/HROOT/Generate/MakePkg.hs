@@ -118,12 +118,17 @@ mkCabalFile isUmbrella config PkgCfg {..} h classmodules = do
               templates 
               [ ("pkgname", pkgname) 
               , ("version", version) 
+              , ("license", "" ) 
+              , ("buildtype", "Custom")
               , ("deps", deps) 
               , ("csrcFiles", if isUmbrella then "" else genCsrcFiles classmodules)
               , ("includeFiles", if isUmbrella then "" else genIncludeFiles pkgname classmodules) 
               , ("cppFiles", if isUmbrella then "" else genCppFiles classmodules)
               , ("exposedModules", genExposedModules pkg_summarymodule classmodules) 
               , ("otherModules", genOtherModules classmodules)
+              , ("extralibdirs",  "" )  -- this need to be changed 
+              , ("extraincludedirs", "" )  -- this need to be changed 
+              , ("extralib", "")
               , ("cabalIndentation", cabalIndentation)
               ]
               cabalTemplate 
