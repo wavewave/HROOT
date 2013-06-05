@@ -14,8 +14,8 @@ module HROOT.Data.IO.Class where
 
 import Data.Monoid 
 --
-import Bindings.Cxx.Generate.Type.Class
-import Bindings.Cxx.Generate.Type.Module
+import FFICXX.Generate.Type.Class
+import FFICXX.Generate.Type.Module
 -- 
 import HROOT.Data.Core.Class
 

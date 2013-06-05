@@ -16,8 +16,8 @@ module HROOT.Data.RooFit.Class where
 
 import Data.Monoid
 -- 
-import Bindings.Cxx.Generate.Type.Class
-import Bindings.Cxx.Generate.Type.Module
+import FFICXX.Generate.Type.Class
+import FFICXX.Generate.Type.Module
 -- 
 import HROOT.Data.Core.Class
 import HROOT.Data.Hist.Class
@@ -93,6 +93,7 @@ rooAbsData = roofitclass "RooAbsData" [tNamed, rooPrintable] mempty
              , Virtual (cppclass_ rooPlot) "statOn" [ cppclass rooPlot "frame" ] 
              , AliasVirtual (cppclass_ tH1) "createHistogram" [ cstring "varNameList" ]  "createHistogram_RooAbsData"
               -- [cstring "name", cppclassref rooAbsRealLValue "xvar" ] "createHistogram_RooAbsData"
+             , AliasVirtual (cppclass_ rooAbsData) "get" [] "get_RooAbsData"
              ] 
 
 rooDirItem :: Class 
@@ -139,6 +140,8 @@ rooAbsCollection :: Class
 rooAbsCollection = 
   roofitclass  "RooAbsCollection" [tObject, rooPrintable] mempty 
   [ Virtual bool_ "add" [cppclassref rooAbsArg "var", bool "silent" ]  
+  , AliasVirtual bool_ "add" [cppclassref rooAbsCollection "list", bool "silent" ] "addCollection" 
+  , Virtual (cppclass_ rooAbsArg) "addClone" [cppclassref rooAbsArg "var", bool "silent" ]
   , NonVirtual (cppclass_ rooAbsArg) "find" [cstring "name"]                 
   ] 
 
@@ -149,6 +152,7 @@ rooArgList = roofitclass "RooArgList" [rooAbsCollection] mempty
 rooArgSet :: Class 
 rooArgSet = roofitclass "RooArgSet" [rooAbsCollection] mempty 
             [ Constructor [ cstring "name" ]  
+            , NonVirtual bool_ "setRealValue" [ cstring "name", double "newVal", bool "verbose" ] 
             ] 
 
 
@@ -177,7 +181,8 @@ rooWorkspace = roofitclass "RooWorkspace" [tNamed] mempty
 
 rooDataSet :: Class
 rooDataSet = roofitclass "RooDataSet" [rooAbsData, rooDirItem] mempty 
-             [] 
+             [ Virtual (cppclass_ rooAbsArg) "addColumn" [ cppclassref rooAbsArg "var", bool "adjustRange" ] 
+             ] 
 
 {- 
 rooCmdArg :: Class 

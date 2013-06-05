@@ -14,8 +14,8 @@ module HROOT.Data.Core.Class where
 
 import Data.Monoid
 -- 
-import Bindings.Cxx.Generate.Type.Class
-import Bindings.Cxx.Generate.Type.Module
+import FFICXX.Generate.Type.Class
+import FFICXX.Generate.Type.Module
 
 
 corecabal = Cabal { cabal_pkgname = "HROOT-core"

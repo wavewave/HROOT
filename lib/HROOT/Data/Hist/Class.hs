@@ -14,10 +14,10 @@ module HROOT.Data.Hist.Class where
 
 import Data.Monoid 
 -- 
--- import Bindings.Cxx.Generate.Type.CType
--- import Bindings.Cxx.Generate.Type.Method
-import Bindings.Cxx.Generate.Type.Class
-import Bindings.Cxx.Generate.Type.Module
+-- import FFICXX.Generate.Type.CType
+-- import FFICXX.Generate.Type.Method
+import FFICXX.Generate.Type.Class
+import FFICXX.Generate.Type.Module
 -- 
 import HROOT.Data.Core.Class
 

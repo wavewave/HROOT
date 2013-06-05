@@ -16,8 +16,8 @@ module HROOT.Data.RooFit.RooStats.Class where
 
 import Data.Monoid
 -- 
-import Bindings.Cxx.Generate.Type.Class
-import Bindings.Cxx.Generate.Type.Module
+import FFICXX.Generate.Type.Class
+import FFICXX.Generate.Type.Module
 -- 
 import HROOT.Data.Core.Class
 import HROOT.Data.RooFit.Class
@@ -67,6 +67,8 @@ modelConfig = roostatsclass "ModelConfig" [tNamed] mempty
               , Virtual void_ "SetPriorPdf" [ cppclassref rooAbsPdf "pdf" ] 
               , Virtual void_ "SetProtoData" [ cppclassref rooAbsData "dat"  ]
               , Virtual void_ "SetObservables" [ cppclassref rooArgSet "set" ] 
+              , Virtual void_ "SetConditionalObservables" [ cppclassref rooArgSet "set" ]
+              , Virtual void_ "SetNuisanceParameters" [ cppclassref rooArgSet "set" ] 
               , Virtual void_ "SetParametersOfInterest" [ cppclassref rooArgSet "set" ] 
 
               ] 
@@ -123,13 +125,15 @@ hypoTestCalculator =
 combinedCalculator :: Class
 combinedCalculator = 
     roostatsclass "CombinedCalculator" [intervalCalculator, hypoTestCalculator ] mempty 
-    [ 
+    [ AliasVirtual void_ "SetConditionalObservables" [cppclassref rooArgSet "set"] "setConditionalObservables_CombinedCalculator"
+    
     ] 
 
 profileLikelihoodCalculator :: Class 
 profileLikelihoodCalculator = 
     roostatsclass "ProfileLikelihoodCalculator" [combinedCalculator] mempty 
     [ Constructor [ cppclassref rooAbsData "data", cppclassref modelConfig "model" ] 
+    , Virtual void_ "SetNullParameters" [ cppclassref rooArgSet "set" ] 
     ] 
 
 
@@ -163,7 +167,9 @@ samplingDistribution =
 simpleLikelihoodRatioTestStat :: Class
 simpleLikelihoodRatioTestStat = 
     roostatsclass "SimpleLikelihoodRatioTestStat" [testStatistic] mempty 
-    [  ] 
+    [  
+
+    ] 
 
 ratioOfProfiledLikelihoodsTestStat :: Class
 ratioOfProfiledLikelihoodsTestStat = 

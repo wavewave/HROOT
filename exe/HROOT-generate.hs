@@ -25,12 +25,12 @@ import qualified Data.HashMap.Strict as HM
 import qualified Data.Map as M
 import           System.Console.CmdArgs
 -- 
-import           Bindings.Cxx.Generate.Config
-import           Bindings.Cxx.Generate.Code.Dependency
-import           Bindings.Cxx.Generate.Generator.ContentMaker
-import           Bindings.Cxx.Generate.Type.Class 
-import           Bindings.Cxx.Generate.Type.Module
-import           Bindings.Cxx.Generate.Type.PackageInterface
+import           FFICXX.Generate.Config
+import           FFICXX.Generate.Code.Dependency
+import           FFICXX.Generate.Generator.ContentMaker
+import           FFICXX.Generate.Type.Class 
+import           FFICXX.Generate.Type.Module
+import           FFICXX.Generate.Type.PackageInterface
 -- 
 import           Command
 -- import           HROOT.Data.Core.Annotate

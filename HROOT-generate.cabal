@@ -1,5 +1,5 @@
 Name:		HROOT-generate
-Version:	0.7.999
+Version:	0.8
 Synopsis:	automatic HROOT binding generation
 Description: 	automatic HROOT binding generation 
 License:        GPL-3
@@ -54,7 +54,7 @@ Executable HROOT-generate
                  transformers, 
                  template-haskell,
                  Cabal,
-                 fficxx,
+                 fficxx >= 0.1,
                  unordered-containers, 
                  HROOT-generate
   Other-Modules: Command
@@ -75,7 +75,7 @@ Library
                  transformers, 
                  template-haskell, 
                  Cabal, 
-                 fficxx, 
+                 fficxx >= 0.1, 
                  unordered-containers
 
   Exposed-Modules: 
