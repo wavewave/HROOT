@@ -25,7 +25,7 @@ histcabal = Cabal { cabal_pkgname = "HROOT-hist"
                   , cabal_cheaderprefix = "HROOTHist" 
                   , cabal_moduleprefix = "HROOT.Hist" } 
 
-histclass = Class histcabal
+histclass n ps ann fs = Class histcabal n ps ann Nothing fs 
 
 ----------------
 -- starting A --
@@ -34,20 +34,20 @@ histclass = Class histcabal
 tAxis :: Class
 tAxis = 
   histclass "TAxis" [tNamed, tAttAxis] mempty
-  [ Constructor [int "nbins", double "xmin", double "xmax"] 
-  , AliasVirtual int_ "FindBin" [double "x"] "findBinTAxis"
-  , AliasVirtual int_ "FindFixBin" [double "x"] "findFixBinTAxis"
-  , AliasVirtual double_ "GetBinCenter" [int "bin"]  "getBinCenterTAxis"
-  , Virtual double_ "GetBinCenterLog" [int "bin"]  
-  -- , Virtual double_ "GetBinLabel" [int "bin"]
-  , Virtual double_ "GetBinUpEdge" [int "bin"]
+  [ Constructor [int "nbins", double "xmin", double "xmax"] Nothing
+  , Virtual int_ "FindBin" [double "x"] (Just "findBinTAxis")
+  , Virtual int_ "FindFixBin" [double "x"] (Just "findFixBinTAxis")
+  , Virtual double_ "GetBinCenter" [int "bin"]  (Just "getBinCenterTAxis")
+  , Virtual double_ "GetBinCenterLog" [int "bin"] Nothing 
+  -- , Virtual double_ "GetBinLabel" [int "bin"] Nothing
+  , Virtual double_ "GetBinUpEdge" [int "bin"] Nothing
   -- GetCenter
-  , NonVirtual bool_ "GetCenterLabels" []
-  , NonVirtual bool_ "GetCenterTitle" [] 
+  , NonVirtual bool_ "GetCenterLabels" [] Nothing
+  , NonVirtual bool_ "GetCenterTitle" [] Nothing 
   -- GetLowEdge
-  , Virtual void_ "SetTimeDisplay" [ int "value" ] 
-  , Virtual void_ "SetTimeFormat" [ cstring "format" ] 
-  , Virtual void_ "SetTimeOffset" [double "toffset", cstring "option"]
+  , Virtual void_ "SetTimeDisplay" [ int "value" ] Nothing
+  , Virtual void_ "SetTimeFormat" [ cstring "format" ] Nothing
+  , Virtual void_ "SetTimeOffset" [double "toffset", cstring "option"] Nothing
   ]
 
 ----------------
@@ -58,120 +58,120 @@ tAxis =
 tF1 :: Class
 tF1 = 
   histclass "TF1" [tFormula, tAttLine, tAttFill, tAttMarker] mempty
-  [ Constructor [cstring "name",cstring "formula",double "xmin",double "xmax"] 
+  [ Constructor [cstring "name",cstring "formula",double "xmin",double "xmax"] Nothing 
   -- Browse
-  , Virtual double_ "Derivative" [double "x", doublep "params", double "epsilon"] 
-  , Virtual double_ "Derivative2" [double "x", doublep "params", double "epsilon"] 
-  , Virtual double_ "Derivative3" [double "x", doublep "params", double "epsilon"]
-  , Static  double_ "DerivativeError" []
+  , Virtual double_ "Derivative" [double "x", doublep "params", double "epsilon"] Nothing
+  , Virtual double_ "Derivative2" [double "x", doublep "params", double "epsilon"] Nothing
+  , Virtual double_ "Derivative3" [double "x", doublep "params", double "epsilon"] Nothing
+  , Static  double_ "DerivativeError" [] Nothing
   -- DerivativeError
-  , AliasVirtual self_ "DrawCopy" [cstring "option"] "drawCopyTF1"
-  , Virtual (cppclass_ tObject) "DrawDerivative" [cstring "option"]
-  , Virtual (cppclass_ tObject) "DrawIntegral" [cstring "option"]
-  , Virtual void_ "DrawF1" [cstring "formula", double "xmin", double "xmax", cstring "option"]
-  , Virtual void_ "FixParameter" [int "ipar", double "value"] 
-  , NonVirtual double_ "GetChisquare" [] 
-  , NonVirtual (cppclass_ tH1)  "GetHistogram" [] 
-  , AliasVirtual double_ "GetMaximum" [double "xmin", double "xmax", double "epsilon", double "maxiter", bool "logx"] "getMaximumTF1"
-  , AliasVirtual double_ "GetMinimum" [double "xmin", double "xmax", double "epsilon", double "maxiter", bool "logx"] "getMinimumTF1"
-  , Virtual double_ "GetMaximumX" [double "xmin", double "xmax", double "epsilon", double "maxiter", bool "logx"]
-  , Virtual double_ "GetMinimumX" [double "xmin", double "xmax", double "epsilon", double "maxiter", bool "logx"]
-  , Virtual int_ "GetNDF" [] 
-  , Virtual int_ "GetNpx" []
+  , Virtual self_ "DrawCopy" [cstring "option"] (Just "drawCopyTF1")
+  , Virtual (cppclass_ tObject) "DrawDerivative" [cstring "option"] Nothing
+  , Virtual (cppclass_ tObject) "DrawIntegral" [cstring "option"] Nothing
+  , Virtual void_ "DrawF1" [cstring "formula", double "xmin", double "xmax", cstring "option"] Nothing
+  , Virtual void_ "FixParameter" [int "ipar", double "value"] Nothing
+  , NonVirtual double_ "GetChisquare" [] Nothing
+  , NonVirtual (cppclass_ tH1)  "GetHistogram" [] Nothing
+  , Virtual double_ "GetMaximum" [double "xmin", double "xmax", double "epsilon", double "maxiter", bool "logx"] (Just "getMaximumTF1")
+  , Virtual double_ "GetMinimum" [double "xmin", double "xmax", double "epsilon", double "maxiter", bool "logx"] (Just "getMinimumTF1")
+  , Virtual double_ "GetMaximumX" [double "xmin", double "xmax", double "epsilon", double "maxiter", bool "logx"] Nothing
+  , Virtual double_ "GetMinimumX" [double "xmin", double "xmax", double "epsilon", double "maxiter", bool "logx"] Nothing
+  , Virtual int_ "GetNDF" [] Nothing
+  , Virtual int_ "GetNpx" [] Nothing
   -- GetMethodCall
-  , Virtual int_ "GetNumberFreeParameters" [] 
-  , Virtual int_ "GetNumberFitPoints" []
-  , NonVirtual (cppclass_ tObject) "GetParent" [] 
-  , Virtual double_ "GetParError" [int "ipar"] 
+  , Virtual int_ "GetNumberFreeParameters" [] Nothing
+  , Virtual int_ "GetNumberFitPoints" [] Nothing
+  , NonVirtual (cppclass_ tObject) "GetParent" [] Nothing
+  , Virtual double_ "GetParError" [int "ipar"] Nothing
   -- GetParErrors 
   -- GetParLiits
-  , Virtual double_ "GetProb" [] 
-  , AliasVirtual int_ "GetQuantiles" [int "nprobSum", doublep "q", doublep "probSum"] "getQuantilesTF1"
-  , AliasVirtual double_ "GetRandom" [double "xmin", double "xmax"] "getRandomTF1"
+  , Virtual double_ "GetProb" [] Nothing
+  , Virtual int_ "GetQuantiles" [int "nprobSum", doublep "q", doublep "probSum"] (Just "getQuantilesTF1")
+  , Virtual double_ "GetRandom" [double "xmin", double "xmax"] (Just "getRandomTF1")
   -- GetRange
-  , Virtual double_ "GetSave" [doublep "x"] 
-  , Virtual double_ "GetX" [double "y", double "xmin", double "xmax", double "epsilon", int "maxiter"] 
-  , Virtual double_ "GetXmin" []
-  , Virtual double_ "GetXmax" [] 
-  , NonVirtual (cppclass_ tAxis) "GetXaxis" [] 
-  , NonVirtual (cppclass_ tAxis) "GetYaxis" [] 
-  , NonVirtual (cppclass_ tAxis) "GetZaxis" [] 
-  , Virtual double_ "GradientPar" [int "ipar", doublep "x", double "eps"] 
-  , Virtual void_ "InitArgs" [doublep "x", doublep "params"] 
-  , Static  void_ "InitStandardFunctions" []
-  , AliasVirtual double_ "Integral" [double "a", double "b", doublep "params", double "epsilon"] "IntegralTF1"
-  , Virtual double_ "IntegralError" [double "a", double "b", doublep "params", doublep "covmat", double "epsilon"]
-  , Virtual double_ "IntegralFast" [int "num", doublep "x", doublep "w", double "a", double "b", doublep "params", double "epsilon"] 
+  , Virtual double_ "GetSave" [doublep "x"] Nothing
+  , Virtual double_ "GetX" [double "y", double "xmin", double "xmax", double "epsilon", int "maxiter"] Nothing
+  , Virtual double_ "GetXmin" [] Nothing
+  , Virtual double_ "GetXmax" [] Nothing
+  , NonVirtual (cppclass_ tAxis) "GetXaxis" [] Nothing
+  , NonVirtual (cppclass_ tAxis) "GetYaxis" [] Nothing
+  , NonVirtual (cppclass_ tAxis) "GetZaxis" [] Nothing
+  , Virtual double_ "GradientPar" [int "ipar", doublep "x", double "eps"] Nothing
+  , Virtual void_ "InitArgs" [doublep "x", doublep "params"] Nothing
+  , Static  void_ "InitStandardFunctions" [] Nothing 
+  , Virtual double_ "Integral" [double "a", double "b", doublep "params", double "epsilon"] (Just "IntegralTF1")
+  , Virtual double_ "IntegralError" [double "a", double "b", doublep "params", doublep "covmat", double "epsilon"] Nothing
+  , Virtual double_ "IntegralFast" [int "num", doublep "x", doublep "w", double "a", double "b", doublep "params", double "epsilon"] Nothing
   -- IntegralMultiple
-  , Virtual bool_ "IsInside" [doublep "x"]  
-  , Virtual void_ "ReleaseParameter" [int "ipar"] 
-  , Virtual void_ "SetChisquare" [double "chi2"] 
+  , Virtual bool_ "IsInside" [doublep "x"] Nothing
+  , Virtual void_ "ReleaseParameter" [int "ipar"] Nothing
+  , Virtual void_ "SetChisquare" [double "chi2"] Nothing
   -- SetFitResult
-  , AliasVirtual void_ "SetMaximum" [double "maximum"] "setMaximumTF1"
-  , AliasVirtual void_ "SetMinimum" [double "minimum"] "setMinimumTF1" 
-  , Virtual void_ "SetNDF" [int "ndf"] 
-  , Virtual void_ "SetNumberFitPoints" [int "npfits"] 
-  , Virtual void_ "SetNpx" [int "npx"]
-  , Virtual void_ "SetParError" [int "ipar", double "error"] 
-  , Virtual void_ "SetParErrors" [doublep "errors"] 
-  , Virtual void_ "SetParLimits" [int "ipar", double "parmin", double "parmax"] 
-  , Virtual void_ "SetParent" [cppclass tObject "parent"] 
-  , AliasVirtual void_ "SetRange" [double "xmin", double "xmax"] "setRange1"
-  , AliasVirtual void_ "SetRange" [double "xmin", double "xmax", double "ymin", double "ymax"] "setRange2"
-  , AliasVirtual void_ "SetRange" [double "xmin", double "xmax", double "ymin", double "ymax", double "zmin", double "zmax"] "setRange3"
-  , Virtual void_ "SetSavedPoint" [int "point", double "value"] 
+  , Virtual void_ "SetMaximum" [double "maximum"] (Just "setMaximumTF1")
+  , Virtual void_ "SetMinimum" [double "minimum"] (Just "setMinimumTF1")
+  , Virtual void_ "SetNDF" [int "ndf"] Nothing
+  , Virtual void_ "SetNumberFitPoints" [int "npfits"] Nothing
+  , Virtual void_ "SetNpx" [int "npx"] Nothing
+  , Virtual void_ "SetParError" [int "ipar", double "error"] Nothing
+  , Virtual void_ "SetParErrors" [doublep "errors"] Nothing
+  , Virtual void_ "SetParLimits" [int "ipar", double "parmin", double "parmax"] Nothing
+  , Virtual void_ "SetParent" [cppclass tObject "parent"] Nothing
+  , Virtual void_ "SetRange" [double "xmin", double "xmax"] (Just "setRange1")
+  , Virtual void_ "SetRange" [double "xmin", double "xmax", double "ymin", double "ymax"] (Just "setRange2")
+  , Virtual void_ "SetRange" [double "xmin", double "xmax", double "ymin", double "ymax", double "zmin", double "zmax"] (Just "setRange3")
+  , Virtual void_ "SetSavedPoint" [int "point", double "value"] Nothing
 
-  , Static  (cppclass_ tF1) "GetCurrent" []
-  , Static  void_ "AbsValue" [bool "reject"]
-  , Static  void_ "RejectPoint" [bool "reject"]
-  , Static  bool_ "RejectedPoint" []
-  , Static  void_ "SetCurrent" [cppclass tF1 "f1"]
+  , Static  (cppclass_ tF1) "GetCurrent" [] Nothing
+  , Static  void_ "AbsValue" [bool "reject"] Nothing
+  , Static  void_ "RejectPoint" [bool "reject"] Nothing
+  , Static  bool_ "RejectedPoint" [] Nothing
+  , Static  void_ "SetCurrent" [cppclass tF1 "f1"] Nothing
   -- RejectPoint 
   -- RejectedPoint 
   -- SetCurrent 
-  , Virtual double_ "Moment" [double "n", double "a", double "b", doublep "params", double "epsilon"] 
-  , Virtual double_ "CentralMoment" [double "n", double "a", double "b", doublep "params", double "epsilon"] 
-  , Virtual double_ "Mean" [double "a", double "b", doublep "params", double "epsilon"]
-  , Virtual double_ "Variance" [double "a", double "b", doublep "params", double "epsilon"] 
-  , Static  void_ "CalcGaussLegendreSamplingPoints" [int "num", doublep "x", doublep "w", double "eps"]
+  , Virtual double_ "Moment" [double "n", double "a", double "b", doublep "params", double "epsilon"] Nothing
+  , Virtual double_ "CentralMoment" [double "n", double "a", double "b", doublep "params", double "epsilon"] Nothing
+  , Virtual double_ "Mean" [double "a", double "b", doublep "params", double "epsilon"] Nothing
+  , Virtual double_ "Variance" [double "a", double "b", doublep "params", double "epsilon"] Nothing
+  , Static  void_ "CalcGaussLegendreSamplingPoints" [int "num", doublep "x", doublep "w", double "eps"] Nothing
   ]
 
 
 tFormula :: Class
 tFormula = histclass "TFormula" [tNamed] mempty
-           [ Constructor [cstring "name", cstring "formula"] 
-           , NonVirtual void_ "Optimize" [] 
+           [ Constructor [cstring "name", cstring "formula"] Nothing
+           , NonVirtual void_ "Optimize" [] Nothing
            -- Analyze
            -- AnalyzeFunction 
-           , Virtual int_ "Compile" [cstring "expression"]
-           , Virtual void_ "Clear" [cstring "option"]
+           , Virtual int_ "Compile" [cstring "expression"] Nothing
+           , Virtual void_ "Clear" [cstring "option"] Nothing
            -- DefinedString
-           , Virtual double_ "DefinedValue" [int "code"]
+           , Virtual double_ "DefinedValue" [int "code"] Nothing
            -- DefinedVariable
-           , Virtual double_ "Eval" [double "x", double "y", double "z", double "t"]
-           , Virtual double_ "EvalParOld" [doublep "x", doublep "params"]
-           , Virtual double_ "EvalPar" [doublep "x", doublep "params"]
+           , Virtual double_ "Eval" [double "x", double "y", double "z", double "t"] Nothing
+           , Virtual double_ "EvalParOld" [doublep "x", doublep "params"] Nothing
+           , Virtual double_ "EvalPar" [doublep "x", doublep "params"] Nothing
            -- GetLinearPart
-           , Virtual int_ "GetNdim" [] 
-           , Virtual int_ "GetNpar" [] 
-           , Virtual int_ "GetNumber" [] 
+           , Virtual int_ "GetNdim" [] Nothing
+           , Virtual int_ "GetNpar" [] Nothing
+           , Virtual int_ "GetNumber" [] Nothing
            -- GetExpFormula
-           , NonVirtual double_ "GetParameter"    [cstring "name" ] 
+           , NonVirtual double_ "GetParameter"    [cstring "name" ] Nothing
            -- GetParameters
            -- GetParName
-           , Virtual int_   "GetParNumber" [cstring "name"]
-           , Virtual bool_  "IsLinear" [] 
-           , Virtual bool_  "IsNormalized" [] 
+           , Virtual int_   "GetParNumber" [cstring "name"] Nothing
+           , Virtual bool_  "IsLinear" [] Nothing
+           , Virtual bool_  "IsNormalized" [] Nothing
            -- ProcessLinear
-           , Virtual void_  "SetNumber" [int "number"]
-           , Virtual void_  "SetParameter" [cstring "name", double "parvalue"]
-           , Virtual void_  "SetParameters" [doublep "params"]
-           , Virtual void_  "SetParName"  [int "ipar", cstring "name"] 
+           , Virtual void_  "SetNumber" [int "number"] Nothing
+           , Virtual void_  "SetParameter" [cstring "name", double "parvalue"] Nothing 
+           , Virtual void_  "SetParameters" [doublep "params"] Nothing
+           , Virtual void_  "SetParName"  [int "ipar", cstring "name"] Nothing
            , Virtual void_  "SetParNames" [cstring "name0", cstring "name1", cstring "name2"
                                           ,cstring "name3", cstring "name4", cstring "name5"
                                           ,cstring "name6", cstring "name7", cstring "name8"
-                                          ,cstring "name9", cstring "name10" ]
-           , Virtual void_  "Update" [] 
+                                          ,cstring "name9", cstring "name10" ] Nothing
+           , Virtual void_  "Update" [] Nothing
            -- SetMaxima
            ]
 
@@ -185,84 +185,84 @@ tFormula = histclass "TFormula" [tNamed] mempty
 tGraph :: Class
 tGraph = 
   histclass "TGraph" [tNamed, tAttLine, tAttFill, tAttMarker] mempty
-  [ Constructor [int "n", doublep "x", doublep "y"] 
-  , Virtual void_ "Apply" [cppclass tF1 "f"] 
-  , Virtual double_ "Chisquare" [cppclass tF1 "f1"]
+  [ Constructor [int "n", doublep "x", doublep "y"] Nothing
+  , Virtual void_ "Apply" [cppclass tF1 "f"] Nothing
+  , Virtual double_ "Chisquare" [cppclass tF1 "f1"] Nothing
   -- CompareArg
   -- CompareX
   -- CompareY 
   -- CompareRadius
   -- ComputeRange
-  , Virtual void_ "DrawGraph" [int "n", doublep "x", doublep "y", cstring "option"] 
-  , AliasVirtual void_ "DrawPanel" [] "drawPanelTGraph"
+  , Virtual void_ "DrawGraph" [int "n", doublep "x", doublep "y", cstring "option"] Nothing
+  , Virtual void_ "DrawPanel" [] (Just "drawPanelTGraph")
   -- Eval 
-  , Virtual void_ "Expand" [int "newsize", int "step"]
+  , Virtual void_ "Expand" [int "newsize", int "step"] Nothing
   -- Fit
-  , AliasVirtual void_ "FitPanel" [] "FitPanelTGraph"
-  , NonVirtual bool_ "GetEditable" [] 
-  , NonVirtual (cppclass_ tF1) "GetFunction" [cstring "name"]
-  , NonVirtual (cppclass_ tH1F) "GetHistogram" [] 
+  , Virtual void_ "FitPanel" [] (Just "FitPanelTGraph")
+  , NonVirtual bool_ "GetEditable" [] Nothing
+  , NonVirtual (cppclass_ tF1) "GetFunction" [cstring "name"] Nothing
+  , NonVirtual (cppclass_ tH1F) "GetHistogram" [] Nothing
   -- , NonVirtual (cppclass_ "TList") "GetListOfFunctions" [] 
-  , AliasVirtual double_ "GetCorrelationFactor" [] "getCorrelationFactorTGraph"
-  , AliasVirtual double_ "GetCovariance" [] "getCovarianceTGraph"
-  , AliasVirtual double_ "GetMean" [int "axis"] "getMeanTGraph"
-  , AliasVirtual double_ "GetRMS" [int "axis"] "getRMSTGraph"
-  , NonVirtual int_ "GetMaxSize" [] 
-  , NonVirtual int_ "GetN" []
-  , Virtual double_ "GetErrorX" [int "bin"] 
-  , Virtual double_ "GetErrorY" [int "bin"]
-  , Virtual double_ "GetErrorXhigh" [int "bin"]
-  , Virtual double_ "GetErrorXlow" [int "bin"]
-  , Virtual double_ "GetErrorYhigh" [int "bin"]
-  , Virtual double_ "GetErrorYlow" [int "bin"]
+  , Virtual double_ "GetCorrelationFactor" [] (Just "getCorrelationFactorTGraph")
+  , Virtual double_ "GetCovariance" [] (Just "getCovarianceTGraph")
+  , Virtual double_ "GetMean" [int "axis"] (Just "getMeanTGraph")
+  , Virtual double_ "GetRMS" [int "axis"] (Just "getRMSTGraph")
+  , NonVirtual int_ "GetMaxSize" [] Nothing
+  , NonVirtual int_ "GetN" [] Nothing
+  , Virtual double_ "GetErrorX" [int "bin"] Nothing
+  , Virtual double_ "GetErrorY" [int "bin"] Nothing
+  , Virtual double_ "GetErrorXhigh" [int "bin"] Nothing
+  , Virtual double_ "GetErrorXlow" [int "bin"] Nothing
+  , Virtual double_ "GetErrorYhigh" [int "bin"] Nothing
+  , Virtual double_ "GetErrorYlow" [int "bin"] Nothing
   -- GetX
   -- GetY
   -- GetEX
   -- GetEY
   -- omit.. 
-  , NonVirtual double_ "GetMaximum" [] 
-  , NonVirtual double_ "GetMinimum" []
-  , NonVirtual (cppclass_ tAxis) "GetXaxis" []
-  , NonVirtual (cppclass_ tAxis) "GetYaxis" [] 
+  , NonVirtual double_ "GetMaximum" [] Nothing
+  , NonVirtual double_ "GetMinimum" [] Nothing
+  , NonVirtual (cppclass_ tAxis) "GetXaxis" [] Nothing
+  , NonVirtual (cppclass_ tAxis) "GetYaxis" [] Nothing
   -- GetPoint
-  , Virtual void_ "InitExpo" [double "xmin", double "xmax"]
-  , Virtual void_ "InitGaus" [double "xmin", double "xmax"]
-  , Virtual void_ "InitPolynom" [double "xmin", double "xmax"]
-  , Virtual int_ "InsertPoint" [] 
-  , AliasVirtual double_ "Integral" [int "first", int "last"] "integralTGraph"
-  , Virtual bool_ "IsEditable" [] 
-  , AliasVirtual int_ "IsInside" [double "x", double "y"] "isInsideTGraph"
-  , Virtual void_ "LeastSquareFit" [int "m", doublep "a", double "xmin", double "xmax"] 
+  , Virtual void_ "InitExpo" [double "xmin", double "xmax"] Nothing
+  , Virtual void_ "InitGaus" [double "xmin", double "xmax"] Nothing
+  , Virtual void_ "InitPolynom" [double "xmin", double "xmax"] Nothing
+  , Virtual int_ "InsertPoint" [] Nothing 
+  , Virtual double_ "Integral" [int "first", int "last"] (Just "integralTGraph")
+  , Virtual bool_ "IsEditable" [] Nothing
+  , Virtual int_ "IsInside" [double "x", double "y"] (Just "isInsideTGraph")
+  , Virtual void_ "LeastSquareFit" [int "m", doublep "a", double "xmin", double "xmax"] Nothing
   -- LeastSquareLinearFit
-  , NonVirtual void_ "PaintGraph" [int "npoints", doublep "x", doublep "y", cstring "chopt"] 
-  , NonVirtual void_ "PaintGrapHist" [int "npoints", doublep "x", doublep "y", cstring "chopt"] 
-  , Virtual void_ "PaintStats" [cppclass tF1 "fit"] 
-  , Virtual int_ "RemovePoint" [int "ipoint"]
-  , Virtual void_ "SetEditable" [bool "editable"] 
-  , Virtual void_ "SetHistogram" [cppclass tH1F "h"] 
-  , AliasVirtual void_ "SetMaximum" [double "maximum"] "setMaximumTGraph"
-  , AliasVirtual void_ "SetMinimum" [double "minimum"] "setMinimumTGraph"
-  , Virtual void_ "Set" [int "n"]
-  , Virtual void_ "SetPoint" [int "i", double "x", double "y"] 
+  , NonVirtual void_ "PaintGraph" [int "npoints", doublep "x", doublep "y", cstring "chopt"] Nothing
+  , NonVirtual void_ "PaintGrapHist" [int "npoints", doublep "x", doublep "y", cstring "chopt"] Nothing
+  , Virtual void_ "PaintStats" [cppclass tF1 "fit"] Nothing
+  , Virtual int_ "RemovePoint" [int "ipoint"] Nothing
+  , Virtual void_ "SetEditable" [bool "editable"] Nothing
+  , Virtual void_ "SetHistogram" [cppclass tH1F "h"] Nothing
+  , Virtual void_ "SetMaximum" [double "maximum"] (Just "setMaximumTGraph")
+  , Virtual void_ "SetMinimum" [double "minimum"] (Just "setMinimumTGraph")
+  , Virtual void_ "Set" [int "n"] Nothing
+  , Virtual void_ "SetPoint" [int "i", double "x", double "y"] Nothing
   -- Zero
   ]
 
 tGraphAsymmErrors :: Class
 tGraphAsymmErrors = 
   histclass "TGraphAsymmErrors" [tGraph] mempty
-  [ Constructor [int "n", doublep "x", doublep "y", doublep "exl", doublep "exh", doublep "eyl", doublep "eyh" ]  
+  [ Constructor [int "n", doublep "x", doublep "y", doublep "exl", doublep "exh", doublep "eyl", doublep "eyh" ] Nothing
   ]
 
 tGraphBentErrors :: Class
 tGraphBentErrors = 
   histclass "TGraphBentErrors" [tGraph] mempty
-  [ Constructor [int "n", doublep "x", doublep "y", doublep "exl", doublep "exh", doublep "eyl", doublep "eyh", doublep "exld", doublep "exhd", doublep "eyld", doublep "eyhd"] 
+  [ Constructor [int "n", doublep "x", doublep "y", doublep "exl", doublep "exh", doublep "eyl", doublep "eyh", doublep "exld", doublep "exhd", doublep "eyld", doublep "eyhd"] Nothing
   ]
 
 tGraphErrors :: Class
 tGraphErrors = 
   histclass "TGraphErrors" [tGraph] mempty
-  [ Constructor [int "n", doublep "x", doublep "y", doublep "ex", doublep "ey"] 
+  [ Constructor [int "n", doublep "x", doublep "y", doublep "ex", doublep "ey"] Nothing
   ]
 
 
@@ -274,166 +274,166 @@ tGraphErrors =
 tH1 :: Class
 tH1 = 
   histclass "TH1" [tObject, tAttLine, tAttFill, tAttMarker] mempty 
-  [ Virtual void_ "Add" [cppclass tH1 "h1", double "c1"]  
-  , Virtual void_ "AddBinContent" [int "bin", double "w"] 
-  , Virtual double_ "Chi2Test" [cppclass tH1 "h2", cstring "option", doublep "res"] 
-  , Virtual double_ "ComputeIntegral" []
-  , Virtual void_ "DirectoryAutoAdd" [cppclass tDirectory "dir"]
+  [ Virtual void_ "Add" [cppclass tH1 "h1", double "c1"] Nothing
+  , Virtual void_ "AddBinContent" [int "bin", double "w"] Nothing
+  , Virtual double_ "Chi2Test" [cppclass tH1 "h2", cstring "option", doublep "res"] Nothing
+  , Virtual double_ "ComputeIntegral" [] Nothing
+  , Virtual void_ "DirectoryAutoAdd" [cppclass tDirectory "dir"] Nothing
 
-  , Virtual void_ "Divide" [cppclass tH1 "h1", cppclass tH1 "h2", double "c1", double "c2", cstring "option"]
-  , AliasVirtual self_ "DrawCopy" [cstring "option"] "drawCopyTH1"
-  , Virtual (cppclass_ tH1) "DrawNormalized" [cstring "option", double "norm"]
-  , AliasVirtual void_ "DrawPanel" [] "drawPanelTH1"
-  , Virtual int_ "BufferEmpty" [int "action"]
-  , AliasVirtual void_ "Eval" [cppclass tF1 "f1", cstring "option"] "evalF"
-  , Virtual (cppclass_ tH1) "FFT" [cppclass tH1 "h_output", cstring "option"] 
+  , Virtual void_ "Divide" [cppclass tH1 "h1", cppclass tH1 "h2", double "c1", double "c2", cstring "option"] Nothing
+  , Virtual self_ "DrawCopy" [cstring "option"] (Just "drawCopyTH1")
+  , Virtual (cppclass_ tH1) "DrawNormalized" [cstring "option", double "norm"] Nothing
+  , Virtual void_ "DrawPanel" [] (Just "drawPanelTH1")
+  , Virtual int_ "BufferEmpty" [int "action"] Nothing
+  , Virtual void_ "Eval" [cppclass tF1 "f1", cstring "option"] (Just "evalF")
+  , Virtual (cppclass_ tH1) "FFT" [cppclass tH1 "h_output", cstring "option"] Nothing 
 
-  , AliasVirtual int_  "Fill" [double "x"] "fill1"
-  , AliasVirtual int_  "Fill" [double "x", double "w"] "fill1w"
-  , AliasVirtual void_ "FillN" [int "ntimes", doublep "x", doublep "w", int "stride"] "fillN1"
-  , Virtual void_ "FillRandom" [cppclass tH1 "h", int "ntimes"] 
-  , Virtual int_ "FindBin" [double "x", double "y", double "z"] 
-  , Virtual int_ "FindFixBin" [double "x", double "y", double "z"]
-  , Virtual int_ "FindFirstBinAbove" [double "threshold", int "axis"] 
-  , Virtual int_ "FindLastBinAbove" [double "threshold", int "axis"]  
+  , Virtual int_  "Fill" [double "x"] (Just "fill1")
+  , Virtual int_  "Fill" [double "x", double "w"] (Just "fill1w")
+  , Virtual void_ "FillN" [int "ntimes", doublep "x", doublep "w", int "stride"] (Just "fillN1")
+  , Virtual void_ "FillRandom" [cppclass tH1 "h", int "ntimes"] Nothing
+  , Virtual int_ "FindBin" [double "x", double "y", double "z"] Nothing
+  , Virtual int_ "FindFixBin" [double "x", double "y", double "z"] Nothing
+  , Virtual int_ "FindFirstBinAbove" [double "threshold", int "axis"] Nothing
+  , Virtual int_ "FindLastBinAbove" [double "threshold", int "axis"] Nothing
   -- Fit
-  , AliasVirtual void_ "FitPanel" [] "FitPanelTH1"
-  , NonVirtual self_ "GetAsymmetry" [cppclass tH1 "h2", double "c2", double "dc2"]
-  , NonVirtual int_ "GetBufferLength" [] 
-  , NonVirtual int_ "GetBufferSize" [] 
+  , Virtual void_ "FitPanel" [] (Just "FitPanelTH1")
+  , NonVirtual self_ "GetAsymmetry" [cppclass tH1 "h2", double "c2", double "dc2"] Nothing
+  , NonVirtual int_ "GetBufferLength" [] Nothing
+  , NonVirtual int_ "GetBufferSize" [] Nothing
   -- GetBuffer
-  , Static int_ "GetDefaultBufferSize" []
+  , Static int_ "GetDefaultBufferSize" [] Nothing
   -- GetIntegral
   -- GetListOfFunctions
-  , AliasVirtual int_ "GetNdivisions" [cstring "axis"] "getNdivisionA"
-  , AliasVirtual short_ "GetAxisColor" [cstring "axis"] "getAxisColorA"
-  , AliasVirtual short_ "GetLabelColor" [cstring "axis"] "getLabelColorA"
-  , AliasVirtual short_ "GetLabelFont" [cstring "axis"] "getLabelFontA"
-  , AliasVirtual float_ "GetLabelOffset" [cstring "axis"] "getLabelOffsetA"
-  , AliasVirtual float_ "GetLabelSize" [cstring "axis"] "getLabelSizeA"
-  , AliasVirtual short_ "GetTitleFont" [cstring "axis"] "getTitleFontA"
-  , AliasVirtual float_ "GetTitleOffset" [cstring "axis"] "getTitleOffsetA"
-  , AliasVirtual float_ "GetTitleSize" [cstring "axis"] "getTitleSizeA"
-  , AliasVirtual float_ "GetTickLength" [cstring "axis"] "getTickLengthA"
-  , Virtual float_ "GetBarOffset" []
-  , Virtual float_ "GetBarWidth" [] 
-  , Virtual int_ "GetContour" [doublep "levels"] 
-  , Virtual double_ "GetContourLevel" [int "level"] 
-  , Virtual double_ "GetContourLevelPad" [int "level"] 
-  , Virtual int_ "GetBin" [int "binx", int "biny", int "binz"]
+  , Virtual int_ "GetNdivisions" [cstring "axis"] (Just "getNdivisionA")
+  , Virtual short_ "GetAxisColor" [cstring "axis"] (Just "getAxisColorA")
+  , Virtual short_ "GetLabelColor" [cstring "axis"] (Just "getLabelColorA")
+  , Virtual short_ "GetLabelFont" [cstring "axis"] (Just "getLabelFontA")
+  , Virtual float_ "GetLabelOffset" [cstring "axis"] (Just "getLabelOffsetA")
+  , Virtual float_ "GetLabelSize" [cstring "axis"] (Just "getLabelSizeA")
+  , Virtual short_ "GetTitleFont" [cstring "axis"] (Just "getTitleFontA")
+  , Virtual float_ "GetTitleOffset" [cstring "axis"] (Just "getTitleOffsetA")
+  , Virtual float_ "GetTitleSize" [cstring "axis"] (Just "getTitleSizeA")
+  , Virtual float_ "GetTickLength" [cstring "axis"] (Just "getTickLengthA")
+  , Virtual float_ "GetBarOffset" [] Nothing
+  , Virtual float_ "GetBarWidth" [] Nothing
+  , Virtual int_ "GetContour" [doublep "levels"] Nothing
+  , Virtual double_ "GetContourLevel" [int "level"] Nothing
+  , Virtual double_ "GetContourLevelPad" [int "level"] Nothing
+  , Virtual int_ "GetBin" [int "binx", int "biny", int "binz"] Nothing
   -- GetBinXYZ
-  , Virtual double_ "GetBinCenter" [int "bin"]
-  , AliasVirtual double_ "GetBinContent" [int "binx"] "GetBinContent1"
-  , AliasVirtual double_ "GetBinContent" [int "binx", int "biny"] "GetBinContent2"
-  , AliasVirtual double_ "GetBinContent" [int "binx", int "biny", int "binz"] "GetBinContent3" 
-  , AliasVirtual double_ "GetBinError" [int "binx"] "GetBinError1"
-  , AliasVirtual double_ "GetBinError" [int "binx", int "biny"] "GetBinError2"
-  , AliasVirtual double_ "GetBinError" [int "binx", int "biny", int "binz"] "GetBinError3" 
-  , Virtual double_ "GetBinLowEdge" [int "bin"] 
-  , Virtual double_ "GetBinWidth" [int "bin"]
+  , Virtual double_ "GetBinCenter" [int "bin"] Nothing
+  , Virtual double_ "GetBinContent" [int "binx"] (Just "GetBinContent1")
+  , Virtual double_ "GetBinContent" [int "binx", int "biny"] (Just "GetBinContent2")
+  , Virtual double_ "GetBinContent" [int "binx", int "biny", int "binz"] (Just "GetBinContent3")
+  , Virtual double_ "GetBinError" [int "binx"] (Just "GetBinError1")
+  , Virtual double_ "GetBinError" [int "binx", int "biny"] (Just "GetBinError2")
+  , Virtual double_ "GetBinError" [int "binx", int "biny", int "binz"] (Just "GetBinError3")
+  , Virtual double_ "GetBinLowEdge" [int "bin"] Nothing
+  , Virtual double_ "GetBinWidth" [int "bin"] Nothing
   -- GetBinWidthContent
-  , Virtual double_ "GetCellContent" [int "binx", int "biny"] 
-  , Virtual double_ "GetCellError" [int "binx", int "biny"]
+  , Virtual double_ "GetCellContent" [int "binx", int "biny"] Nothing
+  , Virtual double_ "GetCellError" [int "binx", int "biny"] Nothing
   -- GetCenter
-  , Static  bool_ "GetDefaultSumw2" []
-  , NonVirtual (cppclass_ tDirectory) "GetDirectory" [] 
-  , Virtual double_ "GetEntries" []
-  , Virtual double_ "GetEffectiveEntries" [] 
-  , Virtual (cppclass_ tF1) "GetFunction" [cstring "name"]
-  , Virtual int_ "GetDimension" []
-  , Virtual double_ "GetKurtosis" [int "axis"]
-  , Virtual void_ "GetLowEdge" [doublep "edge"] 
-  , AliasVirtual double_ "GetMaximum" [double "maxval"] "getMaximumTH1"
-  , Virtual int_ "GetMaximumBin" []
-  , Virtual double_ "GetMaximumStored" []
-  , AliasVirtual double_ "GetMinimum" [double "minval"] "getMinimumTH1"
-  , Virtual int_ "GetMinimumBin" []
-  , Virtual double_ "GetMinimumStored" [] 
-  , Virtual double_ "GetMean" [int "axis"]
-  , Virtual double_ "GetMeanError" [int "axis"]
-  , Virtual double_ "GetNbinsX" [] 
-  , Virtual double_ "GetNbinsY" [] 
-  , Virtual double_ "GetNbinsZ" [] 
+  , Static  bool_ "GetDefaultSumw2" [] Nothing
+  , NonVirtual (cppclass_ tDirectory) "GetDirectory" [] Nothing
+  , Virtual double_ "GetEntries" [] Nothing
+  , Virtual double_ "GetEffectiveEntries" [] Nothing
+  , Virtual (cppclass_ tF1) "GetFunction" [cstring "name"] Nothing
+  , Virtual int_ "GetDimension" [] Nothing
+  , Virtual double_ "GetKurtosis" [int "axis"] Nothing
+  , Virtual void_ "GetLowEdge" [doublep "edge"] Nothing
+  , Virtual double_ "GetMaximum" [double "maxval"] (Just "getMaximumTH1")
+  , Virtual int_ "GetMaximumBin" [] Nothing
+  , Virtual double_ "GetMaximumStored" [] Nothing
+  , Virtual double_ "GetMinimum" [double "minval"] (Just "getMinimumTH1")
+  , Virtual int_ "GetMinimumBin" [] Nothing
+  , Virtual double_ "GetMinimumStored" [] Nothing
+  , Virtual double_ "GetMean" [int "axis"] Nothing
+  , Virtual double_ "GetMeanError" [int "axis"] Nothing
+  , Virtual double_ "GetNbinsX" [] Nothing
+  , Virtual double_ "GetNbinsY" [] Nothing
+  , Virtual double_ "GetNbinsZ" [] Nothing
    -- GetObjectInfo
    -- GetOption
   -- , Virtual (cppclass_ "TVirtualHistPainter") "GetPainter" [cstring "option"]
-  , AliasVirtual int_ "GetQuantiles" [int "nprobSum", doublep "q", doublep "pbSum"] "getQuantilesTH1"
-  , Virtual double_ "GetRandom" []
-  , Virtual void_ "GetStats" [doublep "stats"]
-  , Virtual double_ "GetSumOfWeights" [] 
-  , Virtual (cppclass_ tArrayD) "GetSumw2" []
-  , Virtual int_ "GetSumw2N" [] 
-  , Virtual double_ "GetRMS" [int "axis"]
-  , Virtual double_ "GetRMSError" [int "axis"] 
-  , Virtual double_ "GetSkewness" [int "axis"]
+  , Virtual int_ "GetQuantiles" [int "nprobSum", doublep "q", doublep "pbSum"] (Just "getQuantilesTH1")
+  , Virtual double_ "GetRandom" [] Nothing
+  , Virtual void_ "GetStats" [doublep "stats"] Nothing
+  , Virtual double_ "GetSumOfWeights" [] Nothing
+  , Virtual (cppclass_ tArrayD) "GetSumw2" [] Nothing
+  , Virtual int_ "GetSumw2N" [] Nothing
+  , Virtual double_ "GetRMS" [int "axis"] Nothing
+  , Virtual double_ "GetRMSError" [int "axis"] Nothing
+  , Virtual double_ "GetSkewness" [int "axis"] Nothing
   {- , NonVirtual (cppclass_ "TAxis") "GetXaxis" [] 
   , NonVirtual (cppclass_ "TAxis") "GetYaxis" [] 
   , NonVirtual (cppclass_ "TAxis") "GetZaxis" [] -}
-  , AliasVirtual double_ "Integral" [int "binx1", int "binx2", cstring "option"] "integral1"
+  , Virtual double_ "Integral" [int "binx1", int "binx2", cstring "option"] (Just "integral1")
   -- IntegralAndError
-  , AliasVirtual double_ "Interpolate" [double "x"] "interpolate1"
-  , AliasVirtual double_ "Interpolate" [double "x", double "y"] "interpolate2"
-  , AliasVirtual double_ "Interpolate" [double "x", double "y", double "z"] "interpolate3"
-  , NonVirtual bool_ "IsBinOverflow" [int "bin"]
-  , NonVirtual bool_ "IsBinUnderflow" [int "bin"]
-  , Virtual double_ "KolmogorovTest" [cppclass tH1 "h2", cstring "option"]
-  , Virtual void_ "LabelsDeflate" [cstring "axis"]
-  , Virtual void_ "LabelsInflate" [cstring "axis"]
-  , Virtual void_ "LabelsOption" [cstring "option", cstring "axis"]
-  , AliasVirtual void_ "Multiply" [cppclass tF1 "h1", double "c1"] "multiflyF"
-  , Virtual void_ "Multiply" [cppclass tH1 "h1", cppclass tH1 "h2", double "c1", double "c2", cstring "option"] 
-  , Virtual void_ "PutStats" [doublep "stats"]
-  , Virtual (cppclass_ tH1) "Rebin" [int "ngroup", cstring "newname", doublep "xbins"]
-  , Virtual void_ "RebinAxis" [double "x", cppclass tAxis "axis"]
-  , Virtual void_ "Rebuild" [cstring "option"]
-  , Virtual void_ "RecursiveRemove" [cppclass tObject "obj"]
-  , Virtual void_ "Reset" [cstring "option"]
-  , Virtual void_ "ResetStats" [] 
-  , Virtual void_ "Scale" [double "c1", cstring "option"]
-  , AliasVirtual void_ "SetAxisColor" [short "color", cstring "axis"] "setAxisColorA"
-  , Virtual void_ "SetAxisRange" [double "xmin", double "xmax", cstring "axis"]
-  , Virtual void_ "SetBarOffset" [float "offset"]
-  , Virtual void_ "SetBarWidth" [float "width"]
-  , AliasVirtual void_ "SetBinContent" [int "bin", double "content"] "setBinContent1"
-  , AliasVirtual void_ "SetBinContent" [int "binx", int "biny", double "content"] "setBinContent2"
-  , AliasVirtual void_ "SetBinContent" [int "binx", int "biny", int "binz", double "content"] "setBinContent3"
-  , AliasVirtual void_ "SetBinError" [int "bin", double "error"] "setBinError1"
-  , AliasVirtual void_ "SetBinError" [int "binx", int "biny", double "error"] "setBinError2"
-  , AliasVirtual void_ "SetBinError" [int "binx", int "biny", int "binz", double "error"] "setBinError3"
-  , AliasVirtual void_ "SetBins" [int "nx", doublep "xBins"] "setBins1"
-  , AliasVirtual void_ "SetBins" [int "nx", doublep "xBins", int "ny", doublep "yBins"] "setBins2"
-  , AliasVirtual void_ "SetBins" [int "nx", doublep "xBins", int "ny", doublep "yBins", int "nz", doublep "zBins"] "setBins3"
-  , Virtual void_ "SetBinsLength" [int "bin"]
-  , Virtual void_ "SetBuffer" [int "buffersize", cstring "option"]
-  , Virtual void_ "SetCellContent" [int "binx", int "biny", double "content"]
-  , Virtual void_ "SetContent" [doublep "content"] 
-  , Virtual void_ "SetContour" [int "nlevels", doublep "levels"] 
-  , Virtual void_ "SetContourLevel" [int "level", double "value"]
-  , Static  void_ "SetDefaultBufferSize" [int "buffersize"]
-  , Static  void_ "SetDefaultSumw2" [bool "sumw2"]
+  , Virtual double_ "Interpolate" [double "x"] (Just "interpolate1")
+  , Virtual double_ "Interpolate" [double "x", double "y"] (Just "interpolate2")
+  , Virtual double_ "Interpolate" [double "x", double "y", double "z"] (Just "interpolate3")
+  , NonVirtual bool_ "IsBinOverflow" [int "bin"] Nothing
+  , NonVirtual bool_ "IsBinUnderflow" [int "bin"] Nothing
+  , Virtual double_ "KolmogorovTest" [cppclass tH1 "h2", cstring "option"] Nothing
+  , Virtual void_ "LabelsDeflate" [cstring "axis"] Nothing
+  , Virtual void_ "LabelsInflate" [cstring "axis"] Nothing
+  , Virtual void_ "LabelsOption" [cstring "option", cstring "axis"] Nothing
+  , Virtual void_ "Multiply" [cppclass tF1 "h1", double "c1"] (Just "multiflyF")
+  , Virtual void_ "Multiply" [cppclass tH1 "h1", cppclass tH1 "h2", double "c1", double "c2", cstring "option"] Nothing
+  , Virtual void_ "PutStats" [doublep "stats"] Nothing
+  , Virtual (cppclass_ tH1) "Rebin" [int "ngroup", cstring "newname", doublep "xbins"] Nothing
+  , Virtual void_ "RebinAxis" [double "x", cppclass tAxis "axis"] Nothing
+  , Virtual void_ "Rebuild" [cstring "option"] Nothing
+  , Virtual void_ "RecursiveRemove" [cppclass tObject "obj"] Nothing
+  , Virtual void_ "Reset" [cstring "option"] Nothing
+  , Virtual void_ "ResetStats" [] Nothing
+  , Virtual void_ "Scale" [double "c1", cstring "option"] Nothing
+  , Virtual void_ "SetAxisColor" [short "color", cstring "axis"] (Just "setAxisColorA")
+  , Virtual void_ "SetAxisRange" [double "xmin", double "xmax", cstring "axis"] Nothing
+  , Virtual void_ "SetBarOffset" [float "offset"] Nothing
+  , Virtual void_ "SetBarWidth" [float "width"] Nothing
+  , Virtual void_ "SetBinContent" [int "bin", double "content"] (Just "setBinContent1")
+  , Virtual void_ "SetBinContent" [int "binx", int "biny", double "content"] (Just "setBinContent2")
+  , Virtual void_ "SetBinContent" [int "binx", int "biny", int "binz", double "content"] (Just "setBinContent3")
+  , Virtual void_ "SetBinError" [int "bin", double "error"] (Just "setBinError1")
+  , Virtual void_ "SetBinError" [int "binx", int "biny", double "error"] (Just "setBinError2")
+  , Virtual void_ "SetBinError" [int "binx", int "biny", int "binz", double "error"] (Just "setBinError3")
+  , Virtual void_ "SetBins" [int "nx", doublep "xBins"] (Just "setBins1")
+  , Virtual void_ "SetBins" [int "nx", doublep "xBins", int "ny", doublep "yBins"] (Just "setBins2")
+  , Virtual void_ "SetBins" [int "nx", doublep "xBins", int "ny", doublep "yBins", int "nz", doublep "zBins"] (Just "setBins3")
+  , Virtual void_ "SetBinsLength" [int "bin"] Nothing
+  , Virtual void_ "SetBuffer" [int "buffersize", cstring "option"] Nothing
+  , Virtual void_ "SetCellContent" [int "binx", int "biny", double "content"] Nothing
+  , Virtual void_ "SetContent" [doublep "content"] Nothing
+  , Virtual void_ "SetContour" [int "nlevels", doublep "levels"] Nothing
+  , Virtual void_ "SetContourLevel" [int "level", double "value"] Nothing
+  , Static  void_ "SetDefaultBufferSize" [int "buffersize"] Nothing
+  , Static  void_ "SetDefaultSumw2" [bool "sumw2"] Nothing
   -- SetDefaultSumw2
-  , Virtual void_ "SetDirectory" [cppclass tDirectory "dir"]
-  , Virtual void_ "SetEntries" [double "n"]
-  , Virtual void_ "SetError" [doublep "error"]
-  , AliasVirtual void_ "SetLabelColor" [short "color", cstring "axis"] "setLabelColorA"
-  , AliasVirtual void_ "SetLabelSize" [float "size", cstring "axis"] "setLabelSizeA"
-  , AliasVirtual void_   "SetLabelFont"    [short "font", cstring "axis"] "setLabelFontA"
-  , AliasVirtual void_   "SetLabelOffset"  [float "offset", cstring "axis"] "setLabelOffsetA"
-  , Virtual void_ "SetMaximum" [double "maximum"]
-  , Virtual void_ "SetMinimum" [double "minimum"]
-  , Virtual void_ "SetNormFactor" [double "factor"] 
-  , Virtual void_ "SetStats" [bool "stats"] 
-  , Virtual void_ "SetOption" [cstring "option"] 
-  , Virtual void_ "SetXTitle" [cstring "title"] 
-  , Virtual void_ "SetYTitle" [cstring "title"]
-  , Virtual void_ "SetZTitle" [cstring "title"]
-  , Virtual (cppclass_ tH1) "ShowBackground" [int "niter", cstring "option"]
-  , Virtual int_  "ShowPeaks" [double "sigma", cstring "option", double "threshold" ]
-  , Virtual void_ "Smooth" [int "ntimes", cstring "option"] 
-  , Static  void_ "SmoothArray" [int "NN", doublep "XX", int "ntimes"]
-  , Static  void_ "StatOverflows" [bool "flag"]
-  , Virtual void_ "Sumw2" [] 
-  , NonVirtual void_ "UseCurrentStyle" [] 
+  , Virtual void_ "SetDirectory" [cppclass tDirectory "dir"] Nothing
+  , Virtual void_ "SetEntries" [double "n"] Nothing
+  , Virtual void_ "SetError" [doublep "error"] Nothing
+  , Virtual void_ "SetLabelColor" [short "color", cstring "axis"] (Just "setLabelColorA")
+  , Virtual void_ "SetLabelSize" [float "size", cstring "axis"] (Just "setLabelSizeA")
+  , Virtual void_   "SetLabelFont"    [short "font", cstring "axis"] (Just "setLabelFontA")
+  , Virtual void_   "SetLabelOffset"  [float "offset", cstring "axis"] (Just "setLabelOffsetA")
+  , Virtual void_ "SetMaximum" [double "maximum"] Nothing
+  , Virtual void_ "SetMinimum" [double "minimum"] Nothing
+  , Virtual void_ "SetNormFactor" [double "factor"] Nothing
+  , Virtual void_ "SetStats" [bool "stats"] Nothing
+  , Virtual void_ "SetOption" [cstring "option"] Nothing
+  , Virtual void_ "SetXTitle" [cstring "title"] Nothing
+  , Virtual void_ "SetYTitle" [cstring "title"] Nothing
+  , Virtual void_ "SetZTitle" [cstring "title"] Nothing
+  , Virtual (cppclass_ tH1) "ShowBackground" [int "niter", cstring "option"] Nothing
+  , Virtual int_  "ShowPeaks" [double "sigma", cstring "option", double "threshold" ] Nothing
+  , Virtual void_ "Smooth" [int "ntimes", cstring "option"] Nothing
+  , Static  void_ "SmoothArray" [int "NN", doublep "XX", int "ntimes"] Nothing
+  , Static  void_ "StatOverflows" [bool "flag"] Nothing
+  , Virtual void_ "Sumw2" [] Nothing
+  , NonVirtual void_ "UseCurrentStyle" [] Nothing
   -- TransformHisto
   ] 
 
@@ -443,12 +443,12 @@ tH1C = histclass "TH1C" [tH1, tArrayC] mempty
 
 tH1D :: Class
 tH1D = histclass "TH1D" [tH1, tArrayD] mempty 
-       [ Constructor [cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"]
+       [ Constructor [cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"] Nothing
        ]
 
 tH1F :: Class
 tH1F = histclass "TH1F" [tH1, tArrayF] mempty
-       [ Constructor [cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"]
+       [ Constructor [cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"] Nothing
        ] 
 
 tH1I :: Class 
@@ -467,26 +467,26 @@ tH1S = histclass "TH1S" [tH1, tArrayS] mempty
 tH2 :: Class 
 tH2 = 
   histclass "TH2" [tH1] (Protected ["fill1"])
-  [ AliasVirtual int_ "Fill" [double "x", double "y"] "fill2"
-  , AliasVirtual int_ "Fill" [double "x", double "y", double "w"] "fill2w"
-  , AliasVirtual void_ "FillN" [int "ntimes", doublep "x",  doublep "y", doublep "w", int "stride"] "fillN2"
-  , AliasVirtual void_ "FillRandom" [cppclass tH1 "h", int "ntimes"] "fillRandom2"
-  , AliasVirtual int_  "FindFirstBinAbove" [double "threshold", int "axis"] "findFirstBinAbove2"
-  , AliasVirtual int_  "FindLastBinAbove"  [double "threshold", int "axis"] "findLastBinAbove2"
-  , Virtual void_ "FitSlicesX" [cppclass tF1 "f1", int "firstybin", int "lastybin", int "cut", cstring "option", cppclass tObjArray "arr"]
-  , Virtual void_ "FitSlicesY" [cppclass tF1 "f1", int "firstxbin", int "lastxbin", int "cut", cstring "option", cppclass tObjArray "arr"]
+  [ Virtual int_ "Fill" [double "x", double "y"] (Just "fill2")
+  , Virtual int_ "Fill" [double "x", double "y", double "w"] (Just "fill2w")
+  , Virtual void_ "FillN" [int "ntimes", doublep "x",  doublep "y", doublep "w", int "stride"] (Just "fillN2")
+  , Virtual void_ "FillRandom" [cppclass tH1 "h", int "ntimes"] (Just "fillRandom2")
+  , Virtual int_  "FindFirstBinAbove" [double "threshold", int "axis"] (Just "findFirstBinAbove2")
+  , Virtual int_  "FindLastBinAbove"  [double "threshold", int "axis"] (Just "findLastBinAbove2")
+  , Virtual void_ "FitSlicesX" [cppclass tF1 "f1", int "firstybin", int "lastybin", int "cut", cstring "option", cppclass tObjArray "arr"] Nothing
+  , Virtual void_ "FitSlicesY" [cppclass tF1 "f1", int "firstxbin", int "lastxbin", int "cut", cstring "option", cppclass tObjArray "arr"] Nothing
   -- GetBinWithContent2
-  , AliasVirtual double_ "GetCorrelationFactor" [int "axis1", int "axis2"] "getCorrelationFactor2"
-  , AliasVirtual double_ "GetCovariance" [int "axis1", int "axis2"] "getCovariance2"
+  , Virtual double_ "GetCorrelationFactor" [int "axis1", int "axis2"] (Just "getCorrelationFactor2")
+  , Virtual double_ "GetCovariance" [int "axis1", int "axis2"] (Just "getCovariance2")
   -- GetRandom2
-  , AliasVirtual double_ "Integral" [int "binx1", int "binx2", int "biny1", int "biny2", cstring "option"] "integral2"
-  , NonVirtual (cppclass_ tH1D) "ProjectionX" [cstring "name", int "firstybin", int "lastybin", cstring "option" ]
-  , NonVirtual (cppclass_ tH1D) "ProjectionY" [cstring "name", int "firstxbin", int "lastxbin", cstring "option" ] 
-  , AliasVirtual (cppclass_ tH2) "RebinX" [int "ngroup", cstring "newname"] "rebinX2"
-  , AliasVirtual (cppclass_ tH2) "RebinY" [int "ngroup", cstring "newname"] "rebinY2"
-  , Virtual (cppclass_ tH2) "Rebin2D" [int "nxgroup", int "nygroup", cstring "newname"]
-  , Virtual void_ "SetShowProjectionX" [int "nbins"]
-  , Virtual void_ "SetShowProjectionY" [int "nbins"] 
+  , Virtual double_ "Integral" [int "binx1", int "binx2", int "biny1", int "biny2", cstring "option"] (Just "integral2")
+  , NonVirtual (cppclass_ tH1D) "ProjectionX" [cstring "name", int "firstybin", int "lastybin", cstring "option" ] Nothing
+  , NonVirtual (cppclass_ tH1D) "ProjectionY" [cstring "name", int "firstxbin", int "lastxbin", cstring "option" ] Nothing
+  , Virtual (cppclass_ tH2) "RebinX" [int "ngroup", cstring "newname"] (Just "rebinX2")
+  , Virtual (cppclass_ tH2) "RebinY" [int "ngroup", cstring "newname"] (Just "rebinY2")
+  , Virtual (cppclass_ tH2) "Rebin2D" [int "nxgroup", int "nygroup", cstring "newname"] Nothing
+  , Virtual void_ "SetShowProjectionX" [int "nbins"] Nothing
+  , Virtual void_ "SetShowProjectionY" [int "nbins"] Nothing
   ]
 
 tH2C :: Class
@@ -496,13 +496,13 @@ tH2C = histclass "TH2C" [tH2, tArrayC] (Protected ["fill1"])
 tH2D :: Class 
 tH2D = histclass "TH2D" [tH2, tArrayD] (Protected ["fill1"])
        [ Constructor [ cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"
-                     , int "nbinsy", double "ylow", double "yup"]
+                     , int "nbinsy", double "ylow", double "yup"] Nothing
        ]
 
 tH2F :: Class
 tH2F = histclass "TH2F" [tH2, tArrayF] (Protected ["fill1"])
        [ Constructor [cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"
-                              ,int "nbinsy", double "ylow", double "yup"] 
+                              ,int "nbinsy", double "ylow", double "yup"] Nothing 
        ]
 
 tH2I :: Class
@@ -520,22 +520,22 @@ tH2S = histclass "TH2S" [tH2, tArrayS] (Protected ["fill1"])
 tH3 :: Class
 tH3 = 
   histclass "TH3" [tH1, tAtt3D] (Protected ["fill1","fill1w"])
-  [ AliasVirtual int_ "Fill" [double "x", double "y", double "z"] "fill3"
-  , AliasVirtual int_ "Fill" [double "x", double "y", double "z", double "w"] "fill3w"
-  , Virtual void_ "FitSlicesZ" [cppclass tF1 "f1", int "binminx", int "binmaxx", int "binminy", int "binmaxy", int "cut", cstring "option" ] 
+  [ Virtual int_ "Fill" [double "x", double "y", double "z"] (Just "fill3")
+  , Virtual int_ "Fill" [double "x", double "y", double "z", double "w"] (Just "fill3w")
+  , Virtual void_ "FitSlicesZ" [cppclass tF1 "f1", int "binminx", int "binmaxx", int "binminy", int "binmaxy", int "cut", cstring "option" ] Nothing
   -- GetBinWithContent3
-  , AliasVirtual double_ "GetCorrelationFactor" [int "axis1", int "axis2"] "getCorrelationFactor3"
-  , AliasVirtual double_ "GetCovariance" [int "axis1", int "axis2"] "getCovariance3"
+  , Virtual double_ "GetCorrelationFactor" [int "axis1", int "axis2"] (Just "getCorrelationFactor3")
+  , Virtual double_ "GetCovariance" [int "axis1", int "axis2"] (Just "getCovariance3")
   -- GetRandom3
-  , NonVirtual (cppclass_ tH1D) "ProjectionX" [cstring "name", int "firstybin", int "lastybin", int "firstzbin", int "lastzbin", cstring "option" ]
-  , NonVirtual (cppclass_ tH1D) "ProjectionY" [cstring "name", int "firstxbin", int "lastxbin", int "firstzbin", int "lastzbin", cstring "option" ]
-  , NonVirtual (cppclass_ tH1D) "ProjectionZ" [cstring "name", int "firstxbin", int "lastxbin", int "firstybin", int "lastybin", cstring "option" ] 
-  , NonVirtual (cppclass_ tH1) "Project3D" [cstring "option"]
+  , NonVirtual (cppclass_ tH1D) "ProjectionX" [cstring "name", int "firstybin", int "lastybin", int "firstzbin", int "lastzbin", cstring "option" ] Nothing
+  , NonVirtual (cppclass_ tH1D) "ProjectionY" [cstring "name", int "firstxbin", int "lastxbin", int "firstzbin", int "lastzbin", cstring "option" ] Nothing
+  , NonVirtual (cppclass_ tH1D) "ProjectionZ" [cstring "name", int "firstxbin", int "lastxbin", int "firstybin", int "lastybin", cstring "option" ] Nothing
+  , NonVirtual (cppclass_ tH1) "Project3D" [cstring "option"] Nothing
   -- Project3DProfile
-  , AliasVirtual (cppclass_ tH3) "RebinX" [int "ngroup", cstring "newname"] "rebinX3"
-  , AliasVirtual (cppclass_ tH3) "RebinY" [int "ngroup", cstring "newname"] "rebinY3"
-  , AliasVirtual (cppclass_ tH3) "RebinZ" [int "ngroup", cstring "newname"] "rebinZ3"
-  , Virtual (cppclass_ tH3) "Rebin3D" [int "nxgroup", int "nygroup", int "nzgroup", cstring "newname"]
+  , Virtual (cppclass_ tH3) "RebinX" [int "ngroup", cstring "newname"] (Just "rebinX3")
+  , Virtual (cppclass_ tH3) "RebinY" [int "ngroup", cstring "newname"] (Just "rebinY3")
+  , Virtual (cppclass_ tH3) "RebinZ" [int "ngroup", cstring "newname"] (Just "rebinZ3")
+  , Virtual (cppclass_ tH3) "Rebin3D" [int "nxgroup", int "nygroup", int "nzgroup", cstring "newname"] Nothing
   ]
 
 tH3C :: Class 
@@ -560,7 +560,7 @@ tH3S = histclass "TH3S" [tH3, tArrayS] (Protected ["fill1","fill1w"])
 
 tHStack :: Class
 tHStack = histclass "THStack" [tNamed] mempty 
-          [ Constructor [cstring "name",cstring "title"]  
+          [ Constructor [cstring "name",cstring "title"] Nothing
           ] 
 
 
@@ -573,3 +573,4 @@ hist_classes =
   , tGraph, tGraphAsymmErrors, tGraphBentErrors, tGraphErrors
   , tH1, tH1C, tH1D, tH1F, tH1I, tH1K, tH1S, tH2, tH2C, tH2D, tH2F, tH2I, tH2Poly, tH2S, tH3, tH3C, tH3D, tH3F, tH3I, tH3S, tHStack ] 
 
+hist_topfunctions = [] 

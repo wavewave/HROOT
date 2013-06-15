@@ -23,16 +23,16 @@ mathcabal = Cabal { cabal_pkgname = "HROOT-math"
                   , cabal_cheaderprefix = "HROOTMath" 
                   , cabal_moduleprefix = "HROOT.Math" } 
 
-mathclass = Class mathcabal
+mathclass n ps ann fs = Class mathcabal n ps ann Nothing fs
 
 tRandom :: Class 
 tRandom = 
   mathclass "TRandom" [tNamed] mempty
-  [ Constructor [ int "seed" ] 
-  , Virtual int_ "GetSeed" [] 
-  , Virtual double_ "Gaus" [double "mean", double "sigma"]
-  , Virtual void_ "SetSeed" [ int "seed" ] 
-  , Virtual double_ "Uniform" [double "x1", double "x2"]
+  [ Constructor [ int "seed" ] Nothing
+  , Virtual int_ "GetSeed" [] Nothing
+  , Virtual double_ "Gaus" [double "mean", double "sigma"] Nothing
+  , Virtual void_ "SetSeed" [ int "seed" ] Nothing
+  , Virtual double_ "Uniform" [double "x1", double "x2"] Nothing
   ]       
 
 
@@ -40,3 +40,4 @@ math_classes :: [Class]
 math_classes = 
   [ tRandom ] 
 
+math_topfunctions = [] 

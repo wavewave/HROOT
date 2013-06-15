@@ -47,7 +47,7 @@ import           FFICXX.Generate.Type.PackageInterface
 import           FFICXX.Generate.Util
 -- 
 import qualified Paths_HROOT_generate as H
-import qualified Paths_fficxx as F
+import qualified FFICXX.Paths_fficxx as F
 
 data UmbrellaPackageConfig = UPkgCfg { upkgname :: String } 
 
@@ -56,7 +56,9 @@ data PackageConfig  = PkgCfg { pkgname :: String
                              , pkg_summarymodule :: String 
                              , pkg_typemacro :: TypeMacro
                              , pkg_classes :: [Class] 
+                             -- , pkg_topfunctions :: [TopLevelFunction]
                              , pkg_cihs :: [ClassImportHeader]
+                             , pkg_tih :: TopLevelImportHeader
                              , pkg_modules :: [ClassModule]
                              , pkg_annotateMap :: AnnotateMap
                              , pkg_deps :: [String]
@@ -87,12 +89,6 @@ copyPredefinedFiles pkgname (files,dirs) ibase = do
                    then copyFileWithMD5Check (src</>s) (dest</>s) 
                    else return () 
 
---      [ "CHANGES", "Config.hs", "LICENSE", "README.md", "Setup.lhs" ]
-{-   
-    notExistThenCreate (ibase </> "example") 
-    notExistThenCreate (ibase </> "src") 
-    notExistThenCreate (ibase </> "csrc") -}
-
 
 -- | 
 mkCROOTIncludeHeaders :: ([Namespace],String) -> Class -> ([Namespace],[String])
@@ -106,9 +102,8 @@ mkCabalFile :: Bool  -- ^ is umbrella
             -> FFICXXConfig 
             -> PackageConfig 
             -> Handle 
-            -> [ClassModule] 
             -> IO () 
-mkCabalFile isUmbrella config PkgCfg {..} h classmodules = do 
+mkCabalFile isUmbrella config PkgCfg {..} h = do 
   version <- getHROOTVersion config
   templateDir <- F.getDataDir >>= return . (</> "template")
   (templates :: STGroup String) <- directoryGroup templateDir 
@@ -121,11 +116,11 @@ mkCabalFile isUmbrella config PkgCfg {..} h classmodules = do
               , ("license", "" ) 
               , ("buildtype", "Custom")
               , ("deps", deps) 
-              , ("csrcFiles", if isUmbrella then "" else genCsrcFiles classmodules)
-              , ("includeFiles", if isUmbrella then "" else genIncludeFiles pkgname classmodules) 
-              , ("cppFiles", if isUmbrella then "" else genCppFiles classmodules)
-              , ("exposedModules", genExposedModules pkg_summarymodule classmodules) 
-              , ("otherModules", genOtherModules classmodules)
+              , ("csrcFiles", if isUmbrella then "" else genCsrcFiles (pkg_tih,pkg_modules))
+              , ("includeFiles", if isUmbrella then "" else genIncludeFiles pkgname pkg_modules)
+              , ("cppFiles", if isUmbrella then "" else genCppFiles (pkg_tih,pkg_modules))
+              , ("exposedModules", genExposedModules pkg_summarymodule pkg_modules) 
+              , ("otherModules", genOtherModules pkg_modules)
               , ("extralibdirs",  "" )  -- this need to be changed 
               , ("extraincludedirs", "" )  -- this need to be changed 
               , ("extralib", "")
@@ -160,7 +155,7 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     copyPredefinedFiles pkgname (["Config.hs","LICENSE","Setup.lhs"], ["src","csrc"])   ibase 
 
     withFile (workingDir </> cabalFileName) WriteMode $ 
-      \h -> mkCabalFile False config pkgcfg h pkg_modules 
+      \h -> mkCabalFile False config pkgcfg h
     templateDir <- F.getDataDir >>= return . (</> "template")
     (templates :: STGroup String) <- directoryGroup templateDir 
     let cglobal = mkGlobal pkg_classes
@@ -168,9 +163,11 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     putStrLn "header file generation"
     writeTypeDeclHeaders templates workingDir pkg_typemacro pkgname pkg_cihs
     mapM_ (writeDeclHeaders templates workingDir pkg_typemacro pkgname) pkg_cihs
+    writeTopLevelFunctionHeaders templates workingDir pkg_typemacro pkgname pkg_tih
     -- 
     putStrLn "cpp file generation" 
     mapM_ (writeCppDef templates workingDir) pkg_cihs
+    writeTopLevelFunctionCppDef templates workingDir pkg_typemacro pkgname pkg_tih
     -- 
     putStrLn "RawType.hs file generation" 
     mapM_ (writeRawTypeHs templates workingDir) pkg_modules 
@@ -194,12 +191,12 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     mapM_ (writeModuleHs templates workingDir) pkg_modules
     -- 
     putStrLn "summary module generation generation"
-    writePkgHs pkg_summarymodule templates workingDir pkg_modules
+    writePkgHs pkg_summarymodule templates workingDir pkg_modules pkg_tih
     -- 
     putStrLn "copying"
     copyFileWithMD5Check (workingDir </> cabalFileName)  (ibase </> cabalFileName) 
     -- copyPredefined templateDir (srcDir ibase) pkgname
-    mapM_ (copyCppFiles workingDir (csrcDir ibase) pkgname) pkg_cihs
+    copyCppFiles workingDir (csrcDir ibase) pkgname (pkg_tih,pkg_cihs)
     mapM_ (copyModule workingDir (srcDir ibase) pkg_summarymodule) pkg_modules 
     -- 
     putStrLn "======================"
@@ -228,7 +225,7 @@ makeUmbrellaPackage config pkgcfg@(PkgCfg {..}) mods = do
     copyPredefinedFiles pkgname 
       (["CHANGES","Config.hs","LICENSE","README.md","Setup.lhs"],["example","src","csrc"]) ibase 
     withFile (workingDir </> cabalFileName) WriteMode $ 
-      \h -> mkCabalFile True config pkgcfg h [] 
+      \h -> mkCabalFile True config pkgcfg h
 
     templateDir <- F.getDataDir >>= return . (</> "template")
     (templates :: STGroup String) <- directoryGroup templateDir 

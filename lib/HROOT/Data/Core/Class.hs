@@ -23,7 +23,7 @@ corecabal = Cabal { cabal_pkgname = "HROOT-core"
                   , cabal_moduleprefix = "HROOT.Core" 
                   } 
 
-coreclass = Class corecabal 
+coreclass n ps ann fs = Class corecabal n ps ann Nothing fs 
 
 moduleInterface :: Module
 moduleInterface = Module { module_name = "HROOT.Class.Interface"
@@ -35,8 +35,8 @@ moduleInterface = Module { module_name = "HROOT.Class.Interface"
                          }  
 
 deletable :: Class 
-deletable = AbstractClass corecabal "Deletable" [] mempty 
-          [ Destructor ]
+deletable = AbstractClass corecabal "Deletable" [] mempty Nothing
+          [ Destructor Nothing ]
 
 
 ----------------
@@ -46,8 +46,8 @@ deletable = AbstractClass corecabal "Deletable" [] mempty
 
 tApplication :: Class
 tApplication = coreclass "TApplication" [tObject, tQObject] mempty
-               [ Constructor    [ cstring "appClassName", intp "argc", charpp "argv"  ] 
-               , Virtual void_ "Run"    [ bool "retrn"]   
+               [ Constructor    [ cstring "appClassName", intp "argc", charpp "argv"  ] Nothing
+               , Virtual void_ "Run"    [ bool "retrn"]  Nothing
                ]
 
 tArray :: Class
@@ -89,29 +89,29 @@ tAtt3D = coreclass "TAtt3D" [deletable] mempty
 tAttAxis :: Class
 tAttAxis = 
   coreclass "TAttAxis" [deletable] mempty 
-  [ Constructor [] 
-  , Virtual int_ "GetNdivisions" [] 
-  , Virtual short_ "GetAxisColor" [] 
-  , Virtual short_ "GetLabelColor" []
-  , Virtual short_ "GetLabelFont" [] 
-  , Virtual float_ "GetLabelOffset" [] 
-  , Virtual float_ "GetLabelSize" [] 
-  , Virtual float_ "GetTitleOffset" [] 
-  , Virtual float_ "GetTitleSize" [] 
-  , Virtual float_ "GetTickLength" []
-  , Virtual short_ "GetTitleFont" [] 
+  [ Constructor [] Nothing
+  , Virtual int_ "GetNdivisions" [] Nothing
+  , Virtual short_ "GetAxisColor" [] Nothing
+  , Virtual short_ "GetLabelColor" [] Nothing
+  , Virtual short_ "GetLabelFont" [] Nothing
+  , Virtual float_ "GetLabelOffset" [] Nothing
+  , Virtual float_ "GetLabelSize" [] Nothing
+  , Virtual float_ "GetTitleOffset" [] Nothing
+  , Virtual float_ "GetTitleSize" [] Nothing
+  , Virtual float_ "GetTickLength" [] Nothing
+  , Virtual short_ "GetTitleFont" [] Nothing
   -- omit..
-  , Virtual void_   "SetNdivisions"   [int "n", bool "optim" ]
-  , Virtual void_   "SetAxisColor"    [short  "color"]
-  , Virtual void_   "SetLabelColor"   [short  "color" ] 
-  , Virtual void_   "SetLabelFont"    [short "font"] 
-  , Virtual void_   "SetLabelOffset"  [float "offset"] 
-  , Virtual void_   "SetLabelSize"    [float  "size"  ] 
-  , Virtual void_   "SetTickLength"   [float  "length" ] 
-  , Virtual void_   "SetTitleOffset"  [float  "offset" ] 
-  , Virtual void_   "SetTitleSize"    [float  "size"]
-  , Virtual void_   "SetTitleColor"   [short  "color"]
-  , Virtual void_   "SetTitleFont"    [short  "font"]
+  , Virtual void_   "SetNdivisions"   [int "n", bool "optim" ] Nothing
+  , Virtual void_   "SetAxisColor"    [short  "color"] Nothing
+  , Virtual void_   "SetLabelColor"   [short  "color" ] Nothing 
+  , Virtual void_   "SetLabelFont"    [short "font"] Nothing
+  , Virtual void_   "SetLabelOffset"  [float "offset"] Nothing
+  , Virtual void_   "SetLabelSize"    [float  "size"  ] Nothing
+  , Virtual void_   "SetTickLength"   [float  "length" ] Nothing
+  , Virtual void_   "SetTitleOffset"  [float  "offset" ] Nothing
+  , Virtual void_   "SetTitleSize"    [float  "size"] Nothing
+  , Virtual void_   "SetTitleColor"   [short  "color"] Nothing
+  , Virtual void_   "SetTitleFont"    [short  "font"] Nothing
 
   ] 
 
@@ -122,89 +122,89 @@ tAttBBox = coreclass "TAttBBox" [deletable] mempty
 
 tAttCanvas :: Class
 tAttCanvas = coreclass "TAttCanvas" [deletable] mempty
-             [ Constructor []  
+             [ Constructor []  Nothing
              ]
 
 tAttFill :: Class
 tAttFill = coreclass "TAttFill" [deletable] mempty
-           [ Constructor [short "fcolor", short "fstyle"] 
-           , Virtual void_   "SetFillColor"    [int "color" ] 
-           , Virtual void_   "SetFillStyle"    [int "style" ]  
+           [ Constructor [short "fcolor", short "fstyle"] Nothing
+           , Virtual void_   "SetFillColor"    [int "color" ] Nothing
+           , Virtual void_   "SetFillStyle"    [int "style" ] Nothing
            ]
 
 tAttLine :: Class
 tAttLine = 
   coreclass "TAttLine" [deletable] mempty
-  [ Constructor [short "lcolor", short "lstyle", short "lwidth"] 
-  , NonVirtual int_ "DistancetoLine" [int "px", int "py", double "xp1", double "yp1", double "xp2", double "yp2"]
-  , Virtual short_ "GetLineColor" [] 
-  , Virtual short_ "GetLineStyle" [] 
-  , Virtual short_ "GetLineWidth" [] 
+  [ Constructor [short "lcolor", short "lstyle", short "lwidth"] Nothing
+  , NonVirtual int_ "DistancetoLine" [int "px", int "py", double "xp1", double "yp1", double "xp2", double "yp2"] Nothing
+  , Virtual short_ "GetLineColor" [] Nothing
+  , Virtual short_ "GetLineStyle" [] Nothing
+  , Virtual short_ "GetLineWidth" [] Nothing
   --   , Virtual void_ "Modify" [] 
-  , Virtual void_ "ResetAttLine" [cstring "option"]
-  -- SaveLineAttributes
-  , Virtual void_ "SetLineAttributes" [] 
-  , Virtual void_ "SetLineColor" [short "lcolor" ] 
-  , Virtual void_ "SetLineStyle" [short "lstyle" ]
-  , Virtual void_ "SetLineWidth" [short "lwidth" ]
+  , Virtual void_ "ResetAttLine" [cstring "option"] Nothing
+  -- SaveLineAttributes 
+  , Virtual void_ "SetLineAttributes" [] Nothing
+  , Virtual void_ "SetLineColor" [short "lcolor" ] Nothing 
+  , Virtual void_ "SetLineStyle" [short "lstyle" ] Nothing
+  , Virtual void_ "SetLineWidth" [short "lwidth" ] Nothing
   ]
 
 
 tAttMarker :: Class
 tAttMarker = 
   coreclass "TAttMarker" [deletable] mempty
-  [ Constructor [short "color", short "style", short "msize"] 
-  , Virtual short_ "GetMarkerColor" [] 
-  , Virtual short_ "GetMarkerStyle" [] 
-  , Virtual float_ "GetMarkerSize" []
+  [ Constructor [short "color", short "style", short "msize"] Nothing
+  , Virtual short_ "GetMarkerColor" [] Nothing
+  , Virtual short_ "GetMarkerStyle" [] Nothing
+  , Virtual float_ "GetMarkerSize" [] Nothing
   -- Modify
-  , Virtual void_ "ResetAttMarker" [cstring "option"]
-  , Virtual void_ "SetMarkerAttributes" [] 
-  , Virtual void_ "SetMarkerColor" [short "tcolor"] 
-  , Virtual void_ "SetMarkerStyle" [short "mstyle"]
-  , Virtual void_ "SetMarkerSize" [short "msize"] 
+  , Virtual void_ "ResetAttMarker" [cstring "option"] Nothing
+  , Virtual void_ "SetMarkerAttributes" [] Nothing
+  , Virtual void_ "SetMarkerColor" [short "tcolor"] Nothing
+  , Virtual void_ "SetMarkerStyle" [short "mstyle"] Nothing
+  , Virtual void_ "SetMarkerSize" [short "msize"] Nothing
   ]  
 
 tAttPad :: Class
 tAttPad = 
   coreclass "TAttPad" [deletable] mempty
-  [ Constructor [] 
-  , NonVirtual float_ "GetBottomMargin" [] 
-  , NonVirtual float_ "GetLeftMargin" [] 
-  , NonVirtual float_ "GetRightMargin" [] 
-  , NonVirtual float_ "GetTopMargin" [] 
-  , NonVirtual float_ "GetAfile" [] 
-  , NonVirtual float_ "GetXfile" [] 
-  , NonVirtual float_ "GetYfile" [] 
-  , NonVirtual float_ "GetAstat" [] 
-  , NonVirtual float_ "GetXstat" [] 
-  , NonVirtual float_ "GetYstat" [] 
-  , NonVirtual short_ "GetFrameFillColor" [] 
-  , NonVirtual short_ "GetFrameLineColor" [] 
-  , NonVirtual short_ "GetFrameFillStyle" [] 
-  , NonVirtual short_ "GetFrameLineStyle" [] 
-  , NonVirtual short_ "GetFrameLineWidth" [] 
-  , NonVirtual short_ "GetFrameBorderSize" [] 
-  , NonVirtual short_ "GetFrameBorderMode" [] 
-  , Virtual void_ "ResetAttPad" [cstring "option"] 
-  , Virtual void_ "SetBottomMargin" [float "bottommargin"] 
-  , Virtual void_ "SetLeftMargin" [float "leftmargin"]
-  , Virtual void_ "SetRightMargin" [float "rightmargin"]
-  , Virtual void_ "SetTopMargin" [float "topmargin"]
-  , Virtual void_ "SetMargin" [float "left", float "right", float "bottom", float "top"]
-  , Virtual void_ "SetAfile" [float "afile"] 
-  , Virtual void_ "SetXfile" [float "xfile"]
-  , Virtual void_ "SetYfile" [float "yfile"]
-  , Virtual void_ "SetAstat" [float "astat"]
-  , Virtual void_ "SetXstat" [float "xstat"]
-  , Virtual void_ "SetYstat" [float "ystat"]
-  , NonVirtual void_ "SetFrameFillColor" [short "color"]
-  , NonVirtual void_ "SetFrameLineColor" [short "color"]
-  , NonVirtual void_ "SetFrameFillStyle" [short "styl"]
-  , NonVirtual void_ "SetFrameLineStyle" [short "styl"]
-  , NonVirtual void_ "SetFrameLineWidth" [short "width"]
-  , NonVirtual void_ "SetFrameBorderSize" [short "size"]
-  , NonVirtual void_ "SetFrameBorderMode" [int "mode"]
+  [ Constructor [] Nothing
+  , NonVirtual float_ "GetBottomMargin" [] Nothing
+  , NonVirtual float_ "GetLeftMargin" [] Nothing
+  , NonVirtual float_ "GetRightMargin" [] Nothing
+  , NonVirtual float_ "GetTopMargin" [] Nothing
+  , NonVirtual float_ "GetAfile" [] Nothing
+  , NonVirtual float_ "GetXfile" [] Nothing
+  , NonVirtual float_ "GetYfile" [] Nothing
+  , NonVirtual float_ "GetAstat" [] Nothing
+  , NonVirtual float_ "GetXstat" [] Nothing
+  , NonVirtual float_ "GetYstat" [] Nothing
+  , NonVirtual short_ "GetFrameFillColor" [] Nothing
+  , NonVirtual short_ "GetFrameLineColor" [] Nothing
+  , NonVirtual short_ "GetFrameFillStyle" [] Nothing
+  , NonVirtual short_ "GetFrameLineStyle" [] Nothing
+  , NonVirtual short_ "GetFrameLineWidth" [] Nothing
+  , NonVirtual short_ "GetFrameBorderSize" [] Nothing
+  , NonVirtual short_ "GetFrameBorderMode" [] Nothing
+  , Virtual void_ "ResetAttPad" [cstring "option"] Nothing
+  , Virtual void_ "SetBottomMargin" [float "bottommargin"] Nothing
+  , Virtual void_ "SetLeftMargin" [float "leftmargin"] Nothing
+  , Virtual void_ "SetRightMargin" [float "rightmargin"] Nothing
+  , Virtual void_ "SetTopMargin" [float "topmargin"] Nothing
+  , Virtual void_ "SetMargin" [float "left", float "right", float "bottom", float "top"] Nothing
+  , Virtual void_ "SetAfile" [float "afile"] Nothing
+  , Virtual void_ "SetXfile" [float "xfile"] Nothing
+  , Virtual void_ "SetYfile" [float "yfile"] Nothing
+  , Virtual void_ "SetAstat" [float "astat"] Nothing
+  , Virtual void_ "SetXstat" [float "xstat"] Nothing
+  , Virtual void_ "SetYstat" [float "ystat"] Nothing
+  , NonVirtual void_ "SetFrameFillColor" [short "color"] Nothing
+  , NonVirtual void_ "SetFrameLineColor" [short "color"] Nothing
+  , NonVirtual void_ "SetFrameFillStyle" [short "styl"] Nothing
+  , NonVirtual void_ "SetFrameLineStyle" [short "styl"] Nothing
+  , NonVirtual void_ "SetFrameLineWidth" [short "width"] Nothing
+  , NonVirtual void_ "SetFrameBorderSize" [short "size"] Nothing
+  , NonVirtual void_ "SetFrameBorderMode" [int "mode"] Nothing
 
   ]
 
@@ -217,21 +217,21 @@ tAttParticle = coreclass "TAttParticle" [tNamed] mempty
 tAttText :: Class
 tAttText = 
   coreclass "TAttText" [deletable] mempty
-  [ Constructor [int "align", float "angle", short "color", short "font", float "tsize" ] 
-  , Virtual short_ "GetTextAlign" [] 
-  , Virtual float_ "GetTextAngle" [] 
-  , Virtual short_ "GetTextColor" [] 
-  , Virtual short_ "GetTextFont" [] 
-  , Virtual float_ "GetTextSize" [] 
-  , Virtual void_ "ResetAttText" [cstring "toption"] 
+  [ Constructor [int "align", float "angle", short "color", short "font", float "tsize" ] Nothing
+  , Virtual short_ "GetTextAlign" [] Nothing
+  , Virtual float_ "GetTextAngle" [] Nothing
+  , Virtual short_ "GetTextColor" [] Nothing
+  , Virtual short_ "GetTextFont" [] Nothing
+  , Virtual float_ "GetTextSize" [] Nothing
+  , Virtual void_ "ResetAttText" [cstring "toption"] Nothing
   -- SaveTextAttributes
-  , Virtual void_ "SetTextAttributes" [] 
-  , Virtual void_ "SetTextAlign" [short "align"]
-  , Virtual void_ "SetTextAngle" [float "tangle"]
-  , Virtual void_ "SetTextColor" [int "tcolor"]  
-  , Virtual void_ "SetTextFont" [short "tfont"]
-  , Virtual void_ "SetTextSize"  [float "tsize"]  
-  , Virtual void_ "SetTextSizePixels" [int "npixels"]
+  , Virtual void_ "SetTextAttributes" [] Nothing
+  , Virtual void_ "SetTextAlign" [short "align"] Nothing
+  , Virtual void_ "SetTextAngle" [float "tangle"] Nothing
+  , Virtual void_ "SetTextColor" [int "tcolor"] Nothing
+  , Virtual void_ "SetTextFont" [short "tfont"] Nothing
+  , Virtual void_ "SetTextSize"  [float "tsize"] Nothing 
+  , Virtual void_ "SetTextSizePixels" [int "npixels"] Nothing
   ]  
 
 
@@ -242,7 +242,7 @@ tAttText =
 ----------------
 
 tClass :: Class
-tClass = Class corecabal "TClass" [tDictionary] mempty
+tClass = coreclass "TClass" [tDictionary] mempty
          [
          ]
 
@@ -256,18 +256,18 @@ tCollection =
 
 tDirectory :: Class
 tDirectory = coreclass "TDirectory" [tNamed] mempty
-             [ Static  void_ "AddDirectory" [bool "add"]
-             , Static  bool_ "AddDirectoryStatus" []
-             , Virtual void_ "Append" [cppclass tObject "obj", bool "replace"]
-             , AliasVirtual void_ "Add" [cppclass tObject "obj", bool "replace"] "addD"
-             , Virtual int_ "AppendKey" [cppclass tKey "key" ] 
-             , Virtual void_ "Close"    [ cstring "option" ] 
-             , Virtual (cppclass_ tObject) "Get" [ cstring "namecycle" ] 
-             , AliasVirtual bool_ "cd" [ cstring "path" ]  "cd_TDirectory"
+             [ Static  void_ "AddDirectory" [bool "add"] Nothing
+             , Static  bool_ "AddDirectoryStatus" [] Nothing
+             , Virtual void_ "Append" [cppclass tObject "obj", bool "replace"] Nothing
+             , Virtual void_ "Add" [cppclass tObject "obj", bool "replace"] (Just "addD")
+             , Virtual int_ "AppendKey" [cppclass tKey "key" ] Nothing
+             , Virtual void_ "Close"    [ cstring "option" ] Nothing
+             , Virtual (cppclass_ tObject) "Get" [ cstring "namecycle" ] Nothing 
+             , Virtual bool_ "cd" [ cstring "path" ]  (Just "cd_TDirectory")
              ]
 
 tDictionary :: Class
-tDictionary = AbstractClass corecabal "TDictionary" [tNamed] mempty
+tDictionary = AbstractClass corecabal "TDictionary" [tNamed] mempty Nothing 
               [
               ]
 
@@ -288,11 +288,11 @@ tKey = coreclass "TKey" [tNamed] mempty
 
 tNamed :: Class
 tNamed = 
-  Class corecabal "TNamed" [tObject] mempty
-  [ Constructor [cstring "name", cstring "title"] 
-  , Virtual void_  "SetName"      [cstring "name"]
-  , Virtual void_  "SetNameTitle" [cstring "name", cstring "title"]
-  , Virtual void_  "SetTitle"     [cstring "name"]  
+  Class corecabal "TNamed" [tObject] mempty Nothing
+  [ Constructor [cstring "name", cstring "title"] Nothing
+  , Virtual void_  "SetName"      [cstring "name"] Nothing
+  , Virtual void_  "SetNameTitle" [cstring "name", cstring "title"] Nothing
+  , Virtual void_  "SetTitle"     [cstring "name"] Nothing
   ]
 
 ----------------
@@ -307,19 +307,19 @@ tObjArray =
 tObject :: Class
 tObject = 
   coreclass "TObject" [deletable] mempty
-  [ Constructor [] 
+  [ Constructor [] Nothing
   -- , Virtual int_ "DistancetoPrimitive" [int "px", int "py"]
-  , Virtual void_    "Draw"    [cstring "option"] 
+  , Virtual void_    "Draw"    [cstring "option"] Nothing
   -- , Virtual void_ "ExecuteEvent" [int "event", int "px", int "py"]
-  , Virtual (cppclass_ tObject) "FindObject" [cstring "name"]
-  , Virtual  cstring_ "GetName" [] 
-  , Virtual (cppclass_ tClass) "IsA" [] 
-  , Virtual void_ "Paint" [cstring "option"] 
-  , AliasVirtual void_ "Print" [cstring "option"] "printObj"
-  , Virtual void_    "SaveAs"  [cstring "filename", cstring "option"] 
-  , Virtual int_     "Write"   [cstring "name", int "option", int "bufsize" ]
+  , Virtual (cppclass_ tObject) "FindObject" [cstring "name"] Nothing
+  , Virtual  cstring_ "GetName" [] Nothing
+  , Virtual (cppclass_ tClass) "IsA" [] Nothing
+  , Virtual void_ "Paint" [cstring "option"] Nothing
+  , Virtual void_ "Print" [cstring "option"] (Just "printObj")
+  , Virtual void_    "SaveAs"  [cstring "filename", cstring "option"] Nothing
+  , Virtual int_     "Write"   [cstring "name", int "option", int "bufsize" ] Nothing
 
-  , Static  bool_    "GetObjectStat" []
+  , Static  bool_    "GetObjectStat" [] Nothing
   ]
 
 ----------------
@@ -342,7 +342,7 @@ tSeqCollection =
 tString :: Class 
 tString = 
   coreclass "TString" [] mempty 
-  [ Constructor [ cstring "s" ] 
+  [ Constructor [ cstring "s" ] Nothing
   ] 
 
 ----------------
@@ -351,11 +351,11 @@ tString =
 
 tVirtualPad :: Class 
 tVirtualPad = coreclass "TVirtualPad" [tObject] mempty
-              [ Virtual self_ "cd" [int "subpadnumber"] 
-              , AliasVirtual void_ "Divide" [int "nx", int "ny", float "xmargin", float "ymargin", int "color" ] "divide_tvirtualpad"
-              , Virtual void_ "SetLogx" [int "value"]  
-              , Virtual void_ "SetLogy" [int "value"]
-              , Virtual void_ "SetLogz" [int "value"]
+              [ Virtual self_ "cd" [int "subpadnumber"] Nothing
+              , Virtual void_ "Divide" [int "nx", int "ny", float "xmargin", float "ymargin", int "color" ] (Just "divide_tvirtualpad")
+              , Virtual void_ "SetLogx" [int "value"] Nothing
+              , Virtual void_ "SetLogy" [int "value"] Nothing
+              , Virtual void_ "SetLogz" [int "value"] Nothing
               ] 
 
 
@@ -375,7 +375,7 @@ core_classes =
   , tVirtualPad
   ] 
 
-
+core_topfunctions = [] 
 
 
 

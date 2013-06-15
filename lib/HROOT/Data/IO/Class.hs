@@ -23,7 +23,7 @@ iocabal = Cabal { cabal_pkgname = "HROOT-io"
                   , cabal_cheaderprefix = "HROOTIO" 
                   , cabal_moduleprefix = "HROOT.IO" } 
 
-ioclass = Class iocabal
+ioclass n ps ann fs = Class iocabal n ps ann Nothing fs 
 
 tDirectoryFile :: Class
 tDirectoryFile = 
@@ -33,7 +33,7 @@ tDirectoryFile =
 
 tFile :: Class
 tFile = ioclass "TFile" [tDirectoryFile] mempty
-        [ Constructor [cstring "fname", cstring "option", cstring "ftitle", int "compress" ] 
+        [ Constructor [cstring "fname", cstring "option", cstring "ftitle", int "compress" ] Nothing
         ]
 
 
@@ -41,9 +41,7 @@ io_classes :: [Class]
 io_classes = 
   [ tDirectoryFile, tFile ] 
 
-
-
-
+io_topfunctions = [] 
 
 
 
