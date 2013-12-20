@@ -95,6 +95,7 @@ mkCROOTIncludeHeaders :: ([Namespace],String) -> Class -> ([Namespace],[String])
 mkCROOTIncludeHeaders (nss,str) c = 
   case class_name c of
     "Deletable" -> (nss,[])
+    "TROOT" -> (nss++[NS "ROOT"],[str </> (class_name c) ++ ".h"])
     _ -> (nss,[str </> (class_name c) ++ ".h"])
 
 -- | 

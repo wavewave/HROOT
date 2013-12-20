@@ -330,6 +330,14 @@ tQObject :: Class
 tQObject = coreclass "TQObject" [deletable] mempty
            []
 
+----------------
+-- starting R --
+----------------
+
+tROOT :: Class
+tROOT = 
+  coreclass "TROOT" [tDirectory] mempty []
+
 
 ----------------
 -- starting S --
@@ -345,6 +353,12 @@ tString =
   [ Constructor [ cstring "s" ] Nothing
   ] 
 
+tSystem :: Class
+tSystem = 
+  coreclass "TSystem" [tNamed] mempty
+  [ Virtual bool_ "ProcessEvents" [] Nothing
+  ]
+
 ----------------
 -- starting V --
 ----------------
@@ -358,9 +372,6 @@ tVirtualPad = coreclass "TVirtualPad" [tObject] mempty
               , Virtual void_ "SetLogz" [int "value"] Nothing
               ] 
 
-
-
-
 core_classes :: [Class] 
 core_classes = 
   [ deletable
@@ -371,11 +382,14 @@ core_classes =
   , tNamed
   , tObjArray, tObject
   , tQObject
-  , tSeqCollection
+  , tROOT
+  , tSeqCollection, tSystem
   , tVirtualPad
   ] 
 
-core_topfunctions = [] 
+core_topfunctions = 
+  [ TopLevelFunction (cppclass_ tROOT) "GetROOT" [] Nothing
+  ] 
 
 
 
