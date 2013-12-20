@@ -272,6 +272,17 @@ tDictionary = AbstractClass corecabal "TDictionary" [tNamed] mempty Nothing
               ]
 
 ----------------
+-- starting G --
+----------------
+
+tGlobal :: Class
+tGlobal = 
+  coreclass "TGlobal" [tDictionary] mempty
+  [   
+  ] 
+
+
+----------------
 -- starting K --
 ----------------
 
@@ -336,7 +347,9 @@ tQObject = coreclass "TQObject" [deletable] mempty
 
 tROOT :: Class
 tROOT = 
-  coreclass "TROOT" [tDirectory] mempty []
+  coreclass "TROOT" [tDirectory] mempty 
+  [ NonVirtual (cppclass_ tGlobal) "GetGlobal" [ cstring "name", bool "load" ] Nothing
+  ]
 
 
 ----------------
@@ -378,6 +391,7 @@ core_classes =
   , tApplication, tArray, tArrayC, tArrayD, tArrayF, tArrayI, tArrayL, tArrayL64, tArrayS, tAtt3D, tAttAxis, tAttBBox, tAttCanvas, tAttFill, tAttLine, tAttMarker, tAttPad, tAttText
   , tClass, tCollection
   , tDictionary, tDirectory
+  , tGlobal
   , tKey
   , tNamed
   , tObjArray, tObject
@@ -389,6 +403,7 @@ core_classes =
 
 core_topfunctions = 
   [ TopLevelFunction (cppclass_ tROOT) "GetROOT" [] Nothing
+  , TopLevelVariable (cppclass_ tSystem) "gSystem" Nothing
   ] 
 
 
