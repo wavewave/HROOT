@@ -349,6 +349,7 @@ tROOT :: Class
 tROOT = 
   coreclass "TROOT" [tDirectory] mempty 
   [ NonVirtual (cppclass_ tGlobal) "GetGlobal" [ cstring "name", bool "load" ] Nothing
+  , Static bool_ "Initialized" [] Nothing
   ]
 
 
@@ -403,6 +404,7 @@ core_classes =
 
 core_topfunctions = 
   [ TopLevelFunction (cppclass_ tROOT) "GetROOT" [] Nothing
+  , TopLevelVariable (cppclass_ tROOT) "gROOT" Nothing
   , TopLevelVariable (cppclass_ tSystem) "gSystem" Nothing
   ] 
 

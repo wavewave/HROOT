@@ -10,13 +10,8 @@ import qualified Data.Map as M
 
 
 hist_ann :: AnnotateMap 
-hist_ann = M.empty
-{-  M.fromList 
-  [ tNamedAnn, tNamedNewAnn, tNamedSetTitleAnn
-  , tObjectGetNameAnn, tObjectDrawAnn, tObjectFindObjectAnn ] 
--}
-{-
-  , tH1Ann, tH1AddAnn, tH1AddBinContentAnn, tH1Chi2TestAnn
+hist_ann = M.fromList 
+  [ tH1Ann, tH1AddAnn, tH1AddBinContentAnn, tH1Chi2TestAnn
   , tH1ComputeIntegralAnn, tH1DirectoryAutoAddAnn, tH1DistancetoPrimitiveAnn
   , tH1DivideAnn, tH1DrawCopyAnn, tH1DrawNormalizedAnn
   , tH1DrawPanelAnn
@@ -32,41 +27,8 @@ hist_ann = M.empty
   , ann_rebuild, ann_recursiveRemove, ann_reset, ann_resetStats, ann_scale, ann_setAxisColorA
   , ann_setAxisRange, ann_setBarOffset, ann_setBarWidth, ann_setBinContent1, ann_setBinContent2
   , ann_setBinContent3                  
-  ]  -}
+  ] 
 
-{-
-tNamedAnn = ((PkgClass,"TNamed"),[verbatim|
-Class TNamed
-reference : http://root.cern.ch
-|])
-
-tNamedNewAnn = ((PkgMethod,"newTNamed"),[verbatim|constructor : 
-
-> TNamed( char* name, char* title) 
-
-|] )
-
-tNamedSetTitleAnn = ((PkgMethod, "setTitle"), [verbatim|SetTitle method
-
-> SetTitle( char* name, char* title ) 
-
-|] )
-
-
-tObjectGetNameAnn = ((PkgMethod, "getName"), [verbatim|
-> char* TObject::GetName()
-
-|])
-
-tObjectDrawAnn = ((PkgMethod, "draw"), [verbatim|
-> void TObject::Draw( char* option )
-
-|])
-
-tObjectFindObjectAnn = ((PkgMethod, "findObject"), [verbatim|
-> TObject* TObject::FindObject( char* name )
-
-|])
 
 tH1Ann = ((PkgClass, "TH1"), [verbatim| the TH1 class : the mother class of all histogram classes 
 
@@ -384,4 +346,4 @@ ann_setBinContent3 = ((PkgMethod, "setBinContent3"), [verbatim|
 
 |])
 
--}
+
