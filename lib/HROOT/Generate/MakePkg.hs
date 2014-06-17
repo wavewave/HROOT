@@ -56,13 +56,14 @@ data PackageConfig  = PkgCfg { pkgname :: String
                              , pkg_summarymodule :: String 
                              , pkg_typemacro :: TypeMacro
                              , pkg_classes :: [Class] 
-                             -- , pkg_topfunctions :: [TopLevelFunction]
                              , pkg_cihs :: [ClassImportHeader]
                              , pkg_tih :: TopLevelImportHeader
                              , pkg_modules :: [ClassModule]
                              , pkg_annotateMap :: AnnotateMap
                              , pkg_deps :: [String]
-                             , pkg_hsbootlst :: [String] 
+                             , pkg_hsbootlst :: [String]
+                             , pkg_synopsis :: String
+                             , pkg_description :: String
                              } 
 
 -- | 
@@ -114,7 +115,10 @@ mkCabalFile isUmbrella config PkgCfg {..} h = do
               templates 
               [ ("pkgname", pkgname) 
               , ("version", version) 
-              , ("license", "" ) 
+              , ("synopsis", pkg_synopsis )
+              , ("description", pkg_description )
+              , ("license", "LGPL-2.1" ) 
+              , ("licensefile", "LICENSE")
               , ("buildtype", "Custom")
               , ("deps", deps) 
               , ("csrcFiles", if isUmbrella then "" else genCsrcFiles (pkg_tih,pkg_modules))
@@ -149,11 +153,10 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     putStrLn ("working on " ++ pkgname) 
     putStrLn "----------------------"
     putStrLn "cabal file generation" 
-    -- getHROOTVersion config
     notExistThenCreate ibase 
     notExistThenCreate workingDir 
 
-    copyPredefinedFiles pkgname (["Config.hs","LICENSE","Setup.lhs"], ["src","csrc"])   ibase 
+    copyPredefinedFiles pkgname (["CHANGES","Config.hs","LICENSE","Setup.lhs"], ["src","csrc"])   ibase 
 
     withFile (workingDir </> cabalFileName) WriteMode $ 
       \h -> mkCabalFile False config pkgcfg h
@@ -196,7 +199,6 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
     -- 
     putStrLn "copying"
     copyFileWithMD5Check (workingDir </> cabalFileName)  (ibase </> cabalFileName) 
-    -- copyPredefined templateDir (srcDir ibase) pkgname
     copyCppFiles workingDir (csrcDir ibase) pkgname (pkg_tih,pkg_cihs)
     mapM_ (copyModule workingDir (srcDir ibase) pkg_summarymodule) pkg_modules 
     -- 
@@ -205,8 +207,6 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
 ---------------------------------
 -- for umbrella package 
 ---------------------------------
-
-
 
 -- | make an umbrella package for this project
 makeUmbrellaPackage :: FFICXXConfig -> PackageConfig -> [String] -> IO () 

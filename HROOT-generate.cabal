@@ -8,24 +8,32 @@ Author:		Ian-Woo Kim
 Maintainer: 	Ian-Woo Kim <ianwookim@gmail.com>
 Build-Type: 	Simple
 Cabal-Version:  >= 1.8
-Data-files:     template/HROOT-core/Config.hs
+Data-files:     
+                template/HROOT-core/CHANGES
+                template/HROOT-core/Config.hs
                 template/HROOT-core/LICENSE
                 template/HROOT-core/Setup.lhs
+                template/HROOT-hist/CHANGES
                 template/HROOT-hist/Config.hs
                 template/HROOT-hist/LICENSE
                 template/HROOT-hist/Setup.lhs
+                template/HROOT-graf/CHANGES
                 template/HROOT-graf/Config.hs
                 template/HROOT-graf/LICENSE
                 template/HROOT-graf/Setup.lhs
+                template/HROOT-math/CHANGES
                 template/HROOT-math/Config.hs
                 template/HROOT-math/LICENSE
                 template/HROOT-math/Setup.lhs
+                template/HROOT-io/CHANGES
                 template/HROOT-io/Config.hs
                 template/HROOT-io/LICENSE
                 template/HROOT-io/Setup.lhs
+                template/HROOT-RooFit/CHANGES
                 template/HROOT-RooFit/Config.hs
                 template/HROOT-RooFit/LICENSE
                 template/HROOT-RooFit/Setup.lhs
+                template/HROOT-RooFit-RooStats/CHANGES
                 template/HROOT-RooFit-RooStats/Config.hs
                 template/HROOT-RooFit-RooStats/LICENSE
                 template/HROOT-RooFit-RooStats/Setup.lhs

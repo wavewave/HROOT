@@ -59,8 +59,8 @@ main = do
   putStrLn $ show param 
   commandLineProcess param 
 
-mkPkgCfg :: String -> String -> String -> [String] -> ([Class],[TopLevelFunction]) -> AnnotateMap -> PackageConfig 
-mkPkgCfg name summary macro deps (cs,fs) amap = 
+mkPkgCfg :: String -> String -> String -> [String] -> ([Class],[TopLevelFunction]) -> AnnotateMap -> String -> String -> PackageConfig 
+mkPkgCfg name summary macro deps (cs,fs) amap synopsis descr = 
     let (mods,cihs,tih) = 
           mkAll_ClassModules_CIH_TIH (name,mkCROOTIncludeHeaders ([],"")) (cs,fs)
         hsbootlst = mkHSBOOTCandidateList mods 
@@ -76,14 +76,17 @@ mkPkgCfg name summary macro deps (cs,fs) amap =
                 , pkg_annotateMap = amap -- M.empty  -- for the time being 
                 , pkg_deps = deps
                 , pkg_hsbootlst = hsbootlst 
+                , pkg_synopsis = synopsis
+                , pkg_description = descr
                 }
 
-pkg_CORE = mkPkgCfg "HROOT-core" "HROOT.Core" "__HROOT_CORE__" [] (core_classes,core_topfunctions) core_ann
-pkg_GRAF = mkPkgCfg "HROOT-graf" "HROOT.Graf" "__HROOT_GRAF__" ["HROOT-core","HROOT-hist"] (graf_classes,graf_topfunctions) graf_ann
-pkg_HIST = mkPkgCfg "HROOT-hist" "HROOT.Hist" "__HROOT_HIST__" ["HROOT-core"] (hist_classes,hist_topfunctions) hist_ann
-pkg_MATH = mkPkgCfg "HROOT-math" "HROOT.Math" "__HROOT_MATH__" ["HROOT-core"] (math_classes,math_topfunctions) M.empty
-pkg_IO   = mkPkgCfg "HROOT-io"   "HROOT.IO"   "__HROOT_IO__"   ["HROOT-core"] (io_classes,io_topfunctions) M.empty
-pkg_RooFit = mkPkgCfg "HROOT-RooFit" "HROOT.RooFit" "__HROOT_ROOFIT__" ["HROOT-core", "HROOT-hist", "HROOT-math"] (roofit_classes,roofit_topfunctions) M.empty
+pkg_CORE = mkPkgCfg "HROOT-core" "HROOT.Core" "__HROOT_CORE__" [] (core_classes,core_topfunctions) core_ann "Haskell binding to ROOT Core modules" "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
+pkg_GRAF = mkPkgCfg "HROOT-graf" "HROOT.Graf" "__HROOT_GRAF__" ["HROOT-core","HROOT-hist"] (graf_classes,graf_topfunctions) graf_ann "Haskell binding to ROOT Graf modules" "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
+pkg_HIST = mkPkgCfg "HROOT-hist" "HROOT.Hist" "__HROOT_HIST__" ["HROOT-core"] (hist_classes,hist_topfunctions) hist_ann "Haskell binding to ROOT Hist modules" "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
+pkg_MATH = mkPkgCfg "HROOT-math" "HROOT.Math" "__HROOT_MATH__" ["HROOT-core"] (math_classes,math_topfunctions) M.empty "Haskell binding to ROOT Math modules" "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
+pkg_IO   = mkPkgCfg "HROOT-io"   "HROOT.IO"   "__HROOT_IO__"   ["HROOT-core"] (io_classes,io_topfunctions) M.empty "Haskell binding to ROOT IO modules" "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
+pkg_RooFit = mkPkgCfg "HROOT-RooFit" "HROOT.RooFit" "__HROOT_ROOFIT__" ["HROOT-core", "HROOT-hist", "HROOT-math"] (roofit_classes,roofit_topfunctions) M.empty "Haskell binding to ROOT RooFit modules" "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
+
 pkg_RooStats = 
     let (mods,cihs,tih) = 
           mkAll_ClassModules_CIH_TIH ( "HROOT-RooFit-RooStats"
@@ -104,6 +107,8 @@ pkg_RooStats =
                            , "HROOT-RooFit"
                            ]
               , pkg_hsbootlst = hsbootlst 
+              , pkg_synopsis = ""
+              , pkg_description = ""
               }
 
 
@@ -117,6 +122,8 @@ pkg_HROOT = PkgCfg { pkgname = "HROOT"
                    , pkg_annotateMap = M.empty  -- for the time being 
                    , pkg_deps = ["HROOT-core","HROOT-graf","HROOT-hist","HROOT-math","HROOT-io" ]
                    , pkg_hsbootlst = [] 
+                   , pkg_synopsis = "Haskell binding to ROOT RooFit modules" 
+                   , pkg_description = "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
                    }
 
 

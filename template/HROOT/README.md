@@ -1,6 +1,12 @@
 HROOT
 =====
 
+Installation from Hackage
+-------------------------
+
+* cabal install HROOT
+
+
 Installation from github source code 
 ------------------------------------
 
