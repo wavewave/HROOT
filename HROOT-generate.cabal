@@ -2,7 +2,7 @@ Name:		HROOT-generate
 Version:	0.8
 Synopsis:	automatic HROOT binding generation
 Description: 	automatic HROOT binding generation 
-License:        GPL-3
+License:        LGPL-2.1
 License-file:	LICENSE
 Author:		Ian-Woo Kim
 Maintainer: 	Ian-Woo Kim <ianwookim@gmail.com>
@@ -37,6 +37,10 @@ Data-files:
                 template/HROOT-RooFit-RooStats/Config.hs
                 template/HROOT-RooFit-RooStats/LICENSE
                 template/HROOT-RooFit-RooStats/Setup.lhs
+                template/HROOT-tree/CHANGES
+                template/HROOT-tree/Config.hs
+                template/HROOT-tree/LICENSE
+                template/HROOT-tree/Setup.lhs
                 template/HROOT/CHANGES
                 template/HROOT/Config.hs
                 template/HROOT/LICENSE
@@ -101,6 +105,8 @@ Library
                    HROOT.Data.RooFit.Annotate
                    HROOT.Data.RooFit.Class
                    HROOT.Data.RooFit.RooStats.Class
+                   HROOT.Data.Tree.Annotate
+                   HROOT.Data.Tree.Class
                    
   Other-Modules: 
                    Paths_HROOT_generate

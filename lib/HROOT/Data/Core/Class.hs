@@ -25,6 +25,7 @@ corecabal = Cabal { cabal_pkgname = "HROOT-core"
 
 coreclass n ps ann fs = Class corecabal n ps ann Nothing fs 
 
+{-
 moduleInterface :: Module
 moduleInterface = Module { module_name = "HROOT.Class.Interface"
                          , module_exports = [ "IDeletable" 
@@ -33,6 +34,7 @@ moduleInterface = Module { module_name = "HROOT.Class.Interface"
                                             , "ITNamed" 
                                             , "TNamed" ]
                          }  
+-}
 
 deletable :: Class 
 deletable = AbstractClass corecabal "Deletable" [] mempty Nothing

@@ -1,8 +1,21 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings #-}
+-- {-# LANGUAGE TypeSynonymInstances #-}
+
 module Main where
 
+-- import Control.Applicative
 import Control.Monad
-
+-- import Data.String
+-- import Foreign.C.String
+import Foreign.C.Types
+import System.IO.Unsafe
+--
 import HROOT
+
+
+-- instance IsString CString where
+--   fromString str = unsafePerformIO (newCString str)
 
 main :: IO () 
 main = do 
@@ -21,14 +34,12 @@ main = do
   go 1000000
   draw h2 "lego"
   saveAs tcanvas "random2d.pdf" ""
-  saveAs tcanvas "random2d.jpg" "" 
-  saveAs tcanvas "random2d.png" ""
   delete h2
   delete tcanvas
 
 
 
-histfill :: IO Double -> IO Double-> TH2F ->  IO () 
+histfill :: IO CDouble -> IO CDouble-> TH2F ->  IO () 
 histfill dist1 dist2 hist = do 
   x <- dist1
   y <- dist2

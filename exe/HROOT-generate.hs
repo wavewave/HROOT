@@ -3,9 +3,9 @@
 -----------------------------------------------------------------------------
 -- |
 -- Executable  : HROOT-generate
--- Copyright   : (c) 2011-2013 Ian-Woo Kim
+-- Copyright   : (c) 2011-2014 Ian-Woo Kim
 -- 
--- License     : GPL-3
+-- License     : LGPL-2.1
 -- Maintainer  : ianwookim@gmail.com
 -- Stability   : experimental
 -- Portability : GHC
@@ -43,9 +43,10 @@ import           HROOT.Data.Math.Annotate
 import           HROOT.Data.Math.Class
 import           HROOT.Data.IO.Annotate
 import           HROOT.Data.IO.Class
--- 
 import           HROOT.Data.RooFit.Class 
 import           HROOT.Data.RooFit.RooStats.Class
+import           HROOT.Data.Tree.Annotate 
+import           HROOT.Data.Tree.Class
 
 import           HROOT.Generate.MakePkg 
 -- 
@@ -69,7 +70,6 @@ mkPkgCfg name summary macro deps (cs,fs) amap synopsis descr =
                 , pkg_summarymodule = summary
                 , pkg_typemacro = TypMcro macro 
                 , pkg_classes = cs 
-                -- , pkg_topfunctions = fs 
                 , pkg_cihs = cihs 
                 , pkg_tih = tih
                 , pkg_modules = mods 
@@ -97,7 +97,6 @@ pkg_RooStats =
               , pkg_summarymodule = "HROOT.RooFit.RooStats"
               , pkg_typemacro = TypMcro "__HROOT_ROOFIT_ROOSTATS__"
               , pkg_classes = roostats_classes
-              -- , pkg_topfunctions = roostats_topfunctions
               , pkg_cihs = cihs 
               , pkg_tih = tih 
               , pkg_modules = mods 
@@ -111,6 +110,9 @@ pkg_RooStats =
               , pkg_description = ""
               }
 
+pkg_TREE = mkPkgCfg "HROOT-tree" "HROOT.Tree" "__HROOT_TREE__" ["HROOT-core"] (tree_classes,tree_topfunctions) tree_ann "Haskell binding to ROOT Tree modules" "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
+
+
 
 
 pkg_HROOT = PkgCfg { pkgname = "HROOT" 
@@ -120,9 +122,9 @@ pkg_HROOT = PkgCfg { pkgname = "HROOT"
                    , pkg_cihs = [] 
                    , pkg_modules = [] 
                    , pkg_annotateMap = M.empty  -- for the time being 
-                   , pkg_deps = ["HROOT-core","HROOT-graf","HROOT-hist","HROOT-math","HROOT-io" ]
+                   , pkg_deps = ["HROOT-core", "HROOT-tree", "HROOT-graf","HROOT-hist","HROOT-math","HROOT-io" ]
                    , pkg_hsbootlst = [] 
-                   , pkg_synopsis = "Haskell binding to ROOT RooFit modules" 
+                   , pkg_synopsis = "Haskell binding to the ROOT data analysis framework" 
                    , pkg_description = "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
                    }
 
@@ -139,6 +141,10 @@ commandLineProcess (Generate conf) = do
                  <$> C.lookup cfg "HROOT-hist.scriptbase" 
                  <*> C.lookup cfg "HROOT-hist.workingdir"
                  <*> C.lookup cfg "HROOT-hist.installbase"
+  mtree <- liftM3 FFICXXConfig 
+           <$> C.lookup cfg "HROOT-tree.scriptbase" 
+           <*> C.lookup cfg "HROOT-tree.workingdir"
+           <*> C.lookup cfg "HROOT-tree.installbase"
   mgraf <- liftM3 FFICXXConfig 
            <$> C.lookup cfg "HROOT-graf.scriptbase" 
            <*> C.lookup cfg "HROOT-graf.workingdir"
@@ -168,9 +174,10 @@ commandLineProcess (Generate conf) = do
             <*> C.lookup cfg "HROOT.installbase"
   
 
-  let mcfg = (,,,,,,,) 
+  let mcfg = (,,,,,,,,) 
              <$> mfficxxcfg1 
              <*> mfficxxcfg2 
+             <*> mtree
              <*> mgraf 
              <*> mmath 
              <*> mio 
@@ -179,19 +186,23 @@ commandLineProcess (Generate conf) = do
              <*> mHROOT
   case mcfg of 
     Nothing -> error "config file is not parsed well"
-    Just (config1,config2,cfggraf,cfgmath,cfgio,cfgRooFit,cfgRooStats,cfgHROOT) -> do 
+    Just (config1,config2,cfgtree,cfggraf,cfgmath,cfgio,cfgRooFit,cfgRooStats,cfgHROOT) -> do 
       makePackage config1 pkg_CORE
       makePackage config2 pkg_HIST
+      makePackage cfgtree pkg_TREE
       makePackage cfggraf pkg_GRAF
       makePackage cfgmath pkg_MATH
       makePackage cfgio   pkg_IO
       makePackage cfgRooFit pkg_RooFit
       makePackage cfgRooStats pkg_RooStats
+
     
       makeUmbrellaPackage cfgHROOT pkg_HROOT [ "HROOT.Core" 
                                              , "HROOT.Hist"  
                                              , "HROOT.Graf"  
                                              , "HROOT.IO"    
-                                             , "HROOT.Math" ] 
+                                             , "HROOT.Math" 
+                                             , "HROOT.Tree"
+                                             ] 
 
 
