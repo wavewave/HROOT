@@ -32,6 +32,14 @@ tBranch =
   [ 
   ] 
 
+tChain :: Class
+tChain = 
+  treeclass "TChain" [tTree] mempty
+  [ Constructor [cstring "name", cstring "title" ] Nothing
+  , Virtual int_ "Add" [cppclass tChain "chain"] (Just "addChain")
+  , Virtual int_ "Add" [cstring "name", long "nentries"] (Just "addChain1")
+  ] 
+
 tTree :: Class
 tTree = 
   treeclass "TTree" [tNamed,tAttLine,tAttFill,tAttMarker] mempty 
@@ -43,7 +51,9 @@ tTree =
 
 tree_classes :: [Class] 
 tree_classes = 
-  [ tTree, tBranch 
+  [ tBranch
+  , tChain
+  , tTree 
   ] 
 
 tree_topfunctions = 

@@ -25,16 +25,6 @@ corecabal = Cabal { cabal_pkgname = "HROOT-core"
 
 coreclass n ps ann fs = Class corecabal n ps ann Nothing fs 
 
-{-
-moduleInterface :: Module
-moduleInterface = Module { module_name = "HROOT.Class.Interface"
-                         , module_exports = [ "IDeletable" 
-                                            , "TObject"
-                                            , "ITObject"
-                                            , "ITNamed" 
-                                            , "TNamed" ]
-                         }  
--}
 
 deletable :: Class 
 deletable = AbstractClass corecabal "Deletable" [] mempty Nothing
@@ -44,7 +34,6 @@ deletable = AbstractClass corecabal "Deletable" [] mempty Nothing
 ----------------
 -- starting A --
 ----------------
-
 
 tApplication :: Class
 tApplication = coreclass "TApplication" [tObject, tQObject] mempty
@@ -256,6 +245,11 @@ tCollection =
 -- starting D --
 ----------------
 
+tDictionary :: Class
+tDictionary = AbstractClass corecabal "TDictionary" [tNamed] mempty Nothing 
+              [
+              ]
+
 tDirectory :: Class
 tDirectory = coreclass "TDirectory" [tNamed] mempty
              [ Static  void_ "AddDirectory" [bool "add"] Nothing
@@ -267,11 +261,6 @@ tDirectory = coreclass "TDirectory" [tNamed] mempty
              , Virtual (cppclass_ tObject) "Get" [ cstring "namecycle" ] Nothing 
              , Virtual bool_ "cd" [ cstring "path" ]  (Just "cd_TDirectory")
              ]
-
-tDictionary :: Class
-tDictionary = AbstractClass corecabal "TDictionary" [tNamed] mempty Nothing 
-              [
-              ]
 
 ----------------
 -- starting G --
@@ -290,9 +279,9 @@ tGlobal =
 
 tKey :: Class
 tKey = coreclass "TKey" [tNamed] mempty
-       [ 
--- Constructor [cstring "name", cstring "title", cppclass "TClass" "cl", int "nbytes", cppclass "TDirectory" "motherDir"]
-       ] 
+  [ Constructor [ cstring "name", cstring "title", cppclass tClass "cl", int "nbytes"
+                , cppclass tDirectory "motherDir"] Nothing
+  ] 
 
 
 ----------------
@@ -409,9 +398,4 @@ core_topfunctions =
   , TopLevelVariable (cppclass_ tROOT) "gROOT" Nothing
   , TopLevelVariable (cppclass_ tSystem) "gSystem" Nothing
   ] 
-
-
-
-
-
 
