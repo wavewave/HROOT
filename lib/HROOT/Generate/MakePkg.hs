@@ -18,8 +18,6 @@ module HROOT.Generate.MakePkg where
 
 import           Control.Applicative
 import           Control.Monad
--- import           Data.Configurator as C
--- import           Data.Configurator.Types 
 import           Data.List 
 import qualified Data.Map as M
 import           Data.Maybe
@@ -133,6 +131,7 @@ mkCabalFile isUmbrella config PkgCfg {..} h = do
               , ("extralibdirs",  "" )  -- this need to be changed 
               , ("extraincludedirs", "" )  -- this need to be changed 
               , ("extralib", "")
+              , ("ccOptions", "-std=c++11") 
               , ("cabalIndentation", cabalIndentation)
               ]
               cabalTemplate 
