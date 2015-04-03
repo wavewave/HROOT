@@ -99,7 +99,7 @@ tF1 =
   , Virtual double_ "GradientPar" [int "ipar", doublep "x", double "eps"] Nothing
   , Virtual void_ "InitArgs" [doublep "x", doublep "params"] Nothing
   , Static  void_ "InitStandardFunctions" [] Nothing 
-  , Virtual double_ "Integral" [double "a", double "b", doublep "params", double "epsilon"] (Just "IntegralTF1")
+  , Virtual double_ "Integral" [double "a", double "b", double "epsilon"] (Just "IntegralTF1")
   , Virtual double_ "IntegralError" [double "a", double "b", doublep "params", doublep "covmat", double "epsilon"] Nothing
   , Virtual double_ "IntegralFast" [int "num", doublep "x", doublep "w", double "a", double "b", doublep "params", double "epsilon"] Nothing
   -- IntegralMultiple
