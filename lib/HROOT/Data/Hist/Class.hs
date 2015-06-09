@@ -1,6 +1,6 @@
 -- |
--- Module      : HROOT.Data.Core.ROOTsmall
--- Copyright   : (c) 2011 Ian-Woo Kim
+-- Module      : HROOT.Data.Hist.Class
+-- Copyright   : (c) 2011-2013,2015 Ian-Woo Kim
 -- 
 -- License     : GPL-3
 -- Maintainer  : ianwookim@gmail.com
@@ -14,12 +14,11 @@ module HROOT.Data.Hist.Class where
 
 import Data.Monoid 
 -- 
--- import FFICXX.Generate.Type.CType
--- import FFICXX.Generate.Type.Method
 import FFICXX.Generate.Type.Class
 import FFICXX.Generate.Type.Module
 -- 
 import HROOT.Data.Core.Class
+import HROOT.Data.Math.Class
 
 histcabal = Cabal { cabal_pkgname = "HROOT-hist"
                   , cabal_cheaderprefix = "HROOTHist" 
@@ -135,6 +134,21 @@ tF1 =
   , Virtual double_ "Variance" [double "a", double "b", doublep "params", double "epsilon"] Nothing
   , Static  void_ "CalcGaussLegendreSamplingPoints" [int "num", doublep "x", doublep "w", double "eps"] Nothing
   ]
+
+
+
+tFitResult :: Class
+tFitResult = 
+    histclass "TFitResult" [tNamed ] mempty   -- rootFitFitResult
+    [ ]
+
+
+tFitResultPtr :: Class
+tFitResultPtr = 
+    histclass "TFitResultPtr" [] mempty
+    [ NonVirtual (cppclass_ tFitResult) "Get" [] Nothing 
+    ]
+  
 
 
 tFormula :: Class
@@ -273,7 +287,7 @@ tGraphErrors =
 
 tH1 :: Class
 tH1 = 
-  histclass "TH1" [tObject, tAttLine, tAttFill, tAttMarker] mempty 
+  histclass "TH1" [tNamed, tAttLine, tAttFill, tAttMarker] mempty 
   [ Virtual void_ "Add" [cppclass tH1 "h1", double "c1"] Nothing
   , Virtual void_ "AddBinContent" [int "bin", double "w"] Nothing
   , Virtual double_ "Chi2Test" [cppclass tH1 "h2", cstring "option", doublep "res"] Nothing
@@ -297,6 +311,7 @@ tH1 =
   , Virtual int_ "FindFirstBinAbove" [double "threshold", int "axis"] Nothing
   , Virtual int_ "FindLastBinAbove" [double "threshold", int "axis"] Nothing
   -- Fit
+  , Virtual void_ {- (cppclass_ tFitResultPtr) -} "Fit" [cppclass tF1 "f1", cstring "option", cstring "goption", double "xmin", double "xmax"] Nothing
   , Virtual void_ "FitPanel" [] (Just "FitPanelTH1")
   , NonVirtual self_ "GetAsymmetry" [cppclass tH1 "h2", double "c2", double "dc2"] Nothing
   , NonVirtual int_ "GetBufferLength" [] Nothing
@@ -569,7 +584,7 @@ tHStack = histclass "THStack" [tNamed] mempty
 hist_classes :: [Class]
 hist_classes = 
   [ tAxis
-  , tF1, tFormula
+  , tF1, tFitResult, tFitResultPtr, tFormula
   , tGraph, tGraphAsymmErrors, tGraphBentErrors, tGraphErrors
   , tH1, tH1C, tH1D, tH1F, tH1I, tH1K, tH1S, tH2, tH2C, tH2D, tH2F, tH2I, tH2Poly, tH2S, tH3, tH3C, tH3D, tH3F, tH3I, tH3S, tHStack ] 
 

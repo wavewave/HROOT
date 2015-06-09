@@ -1,6 +1,6 @@
 -- |
 -- Module      : HROOT.Data.Math.Class
--- Copyright   : (c) 2011 Ian-Woo Kim
+-- Copyright   : (c) 2011-2013, 2015 Ian-Woo Kim
 -- 
 -- License     : GPL-3
 -- Maintainer  : ianwookim@gmail.com
@@ -36,8 +36,13 @@ tRandom =
   ]       
 
 
+-- rootFitFitResult :: Class
+-- rootFitFitResult = 
+--  mathclass "ROOT::Fit::FitResult" [] mempty
+--  [ ]
+
 math_classes :: [Class]
 math_classes = 
-  [ tRandom ] 
+  [ tRandom {- , rootFitFitResult -} ] 
 
 math_topfunctions = [] 

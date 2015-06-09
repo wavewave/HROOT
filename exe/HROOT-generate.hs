@@ -3,9 +3,9 @@
 -----------------------------------------------------------------------------
 -- |
 -- Executable  : HROOT-generate
--- Copyright   : (c) 2011-2014 Ian-Woo Kim
+-- Copyright   : (c) 2011-2015 Ian-Woo Kim
 -- 
--- License     : LGPL-2.1
+-- License     : GPL-3
 -- Maintainer  : ianwookim@gmail.com
 -- Stability   : experimental
 -- Portability : GHC

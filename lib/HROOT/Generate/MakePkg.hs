@@ -3,7 +3,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      : HROOT.Generate.MakePkg
--- Copyright   : (c) 2011-2013 Ian-Woo Kim
+-- Copyright   : (c) 2011-2013,2015 Ian-Woo Kim
 -- 
 -- License     : GPL-3
 -- Maintainer  : ianwookim@gmail.com
@@ -90,12 +90,12 @@ copyPredefinedFiles pkgname (files,dirs) ibase = do
 
 
 -- | 
-mkCROOTIncludeHeaders :: ([Namespace],String) -> Class -> ([Namespace],[String])
+mkCROOTIncludeHeaders :: ([Namespace],String) -> Class -> ([Namespace],[HeaderName])
 mkCROOTIncludeHeaders (nss,str) c = 
   case class_name c of
     "Deletable" -> (nss,[])
-    "TROOT" -> (nss++[NS "ROOT"],[str </> (class_name c) ++ ".h"])
-    _ -> (nss,[str </> (class_name c) ++ ".h"])
+    "TROOT" -> (nss++[NS "ROOT"],[HdrName (str </> (class_name c) ++ ".h")])
+    _ -> (nss,[HdrName (str </> (class_name c) ++ ".h")])
 
 -- | 
 mkCabalFile :: Bool  -- ^ is umbrella 
