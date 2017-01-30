@@ -1,5 +1,5 @@
 Name:		HROOT-generate
-Version:	0.8.1
+Version:	0.8.999
 Synopsis:	automatic HROOT binding generation
 Description: 	automatic HROOT binding generation 
 License:        LGPL-2.1
@@ -102,9 +102,9 @@ Library
                    HROOT.Data.Math.Class
                    HROOT.Data.IO.Annotate
                    HROOT.Data.IO.Class
-                   HROOT.Data.RooFit.Annotate
-                   HROOT.Data.RooFit.Class
-                   HROOT.Data.RooFit.RooStats.Class
+                   -- HROOT.Data.RooFit.Annotate
+                   -- HROOT.Data.RooFit.Class
+                   -- HROOT.Data.RooFit.RooStats.Class
                    HROOT.Data.Tree.Annotate
                    HROOT.Data.Tree.Class
                    

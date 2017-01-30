@@ -77,7 +77,7 @@ tCutG =
   grafclass "TCutG" [tGraph] mempty 
   [ Constructor [cstring "name", int "n", doublep "x", doublep "y"] Nothing
   ]
-
+  
 ----------------
 -- starting E --
 ----------------

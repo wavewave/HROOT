@@ -1,6 +1,6 @@
 -- |
 -- Module      : HROOT.Data.Hist.Class
--- Copyright   : (c) 2011-2013,2015 Ian-Woo Kim
+-- Copyright   : (c) 2011-2017 Ian-Woo Kim
 -- 
 -- License     : GPL-3
 -- Maintainer  : ianwookim@gmail.com
@@ -26,9 +26,40 @@ histcabal = Cabal { cabal_pkgname = "HROOT-hist"
 
 histclass n ps ann fs = Class histcabal n ps ann Nothing fs 
 
+{- 
+tAxis :: Class
+tAxis = 
+  histclass "TAxis" [tNamed, tAttAxis] mempty
+  [ Constructor [int "nbins", double "xmin", double "xmax"] Nothing
+  ]
+
+tH1 :: Class
+tH1 = 
+  histclass "TH1" [tNamed, tAttLine, tAttFill, tAttMarker] mempty 
+  [ Virtual void_ "Add" [cppclass tH1 "h1", double "c1"] Nothing
+
+  , Virtual int_  "Fill" [double "x"] (Just "fill1")
+  , Virtual int_  "Fill" [double "x", double "w"] (Just "fill1w")
+  , Virtual void_ "FillN" [int "ntimes", doublep "x", doublep "w", int "stride"] (Just "fillN1")
+  ] 
+
+tH1F :: Class
+tH1F = histclass "TH1F" [tH1, tArrayF] mempty
+       [ Constructor [cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"] Nothing
+       ] 
+
+tF1 :: Class
+tF1 = 
+  histclass "TF1" [tAttLine, tAttFill, tAttMarker] mempty
+  [ Constructor [cstring "name",cstring "formula",double "xmin",double "xmax"] Nothing 
+  ]
+-}
+
 ----------------
 -- starting A --
 ----------------
+
+
 
 tAxis :: Class
 tAxis = 
@@ -56,7 +87,14 @@ tAxis =
 
 tF1 :: Class
 tF1 = 
-  histclass "TF1" [tFormula, tAttLine, tAttFill, tAttMarker] mempty
+  histclass "TF1" [tAttLine, tAttFill, tAttMarker] mempty
+  [ Constructor [cstring "name",cstring "formula",double "xmin",double "xmax"] Nothing 
+  ]
+
+{- 
+tF1 :: Class
+tF1 = 
+  histclass "TF1" [tAttLine, tAttFill, tAttMarker] mempty
   [ Constructor [cstring "name",cstring "formula",double "xmin",double "xmax"] Nothing 
   -- Browse
   , Virtual double_ "Derivative" [double "x", doublep "params", double "epsilon"] Nothing
@@ -67,7 +105,7 @@ tF1 =
   , Virtual self_ "DrawCopy" [cstring "option"] (Just "drawCopyTF1")
   , Virtual (cppclass_ tObject) "DrawDerivative" [cstring "option"] Nothing
   , Virtual (cppclass_ tObject) "DrawIntegral" [cstring "option"] Nothing
-  , Virtual void_ "DrawF1" [cstring "formula", double "xmin", double "xmax", cstring "option"] Nothing
+  -- , Virtual void_ "DrawF1" [cstring "formula", double "xmin", double "xmax", cstring "option"] Nothing
   , Virtual void_ "FixParameter" [int "ipar", double "value"] Nothing
   , NonVirtual double_ "GetChisquare" [] Nothing
   , NonVirtual (cppclass_ tH1)  "GetHistogram" [] Nothing
@@ -135,7 +173,7 @@ tF1 =
   , Static  void_ "CalcGaussLegendreSamplingPoints" [int "num", doublep "x", doublep "w", double "eps"] Nothing
   ]
 
-
+-}
 
 tFitResult :: Class
 tFitResult = 
@@ -150,20 +188,20 @@ tFitResultPtr =
     ]
   
 
-
+{- 
 tFormula :: Class
 tFormula = histclass "TFormula" [tNamed] mempty
            [ Constructor [cstring "name", cstring "formula"] Nothing
            , NonVirtual void_ "Optimize" [] Nothing
            -- Analyze
            -- AnalyzeFunction 
-           , Virtual int_ "Compile" [cstring "expression"] Nothing
+           -- , Virtual int_ "Compile" [cstring "expression"] Nothing
            , Virtual void_ "Clear" [cstring "option"] Nothing
            -- DefinedString
            , Virtual double_ "DefinedValue" [int "code"] Nothing
            -- DefinedVariable
            , Virtual double_ "Eval" [double "x", double "y", double "z", double "t"] Nothing
-           , Virtual double_ "EvalParOld" [doublep "x", doublep "params"] Nothing
+           -- , Virtual double_ "EvalParOld" [doublep "x", doublep "params"] Nothing
            , Virtual double_ "EvalPar" [doublep "x", doublep "params"] Nothing
            -- GetLinearPart
            , Virtual int_ "GetNdim" [] Nothing
@@ -175,9 +213,9 @@ tFormula = histclass "TFormula" [tNamed] mempty
            -- GetParName
            , Virtual int_   "GetParNumber" [cstring "name"] Nothing
            , Virtual bool_  "IsLinear" [] Nothing
-           , Virtual bool_  "IsNormalized" [] Nothing
+           -- , Virtual bool_  "IsNormalized" [] Nothing
            -- ProcessLinear
-           , Virtual void_  "SetNumber" [int "number"] Nothing
+           -- , Virtual void_  "SetNumber" [int "number"] Nothing
            , Virtual void_  "SetParameter" [cstring "name", double "parvalue"] Nothing 
            , Virtual void_  "SetParameters" [doublep "params"] Nothing
            , Virtual void_  "SetParName"  [int "ipar", cstring "name"] Nothing
@@ -189,7 +227,7 @@ tFormula = histclass "TFormula" [tNamed] mempty
            -- SetMaxima
            ]
 
-
+-}
 
 ----------------
 -- starting G --
@@ -578,14 +616,12 @@ tHStack = histclass "THStack" [tNamed] mempty
           [ Constructor [cstring "name",cstring "title"] Nothing
           ] 
 
-
-
-
 hist_classes :: [Class]
 hist_classes = 
   [ tAxis
-  , tF1, tFitResult, tFitResultPtr, tFormula
+  , tF1, tFitResult, tFitResultPtr -- , tFormula
   , tGraph, tGraphAsymmErrors, tGraphBentErrors, tGraphErrors
   , tH1, tH1C, tH1D, tH1F, tH1I, tH1K, tH1S, tH2, tH2C, tH2D, tH2F, tH2I, tH2Poly, tH2S, tH3, tH3C, tH3D, tH3F, tH3I, tH3S, tHStack ] 
+
 
 hist_topfunctions = [] 
