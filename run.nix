@@ -3,11 +3,7 @@
 with pkgs;
 
 let
-  fficxxSrc = fetchgit {
-    url = "git://github.com/wavewave/fficxx.git";
-    rev = "a24cd02a5a0be3049154628e72f9951de30ec292";
-    sha256 = "1m0f8dkvsygiky3g4x038jmx60k6h58lm7jcqhhlfak56r40d4kb";
-  };
+  fficxxSrc = (import ./config.nix { inherit fetchgit;}).fficxxSrc;
 
   config = self: super: {
     "fficxx-runtime" = self.callPackage
