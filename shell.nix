@@ -40,31 +40,6 @@ let
          license = stdenv.lib.licenses.bsd3;
        }) {};
   
-    "HROOT-generate" = self.callPackage
-      ({ mkDerivation, base, Cabal, cmdargs, configurator
-      , containers, directory, fficxx, filepath, HStringTemplate, mtl
-      , process, split, stdenv, template-haskell, transformers
-      , unordered-containers
-      }:
-      mkDerivation {
-        pname = "HROOT-generate";
-        version = "0.8.999";
-        src = ./.;
-        isLibrary = true;
-        isExecutable = true;
-        libraryHaskellDepends = [
-          base Cabal cmdargs containers directory fficxx filepath
-          HStringTemplate mtl process split template-haskell transformers
-          unordered-containers
-        ];
-        executableHaskellDepends = [
-          base Cabal cmdargs configurator containers directory fficxx
-          filepath HStringTemplate mtl process split template-haskell
-          transformers unordered-containers
-        ];
-        description = "automatic HROOT binding generation";
-        license = stdenv.lib.licenses.lgpl21;
-      }) {};
   };
 
 
@@ -74,8 +49,8 @@ let
   hsenv = newHaskellPackages.ghcWithPackages (p: with p; [
             fficxx fficxx-runtime
             cmdargs  configurator
-            containers directory filepath HStringTemplate mtl
-            process split stdenv template-haskell transformers
+            containers directory filepath mtl
+            process split stdenv template template-haskell transformers
             unordered-containers
           ]);
   #drv = haskellPackages.callPackage f {};

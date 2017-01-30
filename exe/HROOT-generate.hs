@@ -26,7 +26,7 @@ import           System.Console.CmdArgs
 -- 
 import           FFICXX.Generate.Config
 import           FFICXX.Generate.Code.Dependency
-import           FFICXX.Generate.Generator.ContentMaker
+import           FFICXX.Generate.ContentMaker
 import           FFICXX.Generate.Type.Annotate
 import           FFICXX.Generate.Type.Class 
 import           FFICXX.Generate.Type.Module
@@ -51,8 +51,6 @@ import           HROOT.Data.Tree.Class
 import           HROOT.Generate.MakePkg 
 -- 
 import qualified Paths_HROOT_generate as H
-import qualified FFICXX.Paths_fficxx as F
-import Debug.Trace
 
 main :: IO () 
 main = do 
@@ -60,10 +58,10 @@ main = do
   putStrLn $ show param 
   commandLineProcess param 
 
-mkPkgCfg :: String -> String -> String -> [String] -> ([Class],[TopLevelFunction]) -> AnnotateMap -> String -> String -> PackageConfig 
+mkPkgCfg :: String -> String -> String -> [String] -> ([Class],[TopLevelFunction]) -> AnnotateMap -> String -> String -> EachPackageConfig 
 mkPkgCfg name summary macro deps (cs,fs) amap synopsis descr = 
-    let (mods,cihs,tih) = 
-          mkAll_ClassModules_CIH_TIH (name,mkCROOTIncludeHeaders ([],"")) (cs,fs)
+    let PkgConfig mods cihs tih _ _ = 
+          mkPackageConfig (name,mkCROOTIncludeHeaders ([],"")) (cs,fs,[],[])
         hsbootlst = mkHSBOOTCandidateList mods 
 
     in PkgCfg { pkgname = name 
@@ -93,10 +91,10 @@ pkg_RooFit = mkPkgCfg "HROOT-RooFit" "HROOT.RooFit" "__HROOT_ROOFIT__" ["HROOT-c
 
 
 pkg_RooStats = 
-    let (mods,cihs,tih) = 
-          mkAll_ClassModules_CIH_TIH ( "HROOT-RooFit-RooStats"
-                                     , mkCROOTIncludeHeaders ([NS "RooStats"],"RooStats"))
-                                     (roostats_classes,roostats_topfunctions) 
+    let PkgConfig mods cihs tih _ _ = 
+          mkPackageConfig ( "HROOT-RooFit-RooStats"
+                          , mkCROOTIncludeHeaders ([NS "RooStats"],"RooStats"))
+                          (roostats_classes,roostats_topfunctions,[],[]) 
         hsbootlst = mkHSBOOTCandidateList mods 
     in PkgCfg { pkgname = "HROOT-RooFit-RooStats"
               , pkg_summarymodule = "HROOT.RooFit.RooStats"
@@ -124,7 +122,7 @@ pkg_HROOT = PkgCfg { pkgname = "HROOT"
                    , pkg_summarymodule = "HROOT"
                    , pkg_typemacro = TypMcro ""
                    , pkg_classes = [] 
-                   , pkg_cihs = [] 
+                   , pkg_cihs = []
                    , pkg_modules = [] 
                    , pkg_annotateMap = M.empty  -- for the time being 
                    , pkg_deps = [ "HROOT-core", "HROOT-hist", "HROOT-math"

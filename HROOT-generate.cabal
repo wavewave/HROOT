@@ -53,41 +53,44 @@ Executable HROOT-generate
   hs-source-dirs: exe
   ghc-options: 	-Wall -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
   ghc-prof-options: -caf-all -auto-all
-  Build-Depends: base>4, 
-                 mtl>2, 
-                 containers, 
-                 filepath>1, 
-                 directory, 
-                 process, 
-                 HStringTemplate, 
-                 split,
-                 configurator >= 0.2,
-                 cmdargs, 
-                 transformers, 
-                 template-haskell,
+  Build-Depends: base>4,
                  Cabal,
+                 cmdargs,
+                 configurator >= 0.2,
+                 containers, 
+                 directory,
                  fficxx >= 0.2.999,
-                 unordered-containers, 
+                 filepath>1, 
+                 mtl>2, 
+                 process, 
+                 split,
+                 template,
+                 template-haskell,
+                 transformers,
+                 unordered-containers,
+                 --
                  HROOT-generate
+                 
   Other-Modules: Command
 
 Library
   hs-source-dirs: lib
   ghc-options: 	-Wall -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
   ghc-prof-options: -caf-all -auto-all
-  Build-Depends: base>4, 
-                 mtl>2,
-                 containers, 
-                 filepath>1, 
-                 directory, 
-                 process, 
-                 HStringTemplate, 
-                 split,
+  Build-Depends: base>4,
+                 Cabal,
                  cmdargs, 
-                 transformers, 
-                 template-haskell, 
-                 Cabal, 
+                 containers,
+                 directory, 
                  fficxx >= 0.2.999, 
+                 filepath>1,
+                 haskell-src-exts,
+                 mtl>2,
+                 process, 
+                 split,
+                 template-haskell,
+                 text,
+                 transformers, 
                  unordered-containers
 
   Exposed-Modules: 
