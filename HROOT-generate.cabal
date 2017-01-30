@@ -66,7 +66,7 @@ Executable HROOT-generate
                  transformers, 
                  template-haskell,
                  Cabal,
-                 fficxx >= 0.1,
+                 fficxx >= 0.2.999,
                  unordered-containers, 
                  HROOT-generate
   Other-Modules: Command
@@ -87,7 +87,7 @@ Library
                  transformers, 
                  template-haskell, 
                  Cabal, 
-                 fficxx >= 0.1, 
+                 fficxx >= 0.2.999, 
                  unordered-containers
 
   Exposed-Modules: 

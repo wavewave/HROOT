@@ -72,11 +72,7 @@ let
   newHaskellPackages = pkgs.haskellPackages.override { overrides = config; }; 
 
   hsenv = newHaskellPackages.ghcWithPackages (p: with p; [
-            fficxx fficxx-runtime
-            cmdargs  configurator
-            containers directory filepath HStringTemplate mtl
-            process split stdenv template-haskell transformers
-            unordered-containers
+            HROOT-generate fficxx fficxx-runtime
           ]);
   #drv = haskellPackages.callPackage f {};
 
