@@ -106,8 +106,6 @@ mkCabalFile :: Bool  -- ^ is umbrella
             -> IO () 
 mkCabalFile isUmbrella config PkgCfg {..} h = do 
   version <- getHROOTVersion config
-  -- templateDir <- F.getDataDir >>= return . (</> "template")
-  -- (templates :: STGroup String) <- directoryGroup templateDir 
   let deps | null pkg_deps = [] 
            | otherwise = "," ++ intercalate "," pkg_deps 
   let str = subst cabalTemplate . context $
@@ -116,12 +114,14 @@ mkCabalFile isUmbrella config PkgCfg {..} h = do
               , ("synopsis", pkg_synopsis )
               , ("description", pkg_description )
               , ("homepage", "http://ianwookim.org/HROOT")
-              , ("license", "LGPL-2.1" ) 
-              , ("licensefile", "LICENSE")
+              , ("licenseField", "license: LGPL-2.1" ) 
+              , ("licenseFileField", "license-file: LICENSE")
               , ("author", "Ian-Woo Kim")
               , ("maintainer", "Ian-Woo Kim <ianwookim@gmail.com>")
               , ("category", "Graphics, Statistics, Math, Numerical")
+              , ("sourcerepository","")
               , ("buildtype", "Custom")
+              , ("ccOptions", "-std=c++14")
               , ("deps", deps) 
               , ("csrcFiles", if isUmbrella then "" else genCsrcFiles (pkg_tih,pkg_modules))
               , ("includeFiles", let cihs = cmCIH =<< pkg_modules
@@ -131,8 +131,7 @@ mkCabalFile isUmbrella config PkgCfg {..} h = do
               , ("otherModules", genOtherModules pkg_modules)
               , ("extralibdirs",  "" )  -- this need to be changed 
               , ("extraincludedirs", "" )  -- this need to be changed 
-              , ("extralib", "")
-              , ("ccOptions", "-std=c++14") 
+              , ("extraLibraries", "")
               , ("cabalIndentation", cabalIndentation)
               ]
   hPutStrLn h str
@@ -248,9 +247,6 @@ makeUmbrellaPackage config pkgcfg@(PkgCfg {..}) mods = do
     withFile (workingDir </> cabalFileName) WriteMode $ 
       \h -> mkCabalFile True config pkgcfg h
 
-    -- templateDir <- F.getDataDir >>= return . (</> "template")
-    -- (templates :: STGroup String) <- directoryGroup templateDir 
-
     putStrLn "umbrella module generation"
     withFile (workingDir </> pkg_summarymodule <.> "hs" )  WriteMode $ \h -> do 
       let exportListStr = intercalateWith (conn "\n, ") (\x->"module " ++ x ) mods 
@@ -258,7 +254,9 @@ makeUmbrellaPackage config pkgcfg@(PkgCfg {..}) mods = do
           str = subst pkgHsTemplate . context $ 
                   [ ("summarymod", pkg_summarymodule)
                   , ("exportList", exportListStr) 
-                  , ("importList", importListStr) ]
+                  , ("importList", importListStr)
+                  , ("topLevelDef", "")
+                  ]
       hPutStrLn h str
     putStrLn "copying"
     copyFileWithMD5Check (workingDir </> cabalFileName)  (ibase </> cabalFileName) 
