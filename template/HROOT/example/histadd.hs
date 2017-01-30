@@ -1,5 +1,8 @@
 module Main where
 
+import Foreign.C.Types
+import Foreign.C.String
+
 import HROOT
 {-
 import HROOT.Class.Deletable
@@ -10,11 +13,17 @@ import HROOT.Class.TRandom
 import HROOT.Class.TObject 
 -}
 
-main = do 
-  tcanvas <- newTCanvas "test" "test" 640 480
+main = do
+  test <- newCString "test"
+  histaddpdf <- newCString "histadd.pdf"
+  histaddjpg <- newCString "histadd.jpg"
+  histaddpng <- newCString "histadd.png"
+  nullstr <- newCString ""
   
-  h1 <- newTH1F "test" "test" 100 (-10.0) 10.0  
-  h2 <- newTH1F "test" "test" 100 (-10.0) 10.0 
+  tcanvas <- newTCanvas test test 640 480
+  
+  h1 <- newTH1F test test 100 (-10.0) 10.0  
+  h2 <- newTH1F test test 100 (-10.0) 10.0 
   
   tRandom <- newTRandom 65535
 
@@ -30,11 +39,11 @@ main = do
  
   add h1 h2 1.0 
    
-  draw h1 ""   
+  draw h1 nullstr
 
-  saveAs tcanvas "histadd.pdf" "" 
-  saveAs tcanvas "histadd.jpg" ""
-  saveAs tcanvas "histadd.png" ""
+  saveAs tcanvas histaddpdf nullstr
+  saveAs tcanvas histaddjpg nullstr
+  saveAs tcanvas histaddpng nullstr
 
   delete h1
   delete h2
@@ -43,7 +52,7 @@ main = do
   return () 
 
          
-histfill :: IO Double -> TH1F -> IO () 
+histfill :: IO CDouble -> TH1F -> IO () 
 histfill dist hist = do 
   x <- dist 
   fill1 hist x 
