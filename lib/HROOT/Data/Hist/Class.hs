@@ -26,40 +26,10 @@ histcabal = Cabal { cabal_pkgname = "HROOT-hist"
 
 histclass n ps ann fs = Class histcabal n ps ann Nothing fs 
 
-{- 
-tAxis :: Class
-tAxis = 
-  histclass "TAxis" [tNamed, tAttAxis] mempty
-  [ Constructor [int "nbins", double "xmin", double "xmax"] Nothing
-  ]
-
-tH1 :: Class
-tH1 = 
-  histclass "TH1" [tNamed, tAttLine, tAttFill, tAttMarker] mempty 
-  [ Virtual void_ "Add" [cppclass tH1 "h1", double "c1"] Nothing
-
-  , Virtual int_  "Fill" [double "x"] (Just "fill1")
-  , Virtual int_  "Fill" [double "x", double "w"] (Just "fill1w")
-  , Virtual void_ "FillN" [int "ntimes", doublep "x", doublep "w", int "stride"] (Just "fillN1")
-  ] 
-
-tH1F :: Class
-tH1F = histclass "TH1F" [tH1, tArrayF] mempty
-       [ Constructor [cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"] Nothing
-       ] 
-
-tF1 :: Class
-tF1 = 
-  histclass "TF1" [tAttLine, tAttFill, tAttMarker] mempty
-  [ Constructor [cstring "name",cstring "formula",double "xmin",double "xmax"] Nothing 
-  ]
--}
 
 ----------------
 -- starting A --
 ----------------
-
-
 
 tAxis :: Class
 tAxis = 
@@ -84,14 +54,14 @@ tAxis =
 -- starting F --
 ----------------
 
-
+{- 
 tF1 :: Class
 tF1 = 
   histclass "TF1" [tAttLine, tAttFill, tAttMarker] mempty
   [ Constructor [cstring "name",cstring "formula",double "xmin",double "xmax"] Nothing 
   ]
-
-{- 
+-}
+ 
 tF1 :: Class
 tF1 = 
   histclass "TF1" [tAttLine, tAttFill, tAttMarker] mempty
@@ -173,7 +143,7 @@ tF1 =
   , Static  void_ "CalcGaussLegendreSamplingPoints" [int "num", doublep "x", doublep "w", double "eps"] Nothing
   ]
 
--}
+
 
 tFitResult :: Class
 tFitResult = 

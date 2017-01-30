@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      : HROOT.Data.RooFit.RooStats.Class
--- Copyright   : (c) 2013 Ian-Woo Kim
+-- Copyright   : (c) 2011-2017 Ian-Woo Kim
 -- 
 -- License     : GPL-3
 -- Maintainer  : ianwookim@gmail.com

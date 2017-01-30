@@ -43,8 +43,8 @@ import           HROOT.Data.Math.Annotate
 import           HROOT.Data.Math.Class
 import           HROOT.Data.IO.Annotate
 import           HROOT.Data.IO.Class
--- import           HROOT.Data.RooFit.Class 
--- import           HROOT.Data.RooFit.RooStats.Class
+import           HROOT.Data.RooFit.Class 
+import           HROOT.Data.RooFit.RooStats.Class
 import           HROOT.Data.Tree.Annotate 
 import           HROOT.Data.Tree.Class
 
@@ -87,10 +87,11 @@ pkg_MATH = mkPkgCfg "HROOT-math" "HROOT.Math" "__HROOT_MATH__" ["HROOT-core"] (m
 
 
 pkg_IO   = mkPkgCfg "HROOT-io"   "HROOT.IO"   "__HROOT_IO__"   ["HROOT-core"] (io_classes,io_topfunctions) M.empty "Haskell binding to ROOT IO modules" "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
--- pkg_RooFit = mkPkgCfg "HROOT-RooFit" "HROOT.RooFit" "__HROOT_ROOFIT__" ["HROOT-core", "HROOT-hist", "HROOT-math"] (roofit_classes,roofit_topfunctions) M.empty "Haskell binding to ROOT RooFit modules" "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
+
+pkg_RooFit = mkPkgCfg "HROOT-RooFit" "HROOT.RooFit" "__HROOT_ROOFIT__" ["HROOT-core", "HROOT-hist", "HROOT-math"] (roofit_classes,roofit_topfunctions) M.empty "Haskell binding to ROOT RooFit modules" "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
 
 
-{-
+
 pkg_RooStats = 
     let (mods,cihs,tih) = 
           mkAll_ClassModules_CIH_TIH ( "HROOT-RooFit-RooStats"
@@ -113,7 +114,7 @@ pkg_RooStats =
               , pkg_synopsis = ""
               , pkg_description = ""
               }
--}
+
 
 pkg_TREE = mkPkgCfg "HROOT-tree" "HROOT.Tree" "__HROOT_TREE__" ["HROOT-core"] (tree_classes,tree_topfunctions) tree_ann "Haskell binding to ROOT Tree modules" "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
 
@@ -199,8 +200,8 @@ commandLineProcess (Generate conf) = do
       makePackage cfggraf pkg_GRAF
       makePackage cfgmath pkg_MATH
       makePackage cfgio   pkg_IO
-      -- makePackage cfgRooFit pkg_RooFit
-      -- makePackage cfgRooStats pkg_RooStats
+      makePackage cfgRooFit pkg_RooFit
+      makePackage cfgRooStats pkg_RooStats
 
     
       makeUmbrellaPackage cfgHROOT pkg_HROOT [ "HROOT.Core" 
