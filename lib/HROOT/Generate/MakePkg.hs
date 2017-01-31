@@ -52,7 +52,6 @@ import           FFICXX.Generate.Type.PackageInterface
 import           FFICXX.Generate.Util
 -- 
 import qualified Paths_HROOT_generate                   as H
--- import qualified FFICXX.Paths_fficxx                    as F
 
 data UmbrellaPackageConfig = UPkgCfg { upkgname :: String } 
 

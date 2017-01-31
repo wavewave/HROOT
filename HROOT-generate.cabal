@@ -1,5 +1,5 @@
 Name:		HROOT-generate
-Version:	0.8.999
+Version:	0.9
 Synopsis:	automatic HROOT binding generation
 Description: 	automatic HROOT binding generation 
 License:        LGPL-2.1
@@ -59,7 +59,7 @@ Executable HROOT-generate
                  configurator >= 0.2,
                  containers, 
                  directory,
-                 fficxx >= 0.2.999,
+                 fficxx >= 0.3,
                  filepath>1, 
                  mtl>2, 
                  process, 
@@ -82,7 +82,7 @@ Library
                  cmdargs, 
                  containers,
                  directory, 
-                 fficxx >= 0.2.999, 
+                 fficxx >= 0.3, 
                  filepath>1,
                  haskell-src-exts,
                  mtl>2,
