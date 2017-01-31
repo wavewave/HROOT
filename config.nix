@@ -3,7 +3,7 @@
 {
   fficxxSrc = fetchgit {
     url = "git://github.com/wavewave/fficxx.git";
-    rev = "64d8c3c47a6b42a8a3d43c4039a3708b063c6854";
-    sha256 = "113ihrfqq4ymrlxxjnf7c8cg48n431qlnwhcg62v5izmvmwlcdjl";
+    rev = "80819859f3fae022d67180503cae4980817fb2d1";
+    sha256 = "1jxi18zc9d4k2k398dhnkpcwpfnxa7pvr5hymlkiiiq9sj7pw9bk";
   };
 }

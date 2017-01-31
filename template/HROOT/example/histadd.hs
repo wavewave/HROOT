@@ -2,16 +2,17 @@
 
 module Main where
 
+import Data.ByteString.Char8 (ByteString)
 import Foreign.C.Types
 import Foreign.C.String
 
 import HROOT
 
 main = do
-  tcanvas <- newTCanvas test test 640 480
+  tcanvas <- newTCanvas ("test" :: ByteString) ("test" :: ByteString) 640 480
 
-  h1 <- newTH1F test test 100 (-10.0) 10.0  
-  h2 <- newTH1F test test 100 (-10.0) 10.0 
+  h1 <- newTH1F ("test" :: ByteString) ("test" :: ByteString) 100 (-10.0) 10.0  
+  h2 <- newTH1F ("test" :: ByteString) ("test" :: ByteString) 100 (-10.0) 10.0 
 
   tRandom <- newTRandom 65535
 
@@ -27,7 +28,7 @@ main = do
 
   add h1 h2 1.0 
 
-  draw h1 nullstr
+  draw h1 ("" :: ByteString)
 
   saveAs tcanvas ("histadd.pdf" :: ByteString) ("" :: ByteString)
   saveAs tcanvas ("histadd.jpg" :: ByteString) ("" :: ByteString)
