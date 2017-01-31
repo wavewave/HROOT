@@ -162,8 +162,6 @@ makePackage config pkgcfg@(PkgCfg {..}) = do
 
     withFile (workingDir </> cabalFileName) WriteMode $ 
       \h -> mkCabalFile False config pkgcfg h
-    -- templateDir <- F.getDataDir >>= return . (</> "template")
-    -- (templates :: STGroup String) <- directoryGroup templateDir 
     let cglobal = mkGlobal pkg_classes
     -- 
     putStrLn "header file generation"

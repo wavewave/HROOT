@@ -7,12 +7,12 @@ let
 
   config = self: super: {
     "fficxx-runtime" = self.callPackage
-      ({ mkDerivation, base, stdenv, template-haskell }:
+      ({ mkDerivation, base, bytestring, stdenv, template-haskell }:
        mkDerivation {
          pname = "fficxx-runtime";
-         version = "0.2.999";
+         version = "0.3";
          src = "${fficxxSrc}/fficxx-runtime";
-         libraryHaskellDepends = [ base template-haskell ];
+         libraryHaskellDepends = [ base bytestring template-haskell ];
          description = "Runtime for fficxx-generated library";
          license = stdenv.lib.licenses.bsd3;
        }) {};
@@ -24,7 +24,7 @@ let
        }:
        mkDerivation {
          pname = "fficxx";
-         version = "0.2.999";
+         version = "0.3";
          src = "${fficxxSrc}/fficxx";
          libraryHaskellDepends = [
            base bytestring Cabal containers data-default directory either
