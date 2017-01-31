@@ -1,26 +1,19 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
--- {-# LANGUAGE TypeSynonymInstances #-}
 
 module Main where
 
--- import Control.Applicative
 import Control.Monad
--- import Data.String
--- import Foreign.C.String
+import Data.ByteString.Char8 (ByteString)
 import Foreign.C.Types
 import System.IO.Unsafe
 --
 import HROOT
 
-
--- instance IsString CString where
---   fromString str = unsafePerformIO (newCString str)
-
 main :: IO () 
 main = do 
-  tcanvas <- newTCanvas "Test" "Test" 640 480
-  h2 <- newTH2F "test" "test" 100 (-5.0) 5.0 100 (-5.0) 5.0 
+  tcanvas <- newTCanvas ("Test" :: ByteString) ("Test" :: ByteString) 640 480
+  h2 <- newTH2F ("test" :: ByteString) ("test" :: ByteString) 100 (-5.0) 5.0 100 (-5.0) 5.0 
 
   tRandom <- newTRandom 65535
 
@@ -32,8 +25,8 @@ main = do
                go (n-1) 
 
   go 1000000
-  draw h2 "lego"
-  saveAs tcanvas "random2d.pdf" ""
+  draw h2 ("lego" :: ByteString)
+  saveAs tcanvas ("random2d.pdf" :: ByteString) ("" :: ByteString)
   delete h2
   delete tcanvas
 

@@ -1,13 +1,17 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main where
 
 import Control.Monad
-
+import Data.ByteString.Char8 (ByteString)
+import Foreign.C.Types
+--
 import HROOT
 
 main :: IO () 
 main = do 
-  tcanvas <- newTCanvas "Test" "Test" 640 480
-  h1 <- newTH1D "test" "test" 100 (-5.0) 5.0 
+  tcanvas <- newTCanvas ("Test" :: ByteString) ("Test" :: ByteString) 640 480
+  h1 <- newTH1D ("test" :: ByteString) ("test" :: ByteString) 100 (-5.0) 5.0 
 
   let bx = [-11,-5,-3,-1,1,2,3,4]
 
@@ -25,14 +29,14 @@ main = do
                go (n-1) 
 
   go 1000000
-  draw h1 ""
-  saveAs tcanvas "variablebins.pdf" ""
+  draw h1 ("" :: ByteString)
+  saveAs tcanvas ("variablebins.pdf" :: ByteString) ("" :: ByteString)
   delete h1
   delete tcanvas
 
 
 
-histfill :: IO Double -> TH1D ->  IO () 
+histfill :: IO CDouble -> TH1D ->  IO () 
 histfill gen hist = do 
   x <- gen
   fill1 hist x

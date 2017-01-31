@@ -4,7 +4,6 @@ module Main where
 
 import Data.ByteString.Char8 (ByteString)
 import Foreign.C.Types
-import Foreign.C.String
 
 import HROOT
 
