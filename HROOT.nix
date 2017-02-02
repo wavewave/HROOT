@@ -60,7 +60,7 @@ let
   }; 
 
   hsenv = newHaskellPackages.ghcWithPackages (p: with p; [
-            HROOT-core fficxx-runtime
+            HROOT fficxx-runtime
           ]);
 in
 

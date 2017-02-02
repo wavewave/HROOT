@@ -121,7 +121,8 @@ mkCabalFile isUmbrella config PkgCfg {..} h = do
               , ("sourcerepository","")
               , ("buildtype", "Custom")
               , ("ccOptions", "-std=c++14")
-              , ("deps", deps) 
+              , ("deps", deps)
+              , ("extraFiles", cabalIndentation <> "Config.hs" )
               , ("csrcFiles", if isUmbrella then "" else genCsrcFiles (pkg_tih,pkg_modules))
               , ("includeFiles", let cihs = cmCIH =<< pkg_modules
                                  in if isUmbrella then "" else genIncludeFiles pkgname (cihs, []))
