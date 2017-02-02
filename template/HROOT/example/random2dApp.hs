@@ -7,6 +7,7 @@ import Data.ByteString.Char8 (ByteString,useAsCString)
 import Foreign.C.String
 import Foreign.C.Types
 import Foreign.Marshal.Alloc (alloca)
+import Foreign.Marshal.Array (withArray)
 import Foreign.Storable
 
 import HROOT
@@ -18,13 +19,13 @@ main = do
     alloca $ \pargc -> do
       poke pargc 0      
 
-      tapp <- newTApplication ("test" :: ByteString) pargc pargv -- ["test" :: ByteString]
+      tapp <- newTApplication ("test" :: ByteString) pargc pargv
       tcanvas <- newTCanvas ("Test" :: ByteString) ("Test" :: ByteString) 640 480
       h2 <- newTH2F ("test" :: ByteString) ("test" :: ByteString) 100 (-5.0) 5.0 100 (-5.0) 5.0 
-      tRandom <- newTRandom 65535
+      trandom <- newTRandom 65535
 
-      let dist1 = gaus tRandom 0 2 
-          dist2 = gaus tRandom 0 2 
+      let dist1 = gaus trandom 0 2 
+          dist2 = gaus trandom 0 2 
 
       let go n | n < 0 = return () 
                | otherwise = do 
@@ -35,6 +36,8 @@ main = do
       draw h2 ("lego" :: ByteString)
       run tapp 1 
       delete h2
+      delete tcanvas
+      delete trandom
       delete tapp
 
 
