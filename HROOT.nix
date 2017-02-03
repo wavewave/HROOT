@@ -67,4 +67,7 @@ in
 stdenv.mkDerivation {
   name = "HROOT-env";
   buildInputs = [ hsenv root ];
+  shellHook = ''
+    PS1="\n\[\033[0;35m\][\u@\h.HROOT:\w]\$\[\033[0m\] "
+  '';  
 }
