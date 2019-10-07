@@ -3,8 +3,6 @@
 module HROOT.Data.Math.Annotate where
 
 import FFICXX.Generate.Type.Annotate 
-import FFICXX.Generate.QQ.Verbatim
-
 
 import qualified Data.Map as M
 
