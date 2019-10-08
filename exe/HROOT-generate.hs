@@ -15,19 +15,22 @@ import qualified Data.HashMap.Strict as HM
 import           Data.Monoid             ( mempty )
 import           Data.Typeable           ( Typeable )
 import           System.Console.CmdArgs  ( cmdArgs, modes )
+import           System.Directory        ( getCurrentDirectory )
+import           System.FilePath         ( (</>) )
 --
 import           FFICXX.Generate.Builder ( simpleBuilder )
 import           FFICXX.Generate.Config  ( FFICXXConfig(..)
+                                         , SimpleBuilderConfig(..)
                                          )
 import           FFICXX.Generate.Dependency ()
 import           FFICXX.Generate.ContentMaker ()
-import           FFICXX.Generate.Type.Annotate ()
+-- import           FFICXX.Generate.Type.Annotate ()
 import           FFICXX.Generate.Type.Config ( ModuleUnitMap(..) )
 import           FFICXX.Generate.Type.Class ()
 import           FFICXX.Generate.Type.Module ()
 import           FFICXX.Generate.Type.PackageInterface ()
 --
-import           HROOT.Data.Core.Annotate ()
+-- import           HROOT.Data.Core.Annotate ()
 import           HROOT.Data.Core.Class             ( corecabal
                                                    , core_classes
                                                    , core_extraDep
@@ -35,13 +38,19 @@ import           HROOT.Data.Core.Class             ( corecabal
                                                    , core_headers
                                                    , core_topfunctions
                                                    )
-import           HROOT.Data.Hist.Annotate ()
-import           HROOT.Data.Hist.Class ()
-import           HROOT.Data.Graf.Annotate ()
+-- import           HROOT.Data.Hist.Annotate ()
+import           HROOT.Data.Hist.Class             ( histcabal
+                                                   , hist_classes
+                                                   , hist_extraDep
+                                                   , hist_extraLib
+                                                   , hist_headers
+                                                   , hist_topfunctions
+                                                   )
+-- import           HROOT.Data.Graf.Annotate ()
 import           HROOT.Data.Graf.Class ()
-import           HROOT.Data.Math.Annotate ()
+-- import           HROOT.Data.Math.Annotate ()
 import           HROOT.Data.Math.Class ()
-import           HROOT.Data.IO.Annotate ()
+-- import           HROOT.Data.IO.Annotate ()
 import           HROOT.Data.IO.Class               ( iocabal
                                                    , io_classes
                                                    , io_extraLib
@@ -51,7 +60,7 @@ import           HROOT.Data.IO.Class               ( iocabal
                                                    )
 import           HROOT.Data.RooFit.Class ()
 import           HROOT.Data.RooFit.RooStats.Class ()
-import           HROOT.Data.Tree.Annotate ()
+-- import           HROOT.Data.Tree.Annotate ()
 import           HROOT.Data.Tree.Class ()
 
 -- import           HROOT.Generate.MakePkg ()
@@ -73,20 +82,95 @@ import           HROOT.Data.Tree.Class ()
 
 main :: IO ()
 main = do
-  simpleBuilder
-    "HROOT.Core"
-    (ModuleUnitMap (HM.fromList core_headers))
-    (corecabal,core_classes,core_topfunctions,[])
-    core_extraLib
-    core_extraDep
-  {-
-  simpleBuilder
-    "HROOT.IO"
-    (ModuleUnitMap (HM.fromList io_headers))
-    (iocabal,io_classes,io_topfunctions,[])
-    io_extraLib
-    io_extraDep
+  cwd <- getCurrentDirectory
+  let mkcfg name = FFICXXConfig {
+                     fficxxconfig_scriptBaseDir  = cwd </> "tmp" </> name </> "script"
+                   , fficxxconfig_workingDir     = cwd </> "tmp" </> name </> "working"
+                   , fficxxconfig_installBaseDir = cwd </> name
+                   }
+      sbc_core   = SimpleBuilderConfig {
+                     sbcTopModule  = "HROOT.Core"
+                   , sbcModUnitMap = ModuleUnitMap (HM.fromList core_headers)
+                   , sbcCabal      = corecabal
+                   , sbcClasses    = core_classes
+                   , sbcTopLevels  = core_topfunctions
+                   , sbcTemplates  = []
+                   , sbcExtraLibs  = core_extraLib
+                   , sbcExtraDeps  = core_extraDep
+                   }
+      sbc_hist   = SimpleBuilderConfig {
+                     sbcTopModule  = "HROOT.Hist"
+                   , sbcModUnitMap = ModuleUnitMap (HM.fromList hist_headers)
+                   , sbcCabal      = histcabal
+                   , sbcClasses    = hist_classes
+                   , sbcTopLevels  = hist_topfunctions
+                   , sbcTemplates  = []
+                   , sbcExtraLibs  = hist_extraLib
+                   , sbcExtraDeps  = hist_extraDep
+                   }
+      sbc_io       = SimpleBuilderConfig {
+                     sbcTopModule  = "HROOT.IO"
+                   , sbcModUnitMap = ModuleUnitMap (HM.fromList io_headers)
+                   , sbcCabal      = iocabal
+                   , sbcClasses    = io_classes
+                   , sbcTopLevels  = io_topfunctions
+                   , sbcTemplates  = []
+                   , sbcExtraLibs  = io_extraLib
+                   , sbcExtraDeps  = io_extraDep
+                   }
+{-      sbc_math   = SimpleBuilderConfig {
+                     sbcTopModule  = "HROOT.Math"
+                   , sbcModUnitMap = ModuleUnitMap (HM.fromList math_headers)
+                   , sbcCabal      = mathcabal
+                   , sbcClasses    = math_classes
+                   , sbcTopLevels  = math_topfunctions
+                   , sbcTemplates  = []
+                   , sbcExtraLibs  = math_extraLib
+                   , sbcExtraDeps  = math_extraDep
+                   }
+      sbc_roofit = SimpleBuilderConfig {
+                     sbcTopModule  = "HROOT.RooFit"
+                   , sbcModUnitMap = ModuleUnitMap (HM.fromList roofit_headers)
+                   , sbcCabal      = roofitcabal
+                   , sbcClasses    = roofit_classes
+                   , sbcTopLevels  = roofit_topfunctions
+                   , sbcTemplates  = []
+                   , sbcExtraLibs  = roofit_extraLib
+                   , sbcExtraDeps  = roofit_extraDep
+                   }
+      sbc_roostats = SimpleBuilderConfig {
+                     sbcTopModule  = "HROOT.RooFit.RooStats"
+                   , sbcModUnitMap = ModuleUnitMap (HM.fromList roostats_headers)
+                   , sbcCabal      = roostatscabal
+                   , sbcClasses    = roostats_classes
+                   , sbcTopLevels  = roostats_topfunctions
+                   , sbcTemplates  = []
+                   , sbcExtraLibs  = roostats_extraLib
+                   , sbcExtraDeps  = roostast_extraDep
+                   }
+     sbc_tree   = SimpleBuilderConfig {
+                     sbcTopModule  = "HROOT.Tree"
+                   , sbcModUnitMap = ModuleUnitMap (HM.fromList tree_headers)
+                   , sbcCabal      = treecabal
+                   , sbcClasses    = tree_classes
+                   , sbcTopLevels  = tree_topfunctions
+                   , sbcTemplates  = []
+                   , sbcExtraLibs  = tree_extraLib
+                   , sbcExtraDeps  = tree_extraDep
+                   }
+
+-}
+
+
+  simpleBuilder (mkcfg "HROOT-core")            sbc_core
+  simpleBuilder (mkcfg "HROOT-hist")            sbc_hist
+  simpleBuilder (mkcfg "HROOT-io")              sbc_io
+{-  simpleBuilder (mkcfg "HROOT-math")            sbc_math
+  simpleBuilder (mkcfg "HROOT-RooFit")          sbc_roofit
+  simpleBuilder (mkcfg "HROOT-RooFit-RooStats") sbc_roostats
+  simpleBuilder (mkcfg "HROOT-tree")            sbc_tree
   -}
+
 
 --   param <- cmdArgs mode
 --   putStrLn $ show param

@@ -1,5 +1,6 @@
-module HROOT.Data.Hist.Class where
+{-# LANGUAGE OverloadedStrings #-}
 
+module HROOT.Data.Hist.Class where
 
 import FFICXX.Generate.Code.Primitive ( bool    , bool_
                                       , cppclass, cppclass_
@@ -18,7 +19,11 @@ import FFICXX.Generate.Type.Class     ( Class(..)
                                       , ProtectedMethod(..)
                                       , TopLevelFunction(..)
                                       )
-import HROOT.Data.Core.Class          ( tArrayC, tArrayD, tArrayF, tArrayI, tArrayS
+import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
+                                      , ModuleUnitImports(..)
+                                      )
+import HROOT.Data.Core.Class          ( modImports
+                                      , tArrayC, tArrayD, tArrayF, tArrayI, tArrayS
                                       , tAtt3D
                                       , tAttAxis
                                       , tAttFill
@@ -39,7 +44,7 @@ histcabal =
   , cabal_moduleprefix       = "HROOT.Hist"
   , cabal_additional_c_incs  = []
   , cabal_additional_c_srcs  = []
-  , cabal_additional_pkgdeps = []
+  , cabal_additional_pkgdeps = [ CabalName "HROOT-core" ]
   , cabal_license            = Nothing
   , cabal_licensefile        = Nothing
   , cabal_extraincludedirs   = []
@@ -630,3 +635,42 @@ hist_classes =
 
 hist_topfunctions :: [TopLevelFunction]
 hist_topfunctions = []
+
+hist_headers :: [(ModuleUnit,ModuleUnitImports)]
+hist_headers =
+  [ modImports "TAxis"             ["ROOT"] ["TAxis.h"]
+  , modImports "TF1"               ["ROOT"] ["TF1.h"]
+  , modImports "TFitResult"        ["ROOT"] ["TFitResult.h"]
+  , modImports "TFitResultPtr"     ["ROOT"] ["TFitResultPtr.h"]
+  , modImports "TGraph"            ["ROOT"] ["TGraph.h"]
+  , modImports "TGraphAsymmErrors" ["ROOT"] ["TGraphAsymmErrors.h"]
+  , modImports "TGraphBentErrors"  ["ROOT"] ["TGraphBentErrors.h"]
+  , modImports "TGraphErrors"      ["ROOT"] ["TGraphErrors.h"]
+  , modImports "TH1"               ["ROOT"] ["TH1.h"]
+  , modImports "TH1C"              ["ROOT"] ["TH1C.h"]
+  , modImports "TH1D"              ["ROOT"] ["TH1D.h"]
+  , modImports "TH1F"              ["ROOT"] ["TH1F.h"]
+  , modImports "TH1I"              ["ROOT"] ["TH1I.h"]
+  , modImports "TH1K"              ["ROOT"] ["TH1K.h"]
+  , modImports "TH1S"              ["ROOT"] ["TH1S.h"]
+  , modImports "TH2"               ["ROOT"] ["TH2.h"]
+  , modImports "TH2C"              ["ROOT"] ["TH2C.h"]
+  , modImports "TH2D"              ["ROOT"] ["TH2D.h"]
+  , modImports "TH2F"              ["ROOT"] ["TH2F.h"]
+  , modImports "TH2I"              ["ROOT"] ["TH2I.h"]
+  , modImports "TH2Poly"           ["ROOT"] ["TH2Poly.h"]
+  , modImports "TH2S"              ["ROOT"] ["TH2S.h"]
+  , modImports "TH3"               ["ROOT"] ["TH3.h"]
+  , modImports "TH3C"              ["ROOT"] ["TH3C.h"]
+  , modImports "TH3D"              ["ROOT"] ["TH3D.h"]
+  , modImports "TH3F"              ["ROOT"] ["TH3F.h"]
+  , modImports "TH3I"              ["ROOT"] ["TH3I.h"]
+  , modImports "TH3S"              ["ROOT"] ["TH3S.h"]
+  , modImports "THStack"           ["ROOT"] ["THStack.h"]
+  ]
+
+hist_extraLib :: [String]
+hist_extraLib = []
+
+hist_extraDep :: [(String,[String])]
+hist_extraDep = []

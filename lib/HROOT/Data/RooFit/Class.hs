@@ -28,7 +28,10 @@ roofitcabal =
   , cabal_moduleprefix       = "HROOT.RooFit"
   , cabal_additional_c_incs  = []
   , cabal_additional_c_srcs  = []
-  , cabal_additional_pkgdeps = []
+  , cabal_additional_pkgdeps = [ CabalName "HROOT-core"
+                               , CabalName "HROOT-hist"
+                               , CabalName "HROOT-math"
+                               ]
   , cabal_license            = Nothing
   , cabal_licensefile        = Nothing
   , cabal_extraincludedirs   = []

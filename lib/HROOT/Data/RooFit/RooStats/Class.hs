@@ -29,7 +29,8 @@ roostatscabal =
   , cabal_moduleprefix       = "HROOT.RooFit.RooStats"
   , cabal_additional_c_incs  = []
   , cabal_additional_c_srcs  = []
-  , cabal_additional_pkgdeps = []
+  , cabal_additional_pkgdeps = [ CabalName "HROOT-core"
+                               , CabalName "HROOT-RooFit" ]
   , cabal_license            = Nothing
   , cabal_licensefile        = Nothing
   , cabal_extraincludedirs   = []
