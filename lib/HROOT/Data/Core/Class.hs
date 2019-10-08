@@ -15,13 +15,13 @@ import FFICXX.Generate.Code.Primitive ( bool    , bool_
                                       , void_
                                       )
 import FFICXX.Generate.Type.Cabal     ( Cabal(..), CabalName(..) )
-import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
-                                      , ModuleUnitImports(..)
-                                      )
 import FFICXX.Generate.Type.Class     ( Class(..)
                                       , Function(..)
                                       , ProtectedMethod(..)
                                       , TopLevelFunction(..)
+                                      )
+import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
+                                      , ModuleUnitImports(..)
                                       )
 import FFICXX.Generate.Type.PackageInterface ( Namespace(..), HeaderName(..) )
 

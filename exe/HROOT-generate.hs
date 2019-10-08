@@ -42,7 +42,13 @@ import           HROOT.Data.Graf.Class ()
 import           HROOT.Data.Math.Annotate ()
 import           HROOT.Data.Math.Class ()
 import           HROOT.Data.IO.Annotate ()
-import           HROOT.Data.IO.Class ()
+import           HROOT.Data.IO.Class               ( iocabal
+                                                   , io_classes
+                                                   , io_extraLib
+                                                   , io_extraDep
+                                                   , io_headers
+                                                   , io_topfunctions
+                                                   )
 import           HROOT.Data.RooFit.Class ()
 import           HROOT.Data.RooFit.RooStats.Class ()
 import           HROOT.Data.Tree.Annotate ()
@@ -73,6 +79,14 @@ main = do
     (corecabal,core_classes,core_topfunctions,[])
     core_extraLib
     core_extraDep
+  {-
+  simpleBuilder
+    "HROOT.IO"
+    (ModuleUnitMap (HM.fromList io_headers))
+    (iocabal,io_classes,io_topfunctions,[])
+    io_extraLib
+    io_extraDep
+  -}
 
 --   param <- cmdArgs mode
 --   putStrLn $ show param

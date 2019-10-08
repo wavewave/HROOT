@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module HROOT.Data.IO.Class where
 
 import FFICXX.Generate.Code.Primitive ( cstring, int )
@@ -7,7 +9,11 @@ import FFICXX.Generate.Type.Class     ( Class(..)
                                       , ProtectedMethod(..)
                                       , TopLevelFunction(..)
                                       )
-import HROOT.Data.Core.Class          ( tDirectory )
+import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
+                                      , ModuleUnitImports(..)
+                                      )
+--
+import HROOT.Data.Core.Class          ( modImports, tDirectory )
 
 
 iocabal :: Cabal
@@ -58,3 +64,15 @@ io_classes =
 
 io_topfunctions :: [TopLevelFunction]
 io_topfunctions = []
+
+io_headers :: [(ModuleUnit,ModuleUnitImports)]
+io_headers =
+  [ modImports "TDirectoryFile" ["ROOT"] ["TDirectoryFile.h"]
+  , modImports "TFile"          ["ROOT"] ["TFile.h"]
+  ]
+
+io_extraLib :: [String]
+io_extraLib = []
+
+io_extraDep :: [(String,[String])]
+io_extraDep = []

@@ -21,6 +21,7 @@ in
 stdenv.mkDerivation {
   name = "HROOT-dev";
 
-  buildInputs = [ root hsenv ];
+  buildInputs = [ #root
+                  hsenv ];
 
 }
