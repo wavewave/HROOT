@@ -48,31 +48,6 @@ Data-files:
                 template/HROOT/Setup.lhs
                 template/HROOT/example/*.hs
 
-Executable HROOT-generate
-  Main-is: HROOT-generate.hs
-  hs-source-dirs: exe
-  ghc-options: 	-Wall -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
-  ghc-prof-options: -caf-all -auto-all
-  Build-Depends: base>4,
-                 Cabal,
-                 cmdargs,
-                 configurator >= 0.2,
-                 containers,
-                 directory,
-                 fficxx >= 0.5,
-                 filepath>1,
-                 mtl>2,
-                 process,
-                 split,
-                 template,
-                 template-haskell,
-                 transformers,
-                 unordered-containers,
-                 --
-                 HROOT-generate
-
-  Other-Modules: Command
-
 Library
   hs-source-dirs: lib
   ghc-options: 	-Wall -Werror -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
@@ -94,7 +69,7 @@ Library
                  unordered-containers
 
   Exposed-Modules:
-                   HROOT.Generate.MakePkg
+                   -- HROOT.Generate.MakePkg
                    HROOT.Data.Core.Annotate
                    HROOT.Data.Core.Class
                    HROOT.Data.Hist.Annotate
@@ -110,6 +85,30 @@ Library
                    HROOT.Data.RooFit.RooStats.Class
                    HROOT.Data.Tree.Annotate
                    HROOT.Data.Tree.Class
-
   Other-Modules:
                    Paths_HROOT_generate
+
+Executable HROOT-generate
+  Main-is: HROOT-generate.hs
+  hs-source-dirs: exe
+  ghc-options: 	-Wall -Werror -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
+  ghc-prof-options: -caf-all -auto-all
+  Build-Depends: base>4,
+                 Cabal,
+                 cmdargs,
+                 configurator >= 0.2,
+                 containers,
+                 directory,
+                 fficxx >= 0.5,
+                 filepath>1,
+                 mtl>2,
+                 process,
+                 split,
+                 template,
+                 template-haskell,
+                 transformers,
+                 unordered-containers,
+                 --
+                 HROOT-generate
+
+  -- Other-Modules: Command

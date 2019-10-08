@@ -13,11 +13,16 @@ import FFICXX.Generate.Code.Primitive ( bool    , bool_
                                       , void_
                                       )
 import FFICXX.Generate.Type.Cabal     ( Cabal(..), CabalName(..) )
+import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
+                                      , ModuleUnitImports(..)
+                                      )
 import FFICXX.Generate.Type.Class     ( Class(..)
                                       , Function(..)
                                       , ProtectedMethod(..)
                                       , TopLevelFunction(..)
                                       )
+import FFICXX.Generate.Type.PackageInterface ( Namespace(..), HeaderName(..) )
+
 
 
 corecabal :: Cabal
@@ -49,6 +54,15 @@ coreclass n ps fs =
     , class_vars       = []
     , class_tmpl_funcs = []
     }
+
+modImports :: String -> [Namespace] -> [HeaderName] -> (ModuleUnit,ModuleUnitImports)
+modImports n ns hs =
+  ( MU_Class n
+  , ModuleUnitImports {
+      muimports_namespaces = ns
+    , muimports_headers = hs
+    }
+  )
 
 deletable :: Class
 deletable =
@@ -443,3 +457,45 @@ core_topfunctions =
   , TopLevelVariable (cppclass_ tROOT) "gROOT" Nothing
   , TopLevelVariable (cppclass_ tSystem) "gSystem" Nothing
   ]
+
+core_headers :: [(ModuleUnit,ModuleUnitImports)]
+core_headers =
+  [ modImports "TApplication" [] []
+  , modImports "TArray" [] []
+  , modImports "TArrayC" [] []
+  , modImports "TArrayD" [] []
+  , modImports "TArrayF" [] []
+  , modImports "TArrayI" [] []
+  , modImports "TArrayL" [] []
+  , modImports "TArrayL64" [] []
+  , modImports "TArrayS" [] []
+  , modImports "TAtt3D" [] []
+  , modImports "TAttAxis" [] []
+  , modImports "TAttBBox" [] []
+  , modImports "TAttCanvas" [] []
+  , modImports "TAttFill" [] []
+  , modImports "TAttLine" [] []
+  , modImports "TAttMarker" [] []
+  , modImports "TAttPad" [] []
+  , modImports "TAttText" [] []
+  , modImports "TClass" [] []
+  , modImports "TCollection" [] []
+  , modImports "TDictionary" [] []
+  , modImports "TDirectory" [] []
+  , modImports "TGlobal" [] []
+  , modImports "TKey" [] []
+  , modImports "TNames" [] []
+  , modImports "TObjArray" [] []
+  , modImports "TObject" [] []
+  , modImports "TQObject" [] []
+  , modImports "TROOT" [] []
+  , modImports "TSeqCollection" [] []
+  , modImports "TSystem" [] []
+  , modImports "TVirtualPad" [] []
+  ]
+
+core_extraLib :: [String]
+core_extraLib = []
+
+core_extraDep :: [(String,[String])]
+core_extraDep = []
