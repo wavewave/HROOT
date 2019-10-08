@@ -68,7 +68,7 @@ import           HROOT.Data.Tree.Class ()
 main :: IO ()
 main = do
   simpleBuilder
-    "HROOT"
+    "HROOT.Core"
     (ModuleUnitMap (HM.fromList core_headers))
     (corecabal,core_classes,core_topfunctions,[])
     core_extraLib

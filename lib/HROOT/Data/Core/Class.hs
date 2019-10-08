@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module HROOT.Data.Core.Class where
 
 import FFICXX.Generate.Code.Primitive ( bool    , bool_
@@ -22,7 +24,6 @@ import FFICXX.Generate.Type.Class     ( Class(..)
                                       , TopLevelFunction(..)
                                       )
 import FFICXX.Generate.Type.PackageInterface ( Namespace(..), HeaderName(..) )
-
 
 
 corecabal :: Cabal
@@ -55,12 +56,16 @@ coreclass n ps fs =
     , class_tmpl_funcs = []
     }
 
-modImports :: String -> [Namespace] -> [HeaderName] -> (ModuleUnit,ModuleUnitImports)
+modImports ::
+     String
+  -> [String]
+  -> [HeaderName]
+  -> (ModuleUnit,ModuleUnitImports)
 modImports n ns hs =
   ( MU_Class n
   , ModuleUnitImports {
-      muimports_namespaces = ns
-    , muimports_headers = hs
+      muimports_namespaces = map NS ns
+    , muimports_headers    = hs
     }
   )
 
@@ -460,38 +465,38 @@ core_topfunctions =
 
 core_headers :: [(ModuleUnit,ModuleUnitImports)]
 core_headers =
-  [ modImports "TApplication" [] []
-  , modImports "TArray" [] []
-  , modImports "TArrayC" [] []
-  , modImports "TArrayD" [] []
-  , modImports "TArrayF" [] []
-  , modImports "TArrayI" [] []
-  , modImports "TArrayL" [] []
-  , modImports "TArrayL64" [] []
-  , modImports "TArrayS" [] []
-  , modImports "TAtt3D" [] []
-  , modImports "TAttAxis" [] []
-  , modImports "TAttBBox" [] []
-  , modImports "TAttCanvas" [] []
-  , modImports "TAttFill" [] []
-  , modImports "TAttLine" [] []
-  , modImports "TAttMarker" [] []
-  , modImports "TAttPad" [] []
-  , modImports "TAttText" [] []
-  , modImports "TClass" [] []
-  , modImports "TCollection" [] []
-  , modImports "TDictionary" [] []
-  , modImports "TDirectory" [] []
-  , modImports "TGlobal" [] []
-  , modImports "TKey" [] []
-  , modImports "TNames" [] []
-  , modImports "TObjArray" [] []
-  , modImports "TObject" [] []
-  , modImports "TQObject" [] []
-  , modImports "TROOT" [] []
-  , modImports "TSeqCollection" [] []
-  , modImports "TSystem" [] []
-  , modImports "TVirtualPad" [] []
+  [ modImports "TApplication"   ["ROOT"] ["TApplication.h"]
+  , modImports "TArray"         ["ROOT"] ["TArray.h"]
+  , modImports "TArrayC"        ["ROOT"] ["TArrayC.h"]
+  , modImports "TArrayD"        ["ROOT"] ["TArrayD.h"]
+  , modImports "TArrayF"        ["ROOT"] ["TArrayF.h"]
+  , modImports "TArrayI"        ["ROOT"] ["TArrayI.h"]
+  , modImports "TArrayL"        ["ROOT"] ["TArrayL.h"]
+  , modImports "TArrayL64"      ["ROOT"] ["TArrayL64.h"]
+  , modImports "TArrayS"        ["ROOT"] ["TArrayS.h"]
+  , modImports "TAtt3D"         ["ROOT"] ["TAtt3D.h"]
+  , modImports "TAttAxis"       ["ROOT"] ["TAttAxis.h"]
+  , modImports "TAttBBox"       ["ROOT"] ["TAttBBox.h"]
+  , modImports "TAttCanvas"     ["ROOT"] ["TAttCanvas.h"]
+  , modImports "TAttFill"       ["ROOT"] ["TAttFill.h"]
+  , modImports "TAttLine"       ["ROOT"] ["TAttLine.h"]
+  , modImports "TAttMarker"     ["ROOT"] ["TAttMarker.h"]
+  , modImports "TAttPad"        ["ROOT"] ["TAttPad.h"]
+  , modImports "TAttText"       ["ROOT"] ["TAttText.h"]
+  , modImports "TClass"         ["ROOT"] ["TClass.h"]
+  , modImports "TCollection"    ["ROOT"] ["TCollection.h"]
+  , modImports "TDictionary"    ["ROOT"] ["TDictionary.h"]
+  , modImports "TDirectory"     ["ROOT"] ["TDirectory.h"]
+  , modImports "TGlobal"        ["ROOT"] ["TGlobal.h"]
+  , modImports "TKey"           ["ROOT"] ["TKey.h"]
+  , modImports "TNamed"         ["ROOT"] ["TNamed.h"]
+  , modImports "TObjArray"      ["ROOT"] ["TObjArray.h"]
+  , modImports "TObject"        ["ROOT"] ["TObject.h"]
+  , modImports "TQObject"       ["ROOT"] ["TQObject.h"]
+  , modImports "TROOT"          ["ROOT"] ["TROOT.h"]
+  , modImports "TSeqCollection" ["ROOT"] ["TSeqCollection.h"]
+  , modImports "TSystem"        ["ROOT"] ["TSystem.h"]
+  , modImports "TVirtualPad"    ["ROOT"] ["TVirtualPad.h"]
   ]
 
 core_extraLib :: [String]
