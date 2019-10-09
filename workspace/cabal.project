@@ -6,3 +6,4 @@ packages: HROOT-core/
 	  HROOT-tree/
 	  HROOT-RooFit/
 	  HROOT-RooFit-RooStats/
+          HROOT/
