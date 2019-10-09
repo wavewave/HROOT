@@ -106,10 +106,10 @@ Executable HROOT-generate
                  split,
                  template,
                  template-haskell,
+                 text,
                  transformers,
                  unordered-containers,
                  --
                  HROOT-generate
   Other-Modules:
                  Paths_HROOT_generate
-

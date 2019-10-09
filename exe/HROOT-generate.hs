@@ -12,21 +12,40 @@ import           Data.Configurator.Types ()
 import           Data.Data (Data)
 import qualified Data.HashMap.Strict as HM
 import           Data.Monoid             ( mempty )
+import           Data.List               ( intercalate )
+import           Data.Text               ( Text )
+import qualified Data.Text as T
 import           Data.Typeable           ( Typeable )
 import           System.Console.CmdArgs  ( cmdArgs, modes )
-import           System.Directory        ( getCurrentDirectory )
-import           System.FilePath         ( (</>) )
+import           System.Directory        ( createDirectoryIfMissing, getCurrentDirectory )
+import           System.FilePath         ( (</>), (<.>) )
+import           System.IO               ( IOMode(..), hPutStrLn, withFile )
 --
-import           FFICXX.Generate.Builder ( simpleBuilder )
+import           FFICXX.Generate.Builder ( copyFileWithMD5Check, simpleBuilder )
+import           FFICXX.Generate.Code.Cabal
+                                         ( cabalIndentation
+                                         , cabalTemplate
+                                         , genExposedModules
+                                         , genOtherModules
+                                         , unlinesWithIndent
+                                         )
 import           FFICXX.Generate.Config  ( FFICXXConfig(..)
                                          , SimpleBuilderConfig(..)
                                          )
 import           FFICXX.Generate.Dependency ()
 import           FFICXX.Generate.ContentMaker ()
+import           FFICXX.Generate.Type.Cabal ( CabalName(..) )
 import           FFICXX.Generate.Type.Config ( ModuleUnitMap(..) )
 import           FFICXX.Generate.Type.Class ()
 import           FFICXX.Generate.Type.Module ()
 import           FFICXX.Generate.Type.PackageInterface ()
+import           FFICXX.Generate.Util              ( conn
+                                                   , connRet
+                                                   , context
+                                                   , contextT
+                                                   , intercalateWith
+                                                   , subst
+                                                   )
 --
 import           HROOT.Data.Core.Class             ( corecabal
                                                    , core_classes
@@ -85,6 +104,111 @@ import           HROOT.Data.Tree.Class             ( treecabal
                                                    , tree_topfunctions
                                                    )
 import qualified Paths_HROOT_generate as H
+
+---------------------------------
+-- for umbrella package
+---------------------------------
+
+pkgHsTemplate :: Text
+pkgHsTemplate =
+  "module $summarymod (\n\
+  \$exportList\n\
+  \) where\n\
+  \\n\
+  \$importList\n\
+  \\n\
+  \$topLevelDef\n"
+
+
+makeUmbrellaCabal :: String
+makeUmbrellaCabal =
+  let pkgname = "HROOT"
+      -- TODO: this should be factored out.
+      version = "0.10.0.1"
+      pkg_summarymodule = "HROOT"
+      pkg_deps = [ "HROOT-core", "HROOT-hist", "HROOT-math"
+                 , "HROOT-tree", "HROOT-graf","HROOT-io"
+                 ]
+      pkg_synopsis = "Haskell binding to the ROOT data analysis framework"
+      pkg_description = "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
+      setupdeps = [ CabalName "Cabal", CabalName "base", CabalName "process" ]
+      deps | null pkg_deps = ""
+           | otherwise     = "base, " ++ intercalate ", " pkg_deps
+      str = subst cabalTemplate . contextT $
+              [ ("pkgname", pkgname)
+              , ("version", version)
+              , ("synopsis", pkg_synopsis )
+              , ("description", pkg_description )
+              , ("homepage", "http://ianwookim.org/HROOT")
+              , ("licenseField", "license: LGPL-2.1" )
+              , ("licenseFileField", "license-file: LICENSE")
+              , ("author", "Ian-Woo Kim")
+              , ("maintainer", "Ian-Woo Kim <ianwookim@gmail.com>")
+              , ("category", "Graphics, Statistics, Math, Numerical")
+              , ("sourcerepository","")
+              , ("buildtype", "Build-Type: Custom\ncustom-setup\n  setup-depends: "
+                                  <> T.pack (intercalate ", " (map unCabalName setupdeps))
+                                  <> "\n")
+              , ("ccOptions", "-std=c++14")
+              , ("pkgdeps", T.pack deps)
+              , ("extraFiles", cabalIndentation <> "Config.hs" )
+              , ("csrcFiles", "")
+              , ("includeFiles", "")
+              , ("cppFiles", "")
+              , ("exposedModules", unlinesWithIndent $ map T.pack $ genExposedModules pkg_summarymodule ([],[]))
+              , ("otherModules"  , unlinesWithIndent $ map T.pack $ genOtherModules [])
+              , ("extralibdirs",  "" )  -- this need to be changed
+              , ("extraincludedirs", "" )  -- this need to be changed
+              , ("extraLibraries", "")
+              , ("cabalIndentation", cabalIndentation)
+              , ("pkgconfigDepends", "")
+              ]
+  in str
+
+-- | make an umbrella package for this project
+makeUmbrellaPackage :: FFICXXConfig -> [String] -> IO ()
+makeUmbrellaPackage config mods = do
+  let pkgname = "HROOT"
+      pkg_summarymodule = "HROOT"
+
+  putStrLn "======================"
+  putStrLn "Umbrella Package 'HROOT' generation"
+  putStrLn "----------------------"
+
+  let cabalFileName = pkgname <> ".cabal"
+      installDir    = fficxxconfig_installBaseDir config
+      workingDir    = fficxxconfig_workingDir     config
+      staticDir     = fficxxconfig_staticFileDir  config
+      staticFiles   = ["CHANGES","Config.hs","LICENSE","README.md","Setup.lhs"]
+  putStrLn "cabal file generation"
+  --
+  createDirectoryIfMissing True installDir
+  createDirectoryIfMissing True workingDir
+  createDirectoryIfMissing True (installDir </> "src")
+  createDirectoryIfMissing True (installDir </> "csrc")
+  --
+  putStrLn "Copying static files"
+  mapM_ (\x->copyFileWithMD5Check (staticDir </> x) (installDir </> x)) staticFiles
+
+  withFile (workingDir </> cabalFileName) WriteMode $ \h ->
+    hPutStrLn h makeUmbrellaCabal
+
+  putStrLn "umbrella module generation"
+  withFile (workingDir </> pkg_summarymodule <.> "hs" )  WriteMode $ \h -> do
+    let exportListStr = intercalateWith (conn "\n, ") (\x->"module " ++ x ) mods
+        importListStr = intercalateWith connRet (\x->"import " ++ x) mods
+        str = subst pkgHsTemplate . contextT $
+                [ ("summarymod", T.pack pkg_summarymodule)
+                , ("exportList", T.pack exportListStr)
+                , ("importList", T.pack importListStr)
+                , ("topLevelDef", "")
+                ]
+    hPutStrLn h str
+  putStrLn "copying"
+  copyFileWithMD5Check (workingDir </> cabalFileName)  (installDir </> cabalFileName)
+  copyFileWithMD5Check (workingDir </> pkg_summarymodule <.> "hs") (installDir </> "src" </> pkg_summarymodule <.> "hs")
+
+
 
 main :: IO ()
 main = do
@@ -196,15 +320,28 @@ main = do
   simpleBuilder (mkcfg "HROOT-RooFit-RooStats") sbc_roostats
   simpleBuilder (mkcfg "HROOT-tree")            sbc_tree
 
-{-
 
-      makeUmbrellaPackage cfgHROOT pkg_HROOT [ "HROOT.Core"
-                                             , "HROOT.Hist"
-                                             , "HROOT.Graf"
-                                             , "HROOT.IO"
-                                             , "HROOT.Math"
-                                             , "HROOT.Tree"
-                                             ]
+  -- RooFit and RooStats are not part of main HROOT.
+  makeUmbrellaPackage (mkcfg "HROOT") [ "HROOT.Core", "HROOT.Hist", "HROOT.Graf", "HROOT.IO", "HROOT.Math", "HROOT.Tree" ]
+
+
+
+{-
+pkg_HROOT = PkgCfg { pkgname = "HROOT"
+                   , pkg_summarymodule = "HROOT"
+                   , pkg_typemacro = TypMcro ""
+                   , pkg_classes = []
+                   , pkg_cihs = []
+                   , pkg_modules = []
+                   , pkg_annotateMap = M.empty  -- for the time being
+                   , pkg_deps = [ "HROOT-core", "HROOT-hist", "HROOT-math"
+                                , "HROOT-tree", "HROOT-graf","HROOT-io"
+                                ]
+                   , pkg_hsbootlst = []
+                   , pkg_synopsis = "Haskell binding to the ROOT data analysis framework"
+                   , pkg_description = "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
+                   }
+
 
 -}
 {-
@@ -248,20 +385,6 @@ pkg_TREE = mkPkgCfg "HROOT-tree" "HROOT.Tree" "__HROOT_TREE__" ["HROOT-core"] (t
 
 
 
-pkg_HROOT = PkgCfg { pkgname = "HROOT"
-                   , pkg_summarymodule = "HROOT"
-                   , pkg_typemacro = TypMcro ""
-                   , pkg_classes = []
-                   , pkg_cihs = []
-                   , pkg_modules = []
-                   , pkg_annotateMap = M.empty  -- for the time being
-                   , pkg_deps = [ "HROOT-core", "HROOT-hist", "HROOT-math"
-                                , "HROOT-tree", "HROOT-graf","HROOT-io"
-                                ]
-                   , pkg_hsbootlst = []
-                   , pkg_synopsis = "Haskell binding to the ROOT data analysis framework"
-                   , pkg_description = "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
-                   }
 
 
 -}
