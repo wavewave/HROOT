@@ -132,8 +132,8 @@ makeUmbrellaCabal =
       pkg_synopsis = "Haskell binding to the ROOT data analysis framework"
       pkg_description = "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
       setupdeps = [ CabalName "Cabal", CabalName "base", CabalName "process" ]
-      deps | null pkg_deps = []
-           | otherwise = intercalate ", " pkg_deps
+      deps | null pkg_deps = ""
+           | otherwise     = "base, " ++ intercalate ", " pkg_deps
       str = subst cabalTemplate . contextT $
               [ ("pkgname", pkgname)
               , ("version", version)

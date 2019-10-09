@@ -4,11 +4,11 @@ import Control.Monad
 import Foreign.C.Types (CDouble)
 import Foreign.C.String (newCString)
 --
--- import HROOT
-import HROOT.Core
-import HROOT.Hist
-import HROOT.Graf
-import HROOT.Math
+import HROOT
+-- import HROOT.Core
+-- import HROOT.Hist
+-- import HROOT.Graf
+-- import HROOT.Math
 
 
 main :: IO ()
