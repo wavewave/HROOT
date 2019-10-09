@@ -1,5 +1,6 @@
-module HROOT.Data.RooFit.RooStats.Class where
+{-# LANGUAGE OverloadedStrings #-}
 
+module HROOT.Data.RooFit.RooStats.Class where
 
 import FFICXX.Generate.Code.Primitive ( bool_
                                       , cppclass, cppclass_
@@ -14,7 +15,10 @@ import FFICXX.Generate.Type.Class     ( Class(..)
                                       , ProtectedMethod(..)
                                       , TopLevelFunction(..)
                                       )
-import HROOT.Data.Core.Class          ( deletable, tNamed )
+import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
+                                      , ModuleUnitImports(..)
+                                      )
+import HROOT.Data.Core.Class          ( modImports, deletable, tNamed )
 import HROOT.Data.RooFit.Class        ( rooAbsData, rooAbsPdf, rooArgSet, rooPrintable
                                       , rooWorkspace
                                       )
@@ -232,3 +236,29 @@ roostats_classes = [ testStatistic
 
 roostats_topfunctions :: [TopLevelFunction]
 roostats_topfunctions = []
+
+
+roostats_headers :: [(ModuleUnit,ModuleUnitImports)]
+roostats_headers =
+  [ modImports "TestStatistic"                      ["ROOT","RooStats"] ["RooStats/TestStatistic.h"]
+  , modImports "ProfileLikelihoodTestStat"          ["ROOT","RooStats"] ["RooStats/ProfileLikelihoodTestStat.h"]
+  , modImports "ModelConfig"                        ["ROOT","RooStats"] ["RooStats/ModelConfig.h"]
+  , modImports "HypoTestCalculator"                 ["ROOT","RooStats"] ["RooStats/HypoTestCalculator.h"]
+  , modImports "IntervalCalculator"                 ["ROOT","RooStats"] ["RooStats/IntervalCalculator.h"]
+  , modImports "ConfInterval"                       ["ROOT","RooStats"] ["RooStats/ConfInterval.h"]
+  , modImports "CombinedCalculator"                 ["ROOT","RooStats"] ["RooStats/CombinedCalculator.h"]
+  , modImports "ProfileLikelihoodCalculator"        ["ROOT","RooStats"] ["RooStats/ProfileLikelihoodCalculator.h"]
+  , modImports "LikelihoodIntervalPlot"             ["ROOT","RooStats"] ["RooStats/LikelihoodIntervalPlot.h"]
+  , modImports "LikelihoodInterval"                 ["ROOT","RooStats"] ["RooStats/LikelihoodInterval.h"]
+  , modImports "HypoTestResult"                     ["ROOT","RooStats"] ["RooStats/HypoTestResult.h"]
+  , modImports "SamplingDistribution"               ["ROOT","RooStats"] ["RooStats/SamplingDistribution.h"]
+  , modImports "SimpleLikelihoodRatioTestStat"      ["ROOT","RooStats"] ["RooStats/SimpleLikelihoodRatioTestStat.h"]
+  , modImports "RatioOfProfiledLikelihoodsTestStat" ["ROOT","RooStats"] ["RooStats/RatioOfProfiledLikelihoodsTestStat.h"]
+  , modImports "NumEventsTestStat"                  ["ROOT","RooStats"] ["RooStats/NumEventsTestStat.h"]
+  ]
+
+roostats_extraLib :: [String]
+roostats_extraLib = []
+
+roostats_extraDep :: [(String,[String])]
+roostats_extraDep = []

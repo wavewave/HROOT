@@ -1,0 +1,8 @@
+packages: HROOT-core/
+          HROOT-graf/
+          HROOT-hist/
+          HROOT-io/
+	  HROOT-math/
+	  HROOT-tree/
+	  HROOT-RooFit/
+	  HROOT-RooFit-RooStats/
