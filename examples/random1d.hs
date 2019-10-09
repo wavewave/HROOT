@@ -1,27 +1,23 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+
 module Main where
 
-import Control.Monad
-import Foreign.C.Types (CDouble)
-import Foreign.C.String (newCString)
+import Data.String      ( IsString(fromString) )
+import Foreign.C.Types  ( CDouble )
+import Foreign.C.String ( CString, newCString )
+import System.IO.Unsafe ( unsafePerformIO )
 --
 import HROOT
--- import HROOT.Core
--- import HROOT.Hist
--- import HROOT.Graf
--- import HROOT.Math
 
+instance IsString CString where
+  fromString s = unsafePerformIO $ newCString s
 
 main :: IO ()
 main = do
-  cTest <- newCString "Test"
-  ctest <- newCString "test"
-  cpdf  <- newCString "random1d.pdf"
-  cjpg  <- newCString "random1d.jpg"
-  cpng  <- newCString "random1d.png"
-  cnull <- newCString ""
-
-  tcanvas <- newTCanvas cTest cTest 640 480
-  h1 <- newTH1F ctest ctest 100 (-5.0) 5.0
+  tcanvas <- newTCanvas ("Test"::CString) ("Test"::CString) 640 480
+  h1 <- newTH1F ("test"::CString) ("test"::CString) 100 (-5.0) 5.0
 
   tRandom <- newTRandom 65535
 
@@ -33,10 +29,10 @@ main = do
                go (n-1)
 
   go 1000000
-  draw h1 cnull
-  saveAs tcanvas cpdf cnull
-  saveAs tcanvas cjpg cnull
-  saveAs tcanvas cpng cnull
+  draw h1 (""::CString)
+  saveAs tcanvas ("random1d.pdf"::CString) (""::CString)
+  saveAs tcanvas ("random1d.jpg"::CString) (""::CString)
+  saveAs tcanvas ("random1d.png"::CString) (""::CString)
   delete h1
   delete tcanvas
 
