@@ -110,5 +110,6 @@ Executable HROOT-generate
                  unordered-containers,
                  --
                  HROOT-generate
+  Other-Modules:
+                 Paths_HROOT_generate
 
-  -- Other-Modules: Command
