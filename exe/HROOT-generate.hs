@@ -64,7 +64,13 @@ import           HROOT.Data.IO.Class               ( iocabal
                                                    , io_headers
                                                    , io_topfunctions
                                                    )
-import           HROOT.Data.RooFit.Class ()
+import           HROOT.Data.RooFit.Class           ( roofitcabal
+                                                   , roofit_classes
+                                                   , roofit_extraLib
+                                                   , roofit_extraDep
+                                                   , roofit_headers
+                                                   , roofit_topfunctions
+                                                   )
 import           HROOT.Data.RooFit.RooStats.Class ()
 import           HROOT.Data.Tree.Class             ( treecabal
                                                    , tree_classes
@@ -159,7 +165,7 @@ main = do
                    , sbcExtraLibs  = tree_extraLib
                    , sbcExtraDeps  = tree_extraDep
                    }
-{-      sbc_roofit = SimpleBuilderConfig {
+      sbc_roofit = SimpleBuilderConfig {
                      sbcTopModule  = "HROOT.RooFit"
                    , sbcModUnitMap = ModuleUnitMap (HM.fromList roofit_headers)
                    , sbcCabal      = roofitcabal
@@ -169,7 +175,7 @@ main = do
                    , sbcExtraLibs  = roofit_extraLib
                    , sbcExtraDeps  = roofit_extraDep
                    }
-      sbc_roostats = SimpleBuilderConfig {
+  {-    sbc_roostats = SimpleBuilderConfig {
                      sbcTopModule  = "HROOT.RooFit.RooStats"
                    , sbcModUnitMap = ModuleUnitMap (HM.fromList roostats_headers)
                    , sbcCabal      = roostatscabal
@@ -187,7 +193,7 @@ main = do
   simpleBuilder (mkcfg "HROOT-hist")            sbc_hist
   simpleBuilder (mkcfg "HROOT-io")              sbc_io
   simpleBuilder (mkcfg "HROOT-math")            sbc_math
-  -- simpleBuilder (mkcfg "HROOT-RooFit")          sbc_roofit
+  simpleBuilder (mkcfg "HROOT-RooFit")          sbc_roofit
   -- simpleBuilder (mkcfg "HROOT-RooFit-RooStats") sbc_roostats
   simpleBuilder (mkcfg "HROOT-tree")            sbc_tree
 

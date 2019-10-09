@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module HROOT.Data.RooFit.Class where
 
 import FFICXX.Generate.Code.Primitive ( bool, bool_
@@ -14,7 +16,10 @@ import FFICXX.Generate.Type.Class     ( Class(..)
                                       , ProtectedMethod(..)
                                       , TopLevelFunction(..)
                                       )
-import HROOT.Data.Core.Class          ( deletable, tNamed, tObject )
+import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
+                                      , ModuleUnitImports(..)
+                                      )
+import HROOT.Data.Core.Class          ( modImports, deletable, tNamed, tObject )
 import HROOT.Data.Hist.Class          ( tH1 )
 import HROOT.Data.Math.Class          ( tRandom )
 
@@ -254,3 +259,38 @@ roofit_classes = [ rooPrintable
 
 roofit_topfunctions :: [TopLevelFunction]
 roofit_topfunctions = [ ]
+
+roofit_headers :: [(ModuleUnit,ModuleUnitImports)]
+roofit_headers =
+  [ modImports "RooPrintable"         ["ROOT"] ["RooPrintable.h"]
+  , modImports "RooAbsArg"            ["ROOT"] ["RooAbsArg.h"]
+  , modImports "RooAbsReal"           ["ROOT"] ["RooAbsReal.h"]
+  , modImports "RooAbsLValue"         ["ROOT"] ["RooAbsLValue.h"]
+  , modImports "RooAbsRealLValue"     ["ROOT"] ["RooAbsRealLValue.h"]
+  , modImports "RooRealVar"           ["ROOT"] ["RooRealVar.h"]
+  , modImports "RooAbsData"           ["ROOT"] ["RooAbsData.h"]
+  , modImports "RooDirItem"           ["ROOT"] ["RooDirItem.h"]
+  , modImports "RooDataHist"          ["ROOT"] ["RooDataHist.h"]
+  , modImports "RooAbsPdf"            ["ROOT"] ["RooAbsPdf.h"]
+  , modImports "RooHistPdf"           ["ROOT"] ["RooHistPdf.h"]
+  , modImports "RooAddPdf"            ["ROOT"] ["RooAddPdf.h"]
+  , modImports "RooPlot"              ["ROOT"] ["RooPlot.h"]
+  , modImports "RooAbsCollection"     ["ROOT"] ["RooAbsCollection.h"]
+  , modImports "RooArgList"           ["ROOT"] ["RooArgList.h"]
+  , modImports "RooArgSet"            ["ROOT"] ["RooArgSet.h"]
+  , modImports "RooRandom"            ["ROOT"] ["RooRandom.h"]
+  , modImports "RooWorkspace"         ["ROOT"] ["RooWorkspace.h"]
+  , modImports "RooDataSet"           ["ROOT"] ["RooDataSet.h"]
+  , modImports "RooFitResult"         ["ROOT"] ["RooFitResult.h"]
+  , modImports "RooCategory"          ["ROOT"] ["RooCategory.h"]
+  , modImports "RooAbsCategoryLValue" ["ROOT"] ["RooAbsCategoryLValue.h"]
+  , modImports "RooAbsCategory"       ["ROOT"] ["RooAbsCategory.h"]
+  , modImports "RooGaussian"          ["ROOT"] ["RooGaussian.h"]
+  , modImports "RooGenericPdf"        ["ROOT"] ["RooGenericPdf.h"]
+  ]
+
+roofit_extraLib :: [String]
+roofit_extraLib = []
+
+roofit_extraDep :: [(String,[String])]
+roofit_extraDep = []
