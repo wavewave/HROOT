@@ -24,13 +24,11 @@ import           FFICXX.Generate.Config  ( FFICXXConfig(..)
                                          )
 import           FFICXX.Generate.Dependency ()
 import           FFICXX.Generate.ContentMaker ()
--- import           FFICXX.Generate.Type.Annotate ()
 import           FFICXX.Generate.Type.Config ( ModuleUnitMap(..) )
 import           FFICXX.Generate.Type.Class ()
 import           FFICXX.Generate.Type.Module ()
 import           FFICXX.Generate.Type.PackageInterface ()
 --
--- import           HROOT.Data.Core.Annotate ()
 import           HROOT.Data.Core.Class             ( corecabal
                                                    , core_classes
                                                    , core_extraDep
@@ -38,7 +36,6 @@ import           HROOT.Data.Core.Class             ( corecabal
                                                    , core_headers
                                                    , core_topfunctions
                                                    )
--- import           HROOT.Data.Hist.Annotate ()
 import           HROOT.Data.Hist.Class             ( histcabal
                                                    , hist_classes
                                                    , hist_extraDep
@@ -46,11 +43,20 @@ import           HROOT.Data.Hist.Class             ( histcabal
                                                    , hist_headers
                                                    , hist_topfunctions
                                                    )
--- import           HROOT.Data.Graf.Annotate ()
-import           HROOT.Data.Graf.Class ()
--- import           HROOT.Data.Math.Annotate ()
-import           HROOT.Data.Math.Class ()
--- import           HROOT.Data.IO.Annotate ()
+import           HROOT.Data.Graf.Class             ( grafcabal
+                                                   , graf_classes
+                                                   , graf_extraDep
+                                                   , graf_extraLib
+                                                   , graf_headers
+                                                   , graf_topfunctions
+                                                   )
+import           HROOT.Data.Math.Class             ( mathcabal
+                                                   , math_classes
+                                                   , math_extraDep
+                                                   , math_extraLib
+                                                   , math_headers
+                                                   , math_topfunctions
+                                                   )
 import           HROOT.Data.IO.Class               ( iocabal
                                                    , io_classes
                                                    , io_extraLib
@@ -60,8 +66,13 @@ import           HROOT.Data.IO.Class               ( iocabal
                                                    )
 import           HROOT.Data.RooFit.Class ()
 import           HROOT.Data.RooFit.RooStats.Class ()
--- import           HROOT.Data.Tree.Annotate ()
-import           HROOT.Data.Tree.Class ()
+import           HROOT.Data.Tree.Class             ( treecabal
+                                                   , tree_classes
+                                                   , tree_extraLib
+                                                   , tree_extraDep
+                                                   , tree_headers
+                                                   , tree_topfunctions
+                                                   )
 
 -- import           HROOT.Generate.MakePkg ()
 --
@@ -98,6 +109,16 @@ main = do
                    , sbcExtraLibs  = core_extraLib
                    , sbcExtraDeps  = core_extraDep
                    }
+      sbc_graf   = SimpleBuilderConfig {
+                     sbcTopModule  = "HROOT.Graf"
+                   , sbcModUnitMap = ModuleUnitMap (HM.fromList graf_headers)
+                   , sbcCabal      = grafcabal
+                   , sbcClasses    = graf_classes
+                   , sbcTopLevels  = graf_topfunctions
+                   , sbcTemplates  = []
+                   , sbcExtraLibs  = graf_extraLib
+                   , sbcExtraDeps  = graf_extraDep
+                   }
       sbc_hist   = SimpleBuilderConfig {
                      sbcTopModule  = "HROOT.Hist"
                    , sbcModUnitMap = ModuleUnitMap (HM.fromList hist_headers)
@@ -118,7 +139,7 @@ main = do
                    , sbcExtraLibs  = io_extraLib
                    , sbcExtraDeps  = io_extraDep
                    }
-{-      sbc_math   = SimpleBuilderConfig {
+      sbc_math   = SimpleBuilderConfig {
                      sbcTopModule  = "HROOT.Math"
                    , sbcModUnitMap = ModuleUnitMap (HM.fromList math_headers)
                    , sbcCabal      = mathcabal
@@ -128,7 +149,17 @@ main = do
                    , sbcExtraLibs  = math_extraLib
                    , sbcExtraDeps  = math_extraDep
                    }
-      sbc_roofit = SimpleBuilderConfig {
+      sbc_tree   = SimpleBuilderConfig {
+                     sbcTopModule  = "HROOT.Tree"
+                   , sbcModUnitMap = ModuleUnitMap (HM.fromList tree_headers)
+                   , sbcCabal      = treecabal
+                   , sbcClasses    = tree_classes
+                   , sbcTopLevels  = tree_topfunctions
+                   , sbcTemplates  = []
+                   , sbcExtraLibs  = tree_extraLib
+                   , sbcExtraDeps  = tree_extraDep
+                   }
+{-      sbc_roofit = SimpleBuilderConfig {
                      sbcTopModule  = "HROOT.RooFit"
                    , sbcModUnitMap = ModuleUnitMap (HM.fromList roofit_headers)
                    , sbcCabal      = roofitcabal
@@ -148,28 +179,18 @@ main = do
                    , sbcExtraLibs  = roostats_extraLib
                    , sbcExtraDeps  = roostast_extraDep
                    }
-     sbc_tree   = SimpleBuilderConfig {
-                     sbcTopModule  = "HROOT.Tree"
-                   , sbcModUnitMap = ModuleUnitMap (HM.fromList tree_headers)
-                   , sbcCabal      = treecabal
-                   , sbcClasses    = tree_classes
-                   , sbcTopLevels  = tree_topfunctions
-                   , sbcTemplates  = []
-                   , sbcExtraLibs  = tree_extraLib
-                   , sbcExtraDeps  = tree_extraDep
-                   }
-
--}
+     -}
 
 
   simpleBuilder (mkcfg "HROOT-core")            sbc_core
+  simpleBuilder (mkcfg "HROOT-graf")            sbc_graf
   simpleBuilder (mkcfg "HROOT-hist")            sbc_hist
   simpleBuilder (mkcfg "HROOT-io")              sbc_io
-{-  simpleBuilder (mkcfg "HROOT-math")            sbc_math
-  simpleBuilder (mkcfg "HROOT-RooFit")          sbc_roofit
-  simpleBuilder (mkcfg "HROOT-RooFit-RooStats") sbc_roostats
+  simpleBuilder (mkcfg "HROOT-math")            sbc_math
+  -- simpleBuilder (mkcfg "HROOT-RooFit")          sbc_roofit
+  -- simpleBuilder (mkcfg "HROOT-RooFit-RooStats") sbc_roostats
   simpleBuilder (mkcfg "HROOT-tree")            sbc_tree
-  -}
+
 
 
 --   param <- cmdArgs mode

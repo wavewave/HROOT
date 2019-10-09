@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module HROOT.Data.Graf.Class where
 
 import FFICXX.Generate.Code.Primitive ( bool    , bool_
@@ -15,7 +17,11 @@ import FFICXX.Generate.Type.Class     ( Class(..)
                                       , ProtectedMethod(..)
                                       , TopLevelFunction(..)
                                       )
-import HROOT.Data.Core.Class          ( deletable
+import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
+                                      , ModuleUnitImports(..)
+                                      )
+import HROOT.Data.Core.Class          ( modImports
+                                      , deletable
                                       , tAtt3D, tAttFill, tAttLine, tAttText
                                       , tNamed
                                       , tObject
@@ -230,3 +236,31 @@ graf_classes =
 
 graf_topfunctions :: [TopLevelFunction]
 graf_topfunctions = [ ]
+
+
+graf_headers :: [(ModuleUnit,ModuleUnitImports)]
+graf_headers =
+  [ modImports "TArc"        ["ROOT"] ["TArc.h"]
+  , modImports "TArrow"      ["ROOT"] ["TArrow.h"]
+  , modImports "TAttImage"   ["ROOT"] ["TAttImage.h"]
+  , modImports "TBRIK"       ["ROOT"] ["TBRIK.h"]
+  , modImports "TCanvas"     ["ROOT"] ["TCanvas.h"]
+  , modImports "TCrown"      ["ROOT"] ["TCrown.h"]
+  , modImports "TCutG"       ["ROOT"] ["TCutG.h"]
+  , modImports "TEllipse"    ["ROOT"] ["TEllipse.h"]
+  , modImports "TGaxis"      ["ROOT"] ["TGaxis.h"]
+  , modImports "TGraphPolar" ["ROOT"] ["TGraphPolar.h"]
+  , modImports "TGraphQQ"    ["ROOT"] ["TGraphQQ.h"]
+  , modImports "TLine"       ["ROOT"] ["TLine.h"]
+  , modImports "TPad"        ["ROOT"] ["TPad.h"]
+  , modImports "TPCON"       ["ROOT"] ["TPCON.h"]
+  , modImports "TShape"      ["ROOT"] ["TShape.h"]
+  , modImports "TSPHE"       ["ROOT"] ["TSPHE.h"]
+  , modImports "TTUBE"       ["ROOT"] ["TTUBE.h"]
+  ]
+
+graf_extraLib :: [String]
+graf_extraLib = []
+
+graf_extraDep :: [(String,[String])]
+graf_extraDep = []

@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module HROOT.Data.Math.Class where
 
 import FFICXX.Generate.Code.Primitive ( double, double_, int, int_, void_ )
@@ -7,7 +9,10 @@ import FFICXX.Generate.Type.Class     ( Class(..)
                                       , ProtectedMethod(..)
                                       , TopLevelFunction(..)
                                       )
-import HROOT.Data.Core.Class          ( tNamed )
+import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
+                                      , ModuleUnitImports(..)
+                                      )
+import HROOT.Data.Core.Class          ( modImports, tNamed )
 
 
 mathcabal :: Cabal
@@ -63,3 +68,14 @@ math_classes =
 
 math_topfunctions :: [TopLevelFunction]
 math_topfunctions = []
+
+math_headers :: [(ModuleUnit,ModuleUnitImports)]
+math_headers =
+  [ modImports "TRandom" ["ROOT"] ["TRandom.h"]
+  ]
+
+math_extraLib :: [String]
+math_extraLib = []
+
+math_extraDep :: [(String,[String])]
+math_extraDep = []

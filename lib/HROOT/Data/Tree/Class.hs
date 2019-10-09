@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module HROOT.Data.Tree.Class where
 
 import FFICXX.Generate.Code.Primitive ( cppclass, cppclass_
@@ -12,7 +14,12 @@ import FFICXX.Generate.Type.Class     ( Class(..)
                                       , ProtectedMethod(..)
                                       , TopLevelFunction(..)
                                       )
-import HROOT.Data.Core.Class          ( tAttFill, tAttLine, tAttMarker, tNamed )
+import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
+                                      , ModuleUnitImports(..)
+                                      )
+import HROOT.Data.Core.Class          ( modImports
+                                      , tAttFill, tAttLine, tAttMarker, tNamed
+                                      )
 
 
 treecabal :: Cabal
@@ -80,3 +87,16 @@ tree_topfunctions :: [TopLevelFunction]
 tree_topfunctions =
   [
   ]
+
+tree_headers :: [(ModuleUnit,ModuleUnitImports)]
+tree_headers =
+  [ modImports "TBranch" ["ROOT"] ["TBranch.h"]
+  , modImports "TChain"  ["ROOT"] ["TChain.h"]
+  , modImports "TTree"   ["ROOT"] ["TTree.h"]
+  ]
+
+tree_extraLib :: [String]
+tree_extraLib = []
+
+tree_extraDep :: [(String,[String])]
+tree_extraDep = []
