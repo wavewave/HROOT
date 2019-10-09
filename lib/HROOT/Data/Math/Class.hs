@@ -1,48 +1,81 @@
--- |
--- Module      : HROOT.Data.Math.Class
--- Copyright   : (c) 2011-2013, 2015 Ian-Woo Kim
--- 
--- License     : GPL-3
--- Maintainer  : ianwookim@gmail.com
--- Stability   : experimental
--- Portability : GHC
---
--- conversion data for ROOT classes 
---
+{-# LANGUAGE OverloadedStrings #-}
 
 module HROOT.Data.Math.Class where
 
-import Data.Monoid
---
-import FFICXX.Generate.Type.Class
-import FFICXX.Generate.Type.Module
--- 
-import HROOT.Data.Core.Class
+import FFICXX.Generate.Code.Primitive ( double, double_, int, int_, void_ )
+import FFICXX.Generate.Type.Cabal     ( Cabal(..), CabalName(..) )
+import FFICXX.Generate.Type.Class     ( Class(..)
+                                      , Function(..)
+                                      , ProtectedMethod(..)
+                                      , TopLevelFunction(..)
+                                      )
+import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
+                                      , ModuleUnitImports(..)
+                                      )
+import HROOT.Data.Core.Class          ( modImports, tNamed )
 
-mathcabal = Cabal { cabal_pkgname = "HROOT-math"
-                  , cabal_cheaderprefix = "HROOTMath" 
-                  , cabal_moduleprefix = "HROOT.Math" } 
 
-mathclass n ps ann fs = Class mathcabal n ps ann Nothing fs
+mathcabal :: Cabal
+mathcabal =
+  Cabal {
+    cabal_pkgname       = CabalName "HROOT-math"
+  , cabal_version       = "0.10.0.1"
+  , cabal_cheaderprefix = "HROOTMath"
+  , cabal_moduleprefix  = "HROOT.Math"
+  , cabal_additional_c_incs  = []
+  , cabal_additional_c_srcs  = []
+  , cabal_additional_pkgdeps = [ CabalName "HROOT-core" ]
+  , cabal_license            = Nothing
+  , cabal_licensefile        = Nothing
+  , cabal_extraincludedirs   = []
+  , cabal_extralibdirs       = []
+  , cabal_extrafiles         = []
+  , cabal_pkg_config_depends = []
+  }
 
-tRandom :: Class 
-tRandom = 
-  mathclass "TRandom" [tNamed] mempty
+
+mathclass :: String -> [Class] -> [Function] -> Class
+mathclass n ps fs =
+  Class {
+      class_cabal      = mathcabal
+    , class_name       = n
+    , class_parents    = ps
+    , class_protected  = Protected []
+    , class_alias      = Nothing
+    , class_funcs      = fs
+    , class_vars       = []
+    , class_tmpl_funcs = []
+    }
+
+tRandom :: Class
+tRandom =
+  mathclass "TRandom" [tNamed]
   [ Constructor [ int "seed" ] Nothing
   , Virtual int_ "GetSeed" [] Nothing
   , Virtual double_ "Gaus" [double "mean", double "sigma"] Nothing
   , Virtual void_ "SetSeed" [ int "seed" ] Nothing
   , Virtual double_ "Uniform" [double "x1", double "x2"] Nothing
-  ]       
-
+  ]
 
 -- rootFitFitResult :: Class
--- rootFitFitResult = 
+-- rootFitFitResult =
 --  mathclass "ROOT::Fit::FitResult" [] mempty
 --  [ ]
 
 math_classes :: [Class]
-math_classes = 
-  [ tRandom {- , rootFitFitResult -} ] 
+math_classes =
+  [ tRandom {- , rootFitFitResult -} ]
 
-math_topfunctions = [] 
+math_topfunctions :: [TopLevelFunction]
+math_topfunctions = []
+
+math_headers :: [(ModuleUnit,ModuleUnitImports)]
+math_headers =
+  [ modImports "TRandom" ["ROOT"] ["TRandom.h"]
+  ]
+
+math_extraLib :: [String]
+math_extraLib = []
+
+math_extraDep :: [(String,[String])]
+math_extraDep = []

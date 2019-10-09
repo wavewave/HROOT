@@ -1,14 +1,14 @@
 Name:		HROOT-generate
-Version:	0.9.0.1
+Version:	0.10.0.1
 Synopsis:	automatic HROOT binding generation
-Description: 	automatic HROOT binding generation 
+Description: 	automatic HROOT binding generation
 License:        LGPL-2.1
 License-file:	LICENSE
 Author:		Ian-Woo Kim
 Maintainer: 	Ian-Woo Kim <ianwookim@gmail.com>
 Build-Type: 	Simple
 Cabal-Version:  >= 1.8
-Data-files:     
+Data-files:
                 template/HROOT-core/CHANGES
                 template/HROOT-core/Config.hs
                 template/HROOT-core/LICENSE
@@ -44,25 +44,65 @@ Data-files:
                 template/HROOT/CHANGES
                 template/HROOT/Config.hs
                 template/HROOT/LICENSE
-                template/HROOT/README.md 
+                template/HROOT/README.md
                 template/HROOT/Setup.lhs
                 template/HROOT/example/*.hs
+
+Library
+  hs-source-dirs: lib
+  ghc-options: 	-Wall -Werror -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
+  ghc-prof-options: -caf-all -auto-all
+  Build-Depends: base>4,
+                 Cabal,
+                 cmdargs,
+                 containers,
+                 directory,
+                 fficxx >= 0.5,
+                 filepath>1,
+                 haskell-src-exts,
+                 mtl>2,
+                 process,
+                 split,
+                 template-haskell,
+                 text,
+                 transformers,
+                 unordered-containers
+
+  Exposed-Modules:
+                   -- HROOT.Generate.MakePkg
+                   -- HROOT.Data.Core.Annotate
+                   HROOT.Data.Core.Class
+                   -- HROOT.Data.Hist.Annotate
+                   HROOT.Data.Hist.Class
+                   -- HROOT.Data.Graf.Annotate
+                   HROOT.Data.Graf.Class
+                   -- HROOT.Data.Math.Annotate
+                   HROOT.Data.Math.Class
+                   -- HROOT.Data.IO.Annotate
+                   HROOT.Data.IO.Class
+                   -- HROOT.Data.RooFit.Annotate
+                   HROOT.Data.RooFit.Class
+                   HROOT.Data.RooFit.RooStats.Class
+                   -- HROOT.Data.Tree.Annotate
+                   HROOT.Data.Tree.Class
+  Other-Modules:
+                   Paths_HROOT_generate
 
 Executable HROOT-generate
   Main-is: HROOT-generate.hs
   hs-source-dirs: exe
-  ghc-options: 	-Wall -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
+  ghc-options: 	-Wall -Werror -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
   ghc-prof-options: -caf-all -auto-all
   Build-Depends: base>4,
                  Cabal,
                  cmdargs,
                  configurator >= 0.2,
-                 containers, 
+                 containers,
                  directory,
-                 fficxx >= 0.3,
-                 filepath>1, 
-                 mtl>2, 
-                 process, 
+                 fficxx >= 0.5,
+                 filepath>1,
+                 mtl>2,
+                 process,
                  split,
                  template,
                  template-haskell,
@@ -70,47 +110,5 @@ Executable HROOT-generate
                  unordered-containers,
                  --
                  HROOT-generate
-                 
-  Other-Modules: Command
 
-Library
-  hs-source-dirs: lib
-  ghc-options: 	-Wall -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
-  ghc-prof-options: -caf-all -auto-all
-  Build-Depends: base>4,
-                 Cabal,
-                 cmdargs, 
-                 containers,
-                 directory, 
-                 fficxx >= 0.3, 
-                 filepath>1,
-                 haskell-src-exts,
-                 mtl>2,
-                 process, 
-                 split,
-                 template-haskell,
-                 text,
-                 transformers, 
-                 unordered-containers
-
-  Exposed-Modules: 
-                   HROOT.Generate.MakePkg 
-                   HROOT.Data.Core.Annotate 
-                   HROOT.Data.Core.Class 
-                   HROOT.Data.Hist.Annotate
-                   HROOT.Data.Hist.Class
-                   HROOT.Data.Graf.Annotate
-                   HROOT.Data.Graf.Class
-                   HROOT.Data.Math.Annotate
-                   HROOT.Data.Math.Class
-                   HROOT.Data.IO.Annotate
-                   HROOT.Data.IO.Class
-                   HROOT.Data.RooFit.Annotate
-                   HROOT.Data.RooFit.Class
-                   HROOT.Data.RooFit.RooStats.Class
-                   HROOT.Data.Tree.Annotate
-                   HROOT.Data.Tree.Class
-                   
-  Other-Modules: 
-                   Paths_HROOT_generate
-
+  -- Other-Modules: Command

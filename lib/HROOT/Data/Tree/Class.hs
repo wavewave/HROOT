@@ -1,67 +1,102 @@
--- |
--- Module      : HROOT.Data.Tree.Class
--- Copyright   : (c) 2011-2014 Ian-Woo Kim
--- 
--- License     : LGPL-2.1
--- Maintainer  : ianwookim@gmail.com
--- Stability   : experimental
--- Portability : GHC
---
--- conversion data for ROOT classes 
---
+{-# LANGUAGE OverloadedStrings #-}
 
 module HROOT.Data.Tree.Class where
 
-import Data.Monoid
--- 
-import FFICXX.Generate.Type.Class
-import FFICXX.Generate.Type.Module
---
-import HROOT.Data.Core.Class
+import FFICXX.Generate.Code.Primitive ( cppclass, cppclass_
+                                      , cstring
+                                      , int, int_
+                                      , long
+                                      , voidp
+                                      )
+import FFICXX.Generate.Type.Cabal     ( Cabal(..), CabalName(..) )
+import FFICXX.Generate.Type.Class     ( Class(..)
+                                      , Function(..)
+                                      , ProtectedMethod(..)
+                                      , TopLevelFunction(..)
+                                      )
+import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
+                                      , ModuleUnitImports(..)
+                                      )
+import HROOT.Data.Core.Class          ( modImports
+                                      , tAttFill, tAttLine, tAttMarker, tNamed
+                                      )
 
-treecabal = Cabal { cabal_pkgname = "HROOT-tree"
-                  , cabal_cheaderprefix = "HROOTTree" 
-                  , cabal_moduleprefix = "HROOT.Tree" 
-                  } 
 
-treeclass n ps ann fs = Class treecabal n ps ann Nothing fs 
+treecabal :: Cabal
+treecabal =
+  Cabal {
+    cabal_pkgname            = CabalName "HROOT-tree"
+  , cabal_version            = "0.10.0.1"
+  , cabal_cheaderprefix      = "HROOTTree"
+  , cabal_moduleprefix       = "HROOT.Tree"
+  , cabal_additional_c_incs  = []
+  , cabal_additional_c_srcs  = []
+  , cabal_additional_pkgdeps = [ CabalName "HROOT-core" ]
+  , cabal_license            = Nothing
+  , cabal_licensefile        = Nothing
+  , cabal_extraincludedirs   = []
+  , cabal_extralibdirs       = []
+  , cabal_extrafiles         = []
+  , cabal_pkg_config_depends = []
+  }
+
+treeclass :: String -> [Class] -> [Function] -> Class
+treeclass n ps fs =
+  Class {
+      class_cabal      = treecabal
+    , class_name       = n
+    , class_parents    = ps
+    , class_protected  = Protected []
+    , class_alias      = Nothing
+    , class_funcs      = fs
+    , class_vars       = []
+    , class_tmpl_funcs = []
+    }
 
 tBranch :: Class
-tBranch = 
-  treeclass "TBranch" [tNamed, tAttFill] mempty
-  [ 
-  ] 
+tBranch =
+  treeclass "TBranch" [tNamed, tAttFill]
+  [
+  ]
 
 tChain :: Class
-tChain = 
-  treeclass "TChain" [tTree] mempty
+tChain =
+  treeclass "TChain" [tTree]
   [ Constructor [cstring "name", cstring "title" ] Nothing
   , Virtual int_ "Add" [cppclass tChain "chain"] (Just "addChain")
   , Virtual int_ "Add" [cstring "name", long "nentries"] (Just "addChain1")
-  ] 
+  ]
 
 tTree :: Class
-tTree = 
-  treeclass "TTree" [tNamed,tAttLine,tAttFill,tAttMarker] mempty 
+tTree =
+  treeclass "TTree" [tNamed,tAttLine,tAttFill,tAttMarker]
   [ Constructor [cstring "name", cstring "title", int "splitlevel" ] Nothing
   , Virtual int_ "Branch" [ cstring "folder", int "bufsize", int "splitlevel" ] Nothing
   , Virtual (cppclass_ tBranch) "Branch" [ cstring "name", voidp "address", cstring "leaflist", int "bufsize" ] (Just "branch1")
   , Virtual int_ "Fill" [ ] (Just "fillTree")
   ]
 
-tree_classes :: [Class] 
-tree_classes = 
+tree_classes :: [Class]
+tree_classes =
   [ tBranch
   , tChain
-  , tTree 
-  ] 
+  , tTree
+  ]
 
-tree_topfunctions = 
-  [ 
-  ] 
+tree_topfunctions :: [TopLevelFunction]
+tree_topfunctions =
+  [
+  ]
 
+tree_headers :: [(ModuleUnit,ModuleUnitImports)]
+tree_headers =
+  [ modImports "TBranch" ["ROOT"] ["TBranch.h"]
+  , modImports "TChain"  ["ROOT"] ["TChain.h"]
+  , modImports "TTree"   ["ROOT"] ["TTree.h"]
+  ]
 
+tree_extraLib :: [String]
+tree_extraLib = []
 
-
-
-
+tree_extraDep :: [(String,[String])]
+tree_extraDep = []

@@ -1,30 +1,70 @@
--- |
--- Module      : HROOT.Data.Hist.Class
--- Copyright   : (c) 2011-2017 Ian-Woo Kim
--- 
--- License     : GPL-3
--- Maintainer  : ianwookim@gmail.com
--- Stability   : experimental
--- Portability : GHC
---
--- conversion data for ROOT classes 
---
+{-# LANGUAGE OverloadedStrings #-}
 
 module HROOT.Data.Hist.Class where
 
-import Data.Monoid 
--- 
-import FFICXX.Generate.Type.Class
-import FFICXX.Generate.Type.Module
--- 
-import HROOT.Data.Core.Class
-import HROOT.Data.Math.Class
+import FFICXX.Generate.Code.Primitive ( bool    , bool_
+                                      , cppclass, cppclass_
+                                      , cstring
+                                      , double  , double_
+                                      , doublep
+                                      , float   , float_
+                                      , int     , int_
+                                      , self_
+                                      , short   , short_
+                                      , void_
+                                      )
+import FFICXX.Generate.Type.Cabal     ( Cabal(..), CabalName(..) )
+import FFICXX.Generate.Type.Class     ( Class(..)
+                                      , Function(..)
+                                      , ProtectedMethod(..)
+                                      , TopLevelFunction(..)
+                                      )
+import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
+                                      , ModuleUnitImports(..)
+                                      )
+import HROOT.Data.Core.Class          ( modImports
+                                      , tArrayC, tArrayD, tArrayF, tArrayI, tArrayS
+                                      , tAtt3D
+                                      , tAttAxis
+                                      , tAttFill
+                                      , tAttLine
+                                      , tAttMarker
+                                      , tDirectory
+                                      , tNamed
+                                      , tObjArray
+                                      , tObject
+                                      )
 
-histcabal = Cabal { cabal_pkgname = "HROOT-hist"
-                  , cabal_cheaderprefix = "HROOTHist" 
-                  , cabal_moduleprefix = "HROOT.Hist" } 
+histcabal :: Cabal
+histcabal =
+  Cabal {
+    cabal_pkgname            = CabalName "HROOT-hist"
+  , cabal_version            = "0.10.0.1"
+  , cabal_cheaderprefix      = "HROOTHist"
+  , cabal_moduleprefix       = "HROOT.Hist"
+  , cabal_additional_c_incs  = []
+  , cabal_additional_c_srcs  = []
+  , cabal_additional_pkgdeps = [ CabalName "HROOT-core" ]
+  , cabal_license            = Nothing
+  , cabal_licensefile        = Nothing
+  , cabal_extraincludedirs   = []
+  , cabal_extralibdirs       = []
+  , cabal_extrafiles         = []
+  , cabal_pkg_config_depends = []
+  }
 
-histclass n ps ann fs = Class histcabal n ps ann Nothing fs 
+histclass :: String -> [Class] -> ProtectedMethod -> [Function] -> Class
+histclass n ps protect fs =
+  Class {
+    class_cabal      = histcabal
+  , class_name       = n
+  , class_parents    = ps
+  , class_protected  = protect
+  , class_alias      = Nothing
+  , class_funcs      = fs
+  , class_vars       = []
+  , class_tmpl_funcs = []
+  }
 
 
 ----------------
@@ -32,18 +72,18 @@ histclass n ps ann fs = Class histcabal n ps ann Nothing fs
 ----------------
 
 tAxis :: Class
-tAxis = 
-  histclass "TAxis" [tNamed, tAttAxis] mempty
+tAxis =
+  histclass "TAxis" [tNamed, tAttAxis] (Protected [])
   [ Constructor [int "nbins", double "xmin", double "xmax"] Nothing
   , Virtual int_ "FindBin" [double "x"] (Just "findBinTAxis")
   , Virtual int_ "FindFixBin" [double "x"] (Just "findFixBinTAxis")
   , Virtual double_ "GetBinCenter" [int "bin"]  (Just "getBinCenterTAxis")
-  , Virtual double_ "GetBinCenterLog" [int "bin"] Nothing 
+  , Virtual double_ "GetBinCenterLog" [int "bin"] Nothing
   -- , Virtual double_ "GetBinLabel" [int "bin"] Nothing
   , Virtual double_ "GetBinUpEdge" [int "bin"] Nothing
   -- GetCenter
   , NonVirtual bool_ "GetCenterLabels" [] Nothing
-  , NonVirtual bool_ "GetCenterTitle" [] Nothing 
+  , NonVirtual bool_ "GetCenterTitle" [] Nothing
   -- GetLowEdge
   , Virtual void_ "SetTimeDisplay" [ int "value" ] Nothing
   , Virtual void_ "SetTimeFormat" [ cstring "format" ] Nothing
@@ -54,18 +94,18 @@ tAxis =
 -- starting F --
 ----------------
 
-{- 
+{-
 tF1 :: Class
-tF1 = 
+tF1 =
   histclass "TF1" [tAttLine, tAttFill, tAttMarker] mempty
-  [ Constructor [cstring "name",cstring "formula",double "xmin",double "xmax"] Nothing 
+  [ Constructor [cstring "name",cstring "formula",double "xmin",double "xmax"] Nothing
   ]
 -}
- 
+
 tF1 :: Class
-tF1 = 
-  histclass "TF1" [tAttLine, tAttFill, tAttMarker] mempty
-  [ Constructor [cstring "name",cstring "formula",double "xmin",double "xmax"] Nothing 
+tF1 =
+  histclass "TF1" [tAttLine, tAttFill, tAttMarker] (Protected [])
+  [ Constructor [cstring "name",cstring "formula",double "xmin",double "xmax"] Nothing
   -- Browse
   , Virtual double_ "Derivative" [double "x", doublep "params", double "epsilon"] Nothing
   , Virtual double_ "Derivative2" [double "x", doublep "params", double "epsilon"] Nothing
@@ -90,7 +130,7 @@ tF1 =
   , Virtual int_ "GetNumberFitPoints" [] Nothing
   , NonVirtual (cppclass_ tObject) "GetParent" [] Nothing
   , Virtual double_ "GetParError" [int "ipar"] Nothing
-  -- GetParErrors 
+  -- GetParErrors
   -- GetParLiits
   , Virtual double_ "GetProb" [] Nothing
   , Virtual int_ "GetQuantiles" [int "nprobSum", doublep "q", doublep "probSum"] (Just "getQuantilesTF1")
@@ -105,7 +145,7 @@ tF1 =
   , NonVirtual (cppclass_ tAxis) "GetZaxis" [] Nothing
   , Virtual double_ "GradientPar" [int "ipar", doublep "x", double "eps"] Nothing
   , Virtual void_ "InitArgs" [doublep "x", doublep "params"] Nothing
-  , Static  void_ "InitStandardFunctions" [] Nothing 
+  , Static  void_ "InitStandardFunctions" [] Nothing
   , Virtual double_ "Integral" [double "a", double "b", double "epsilon"] (Just "IntegralTF1")
   , Virtual double_ "IntegralError" [double "a", double "b", doublep "params", doublep "covmat", double "epsilon"] Nothing
   , Virtual double_ "IntegralFast" [int "num", doublep "x", doublep "w", double "a", double "b", doublep "params", double "epsilon"] Nothing
@@ -133,9 +173,9 @@ tF1 =
   , Static  void_ "RejectPoint" [bool "reject"] Nothing
   , Static  bool_ "RejectedPoint" [] Nothing
   , Static  void_ "SetCurrent" [cppclass tF1 "f1"] Nothing
-  -- RejectPoint 
-  -- RejectedPoint 
-  -- SetCurrent 
+  -- RejectPoint
+  -- RejectedPoint
+  -- SetCurrent
   , Virtual double_ "Moment" [double "n", double "a", double "b", doublep "params", double "epsilon"] Nothing
   , Virtual double_ "CentralMoment" [double "n", double "a", double "b", doublep "params", double "epsilon"] Nothing
   , Virtual double_ "Mean" [double "a", double "b", doublep "params", double "epsilon"] Nothing
@@ -146,25 +186,25 @@ tF1 =
 
 
 tFitResult :: Class
-tFitResult = 
-    histclass "TFitResult" [tNamed ] mempty   -- rootFitFitResult
+tFitResult =
+    histclass "TFitResult" [tNamed] (Protected []) -- rootFitFitResult
     [ ]
 
 
 tFitResultPtr :: Class
-tFitResultPtr = 
-    histclass "TFitResultPtr" [] mempty
-    [ NonVirtual (cppclass_ tFitResult) "Get" [] Nothing 
+tFitResultPtr =
+    histclass "TFitResultPtr" [] (Protected [])
+    [ NonVirtual (cppclass_ tFitResult) "Get" [] Nothing
     ]
-  
 
-{- 
+
+{-
 tFormula :: Class
 tFormula = histclass "TFormula" [tNamed] mempty
            [ Constructor [cstring "name", cstring "formula"] Nothing
            , NonVirtual void_ "Optimize" [] Nothing
            -- Analyze
-           -- AnalyzeFunction 
+           -- AnalyzeFunction
            -- , Virtual int_ "Compile" [cstring "expression"] Nothing
            , Virtual void_ "Clear" [cstring "option"] Nothing
            -- DefinedString
@@ -186,7 +226,7 @@ tFormula = histclass "TFormula" [tNamed] mempty
            -- , Virtual bool_  "IsNormalized" [] Nothing
            -- ProcessLinear
            -- , Virtual void_  "SetNumber" [int "number"] Nothing
-           , Virtual void_  "SetParameter" [cstring "name", double "parvalue"] Nothing 
+           , Virtual void_  "SetParameter" [cstring "name", double "parvalue"] Nothing
            , Virtual void_  "SetParameters" [doublep "params"] Nothing
            , Virtual void_  "SetParName"  [int "ipar", cstring "name"] Nothing
            , Virtual void_  "SetParNames" [cstring "name0", cstring "name1", cstring "name2"
@@ -205,26 +245,26 @@ tFormula = histclass "TFormula" [tNamed] mempty
 
 
 tGraph :: Class
-tGraph = 
-  histclass "TGraph" [tNamed, tAttLine, tAttFill, tAttMarker] mempty
+tGraph =
+  histclass "TGraph" [tNamed, tAttLine, tAttFill, tAttMarker] (Protected [])
   [ Constructor [int "n", doublep "x", doublep "y"] Nothing
   , Virtual void_ "Apply" [cppclass tF1 "f"] Nothing
   , Virtual double_ "Chisquare" [cppclass tF1 "f1"] Nothing
   -- CompareArg
   -- CompareX
-  -- CompareY 
+  -- CompareY
   -- CompareRadius
   -- ComputeRange
   , Virtual void_ "DrawGraph" [int "n", doublep "x", doublep "y", cstring "option"] Nothing
   , Virtual void_ "DrawPanel" [] (Just "drawPanelTGraph")
-  -- Eval 
+  -- Eval
   , Virtual void_ "Expand" [int "newsize", int "step"] Nothing
   -- Fit
   , Virtual void_ "FitPanel" [] (Just "FitPanelTGraph")
   , NonVirtual bool_ "GetEditable" [] Nothing
   , NonVirtual (cppclass_ tF1) "GetFunction" [cstring "name"] Nothing
   , NonVirtual (cppclass_ tH1F) "GetHistogram" [] Nothing
-  -- , NonVirtual (cppclass_ "TList") "GetListOfFunctions" [] 
+  -- , NonVirtual (cppclass_ "TList") "GetListOfFunctions" []
   , Virtual double_ "GetCorrelationFactor" [] (Just "getCorrelationFactorTGraph")
   , Virtual double_ "GetCovariance" [] (Just "getCovarianceTGraph")
   , Virtual double_ "GetMean" [int "axis"] (Just "getMeanTGraph")
@@ -241,7 +281,7 @@ tGraph =
   -- GetY
   -- GetEX
   -- GetEY
-  -- omit.. 
+  -- omit..
   , NonVirtual double_ "GetMaximum" [] Nothing
   , NonVirtual double_ "GetMinimum" [] Nothing
   , NonVirtual (cppclass_ tAxis) "GetXaxis" [] Nothing
@@ -250,7 +290,7 @@ tGraph =
   , Virtual void_ "InitExpo" [double "xmin", double "xmax"] Nothing
   , Virtual void_ "InitGaus" [double "xmin", double "xmax"] Nothing
   , Virtual void_ "InitPolynom" [double "xmin", double "xmax"] Nothing
-  , Virtual int_ "InsertPoint" [] Nothing 
+  , Virtual int_ "InsertPoint" [] Nothing
   , Virtual double_ "Integral" [int "first", int "last"] (Just "integralTGraph")
   , Virtual bool_ "IsEditable" [] Nothing
   , Virtual int_ "IsInside" [double "x", double "y"] (Just "isInsideTGraph")
@@ -270,20 +310,20 @@ tGraph =
   ]
 
 tGraphAsymmErrors :: Class
-tGraphAsymmErrors = 
-  histclass "TGraphAsymmErrors" [tGraph] mempty
+tGraphAsymmErrors =
+  histclass "TGraphAsymmErrors" [tGraph] (Protected [])
   [ Constructor [int "n", doublep "x", doublep "y", doublep "exl", doublep "exh", doublep "eyl", doublep "eyh" ] Nothing
   ]
 
 tGraphBentErrors :: Class
-tGraphBentErrors = 
-  histclass "TGraphBentErrors" [tGraph] mempty
+tGraphBentErrors =
+  histclass "TGraphBentErrors" [tGraph] (Protected [])
   [ Constructor [int "n", doublep "x", doublep "y", doublep "exl", doublep "exh", doublep "eyl", doublep "eyh", doublep "exld", doublep "exhd", doublep "eyld", doublep "eyhd"] Nothing
   ]
 
 tGraphErrors :: Class
-tGraphErrors = 
-  histclass "TGraphErrors" [tGraph] mempty
+tGraphErrors =
+  histclass "TGraphErrors" [tGraph] (Protected [])
   [ Constructor [int "n", doublep "x", doublep "y", doublep "ex", doublep "ey"] Nothing
   ]
 
@@ -294,8 +334,8 @@ tGraphErrors =
 
 
 tH1 :: Class
-tH1 = 
-  histclass "TH1" [tNamed, tAttLine, tAttFill, tAttMarker] mempty 
+tH1 =
+  histclass "TH1" [tNamed, tAttLine, tAttFill, tAttMarker] (Protected [])
   [ Virtual void_ "Add" [cppclass tH1 "h1", double "c1"] Nothing
   , Virtual void_ "AddBinContent" [int "bin", double "w"] Nothing
   , Virtual double_ "Chi2Test" [cppclass tH1 "h2", cstring "option", doublep "res"] Nothing
@@ -308,7 +348,7 @@ tH1 =
   , Virtual void_ "DrawPanel" [] (Just "drawPanelTH1")
   , Virtual int_ "BufferEmpty" [int "action"] Nothing
   , Virtual void_ "Eval" [cppclass tF1 "f1", cstring "option"] (Just "evalF")
-  , Virtual (cppclass_ tH1) "FFT" [cppclass tH1 "h_output", cstring "option"] Nothing 
+  , Virtual (cppclass_ tH1) "FFT" [cppclass tH1 "h_output", cstring "option"] Nothing
 
   , Virtual int_  "Fill" [double "x"] (Just "fill1")
   , Virtual int_  "Fill" [double "x", double "w"] (Just "fill1w")
@@ -389,8 +429,8 @@ tH1 =
   , Virtual double_ "GetRMS" [int "axis"] Nothing
   , Virtual double_ "GetRMSError" [int "axis"] Nothing
   , Virtual double_ "GetSkewness" [int "axis"] Nothing
-  {- , NonVirtual (cppclass_ "TAxis") "GetXaxis" [] 
-  , NonVirtual (cppclass_ "TAxis") "GetYaxis" [] 
+  {- , NonVirtual (cppclass_ "TAxis") "GetXaxis" []
+  , NonVirtual (cppclass_ "TAxis") "GetYaxis" []
   , NonVirtual (cppclass_ "TAxis") "GetZaxis" [] -}
   , Virtual double_ "Integral" [int "binx1", int "binx2", cstring "option"] (Just "integral1")
   -- IntegralAndError
@@ -458,37 +498,37 @@ tH1 =
   , Virtual void_ "Sumw2" [] Nothing
   , NonVirtual void_ "UseCurrentStyle" [] Nothing
   -- TransformHisto
-  ] 
+  ]
 
-tH1C :: Class 
-tH1C = histclass "TH1C" [tH1, tArrayC] mempty 
+tH1C :: Class
+tH1C = histclass "TH1C" [tH1, tArrayC] (Protected [])
        []
 
 tH1D :: Class
-tH1D = histclass "TH1D" [tH1, tArrayD] mempty 
+tH1D = histclass "TH1D" [tH1, tArrayD] (Protected [])
        [ Constructor [cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"] Nothing
        ]
 
 tH1F :: Class
-tH1F = histclass "TH1F" [tH1, tArrayF] mempty
+tH1F = histclass "TH1F" [tH1, tArrayF] (Protected [])
        [ Constructor [cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"] Nothing
-       ] 
+       ]
 
-tH1I :: Class 
-tH1I = histclass "TH1I" [tH1, tArrayI] mempty
+tH1I :: Class
+tH1I = histclass "TH1I" [tH1, tArrayI] (Protected [])
        []
 
 tH1K :: Class
-tH1K = histclass "TH1K" [tH1, tArrayF] mempty
+tH1K = histclass "TH1K" [tH1, tArrayF] (Protected [])
        []
 
 tH1S :: Class
-tH1S = histclass "TH1S" [tH1, tArrayS] mempty 
+tH1S = histclass "TH1S" [tH1, tArrayS] (Protected [])
        []
 
 
-tH2 :: Class 
-tH2 = 
+tH2 :: Class
+tH2 =
   histclass "TH2" [tH1] (Protected ["fill1"])
   [ Virtual int_ "Fill" [double "x", double "y"] (Just "fill2")
   , Virtual int_ "Fill" [double "x", double "y", double "w"] (Just "fill2w")
@@ -516,7 +556,7 @@ tH2C :: Class
 tH2C = histclass "TH2C" [tH2, tArrayC] (Protected ["fill1"])
        []
 
-tH2D :: Class 
+tH2D :: Class
 tH2D = histclass "TH2D" [tH2, tArrayD] (Protected ["fill1"])
        [ Constructor [ cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"
                      , int "nbinsy", double "ylow", double "yup"] Nothing
@@ -525,14 +565,14 @@ tH2D = histclass "TH2D" [tH2, tArrayD] (Protected ["fill1"])
 tH2F :: Class
 tH2F = histclass "TH2F" [tH2, tArrayF] (Protected ["fill1"])
        [ Constructor [cstring "name",cstring "title",int "nbinsx",double "xlow",double "xup"
-                              ,int "nbinsy", double "ylow", double "yup"] Nothing 
+                              ,int "nbinsy", double "ylow", double "yup"] Nothing
        ]
 
 tH2I :: Class
 tH2I = histclass "TH2I" [tH2, tArrayI] (Protected ["fill1"])
        []
 
-tH2Poly :: Class 
+tH2Poly :: Class
 tH2Poly = histclass "TH2Poly" [tH2] (Protected ["fill1"])
           []
 
@@ -541,7 +581,7 @@ tH2S = histclass "TH2S" [tH2, tArrayS] (Protected ["fill1"])
        []
 
 tH3 :: Class
-tH3 = 
+tH3 =
   histclass "TH3" [tH1, tAtt3D] (Protected ["fill1","fill1w"])
   [ Virtual int_ "Fill" [double "x", double "y", double "z"] (Just "fill3")
   , Virtual int_ "Fill" [double "x", double "y", double "z", double "w"] (Just "fill3w")
@@ -561,7 +601,7 @@ tH3 =
   , Virtual (cppclass_ tH3) "Rebin3D" [int "nxgroup", int "nygroup", int "nzgroup", cstring "newname"] Nothing
   ]
 
-tH3C :: Class 
+tH3C :: Class
 tH3C = histclass "TH3C" [tH3, tArrayC] (Protected ["fill1","fill1w"])
        []
 
@@ -582,16 +622,55 @@ tH3S = histclass "TH3S" [tH3, tArrayS] (Protected ["fill1","fill1w"])
        []
 
 tHStack :: Class
-tHStack = histclass "THStack" [tNamed] mempty 
+tHStack = histclass "THStack" [tNamed] (Protected [])
           [ Constructor [cstring "name",cstring "title"] Nothing
-          ] 
+          ]
 
 hist_classes :: [Class]
-hist_classes = 
+hist_classes =
   [ tAxis
   , tF1, tFitResult, tFitResultPtr -- , tFormula
   , tGraph, tGraphAsymmErrors, tGraphBentErrors, tGraphErrors
-  , tH1, tH1C, tH1D, tH1F, tH1I, tH1K, tH1S, tH2, tH2C, tH2D, tH2F, tH2I, tH2Poly, tH2S, tH3, tH3C, tH3D, tH3F, tH3I, tH3S, tHStack ] 
+  , tH1, tH1C, tH1D, tH1F, tH1I, tH1K, tH1S, tH2, tH2C, tH2D, tH2F, tH2I, tH2Poly, tH2S, tH3, tH3C, tH3D, tH3F, tH3I, tH3S, tHStack ]
 
+hist_topfunctions :: [TopLevelFunction]
+hist_topfunctions = []
 
-hist_topfunctions = [] 
+hist_headers :: [(ModuleUnit,ModuleUnitImports)]
+hist_headers =
+  [ modImports "TAxis"             ["ROOT"] ["TAxis.h"]
+  , modImports "TF1"               ["ROOT"] ["TF1.h"]
+  , modImports "TFitResult"        ["ROOT"] ["TFitResult.h"]
+  , modImports "TFitResultPtr"     ["ROOT"] ["TFitResultPtr.h"]
+  , modImports "TGraph"            ["ROOT"] ["TGraph.h"]
+  , modImports "TGraphAsymmErrors" ["ROOT"] ["TGraphAsymmErrors.h"]
+  , modImports "TGraphBentErrors"  ["ROOT"] ["TGraphBentErrors.h"]
+  , modImports "TGraphErrors"      ["ROOT"] ["TGraphErrors.h"]
+  , modImports "TH1"               ["ROOT"] ["TH1.h"]
+  , modImports "TH1C"              ["ROOT"] ["TH1C.h"]
+  , modImports "TH1D"              ["ROOT"] ["TH1D.h"]
+  , modImports "TH1F"              ["ROOT"] ["TH1F.h"]
+  , modImports "TH1I"              ["ROOT"] ["TH1I.h"]
+  , modImports "TH1K"              ["ROOT"] ["TH1K.h"]
+  , modImports "TH1S"              ["ROOT"] ["TH1S.h"]
+  , modImports "TH2"               ["ROOT"] ["TH2.h"]
+  , modImports "TH2C"              ["ROOT"] ["TH2C.h"]
+  , modImports "TH2D"              ["ROOT"] ["TH2D.h"]
+  , modImports "TH2F"              ["ROOT"] ["TH2F.h"]
+  , modImports "TH2I"              ["ROOT"] ["TH2I.h"]
+  , modImports "TH2Poly"           ["ROOT"] ["TH2Poly.h"]
+  , modImports "TH2S"              ["ROOT"] ["TH2S.h"]
+  , modImports "TH3"               ["ROOT"] ["TH3.h"]
+  , modImports "TH3C"              ["ROOT"] ["TH3C.h"]
+  , modImports "TH3D"              ["ROOT"] ["TH3D.h"]
+  , modImports "TH3F"              ["ROOT"] ["TH3F.h"]
+  , modImports "TH3I"              ["ROOT"] ["TH3I.h"]
+  , modImports "TH3S"              ["ROOT"] ["TH3S.h"]
+  , modImports "THStack"           ["ROOT"] ["THStack.h"]
+  ]
+
+hist_extraLib :: [String]
+hist_extraLib = []
+
+hist_extraDep :: [(String,[String])]
+hist_extraDep = []
