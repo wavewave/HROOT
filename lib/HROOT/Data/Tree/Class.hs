@@ -8,7 +8,7 @@ import FFICXX.Generate.Code.Primitive ( cppclass, cppclass_
                                       , long
                                       , voidp
                                       )
-import FFICXX.Generate.Type.Cabal     ( Cabal(..), CabalName(..) )
+import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) )
 import FFICXX.Generate.Type.Class     ( Class(..)
                                       , Function(..)
                                       , ProtectedMethod(..)
@@ -38,6 +38,7 @@ treecabal =
   , cabal_extralibdirs       = []
   , cabal_extrafiles         = []
   , cabal_pkg_config_depends = []
+  , cabal_buildType          = Custom [CabalName "Cabal", CabalName "base", CabalName "process"]
   }
 
 treeclass :: String -> [Class] -> [Function] -> Class

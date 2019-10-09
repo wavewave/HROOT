@@ -84,15 +84,18 @@ import           HROOT.Data.Tree.Class             ( treecabal
                                                    , tree_headers
                                                    , tree_topfunctions
                                                    )
-
+import qualified Paths_HROOT_generate as H
 
 main :: IO ()
 main = do
   cwd <- getCurrentDirectory
+  -- tmpldir <- H.getDataDir >>= return . (</> "template")
+  let tmpldir = "../template"
+
   let mkcfg name = FFICXXConfig {
-                     fficxxconfig_scriptBaseDir  = cwd </> "tmp" </> name </> "script"
-                   , fficxxconfig_workingDir     = cwd </> "tmp" </> name </> "working"
+                     fficxxconfig_workingDir     = cwd </> "tmp" </> name </> "working"
                    , fficxxconfig_installBaseDir = cwd </> name
+                   , fficxxconfig_staticFileDir  = tmpldir </> name
                    }
       sbc_core   = SimpleBuilderConfig {
                      sbcTopModule  = "HROOT.Core"
@@ -103,6 +106,7 @@ main = do
                    , sbcTemplates  = []
                    , sbcExtraLibs  = core_extraLib
                    , sbcExtraDeps  = core_extraDep
+                   , sbcStaticFiles = ["CHANGES","Config.hs","LICENSE","Setup.lhs"]
                    }
       sbc_graf   = SimpleBuilderConfig {
                      sbcTopModule  = "HROOT.Graf"
@@ -113,6 +117,7 @@ main = do
                    , sbcTemplates  = []
                    , sbcExtraLibs  = graf_extraLib
                    , sbcExtraDeps  = graf_extraDep
+                   , sbcStaticFiles = ["CHANGES","Config.hs","LICENSE","Setup.lhs"]
                    }
       sbc_hist   = SimpleBuilderConfig {
                      sbcTopModule  = "HROOT.Hist"
@@ -123,6 +128,7 @@ main = do
                    , sbcTemplates  = []
                    , sbcExtraLibs  = hist_extraLib
                    , sbcExtraDeps  = hist_extraDep
+                   , sbcStaticFiles = ["CHANGES","Config.hs","LICENSE","Setup.lhs"]
                    }
       sbc_io       = SimpleBuilderConfig {
                      sbcTopModule  = "HROOT.IO"
@@ -133,6 +139,7 @@ main = do
                    , sbcTemplates  = []
                    , sbcExtraLibs  = io_extraLib
                    , sbcExtraDeps  = io_extraDep
+                   , sbcStaticFiles = ["CHANGES","Config.hs","LICENSE","Setup.lhs"]
                    }
       sbc_math   = SimpleBuilderConfig {
                      sbcTopModule  = "HROOT.Math"
@@ -143,6 +150,7 @@ main = do
                    , sbcTemplates  = []
                    , sbcExtraLibs  = math_extraLib
                    , sbcExtraDeps  = math_extraDep
+                   , sbcStaticFiles = ["CHANGES","Config.hs","LICENSE","Setup.lhs"]
                    }
       sbc_tree   = SimpleBuilderConfig {
                      sbcTopModule  = "HROOT.Tree"
@@ -153,6 +161,7 @@ main = do
                    , sbcTemplates  = []
                    , sbcExtraLibs  = tree_extraLib
                    , sbcExtraDeps  = tree_extraDep
+                   , sbcStaticFiles = ["CHANGES","Config.hs","LICENSE","Setup.lhs"]
                    }
       sbc_roofit = SimpleBuilderConfig {
                      sbcTopModule  = "HROOT.RooFit"
@@ -163,6 +172,7 @@ main = do
                    , sbcTemplates  = []
                    , sbcExtraLibs  = roofit_extraLib
                    , sbcExtraDeps  = roofit_extraDep
+                   , sbcStaticFiles = ["CHANGES","Config.hs","LICENSE","Setup.lhs"]
                    }
       sbc_roostats = SimpleBuilderConfig {
                      sbcTopModule  = "HROOT.RooFit.RooStats"
@@ -173,8 +183,8 @@ main = do
                    , sbcTemplates  = []
                    , sbcExtraLibs  = roostats_extraLib
                    , sbcExtraDeps  = roostats_extraDep
+                   , sbcStaticFiles = ["CHANGES","Config.hs","LICENSE","Setup.lhs"]
                    }
-
 
 
   simpleBuilder (mkcfg "HROOT-core")            sbc_core

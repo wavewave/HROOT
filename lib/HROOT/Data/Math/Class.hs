@@ -3,7 +3,7 @@
 module HROOT.Data.Math.Class where
 
 import FFICXX.Generate.Code.Primitive ( double, double_, int, int_, void_ )
-import FFICXX.Generate.Type.Cabal     ( Cabal(..), CabalName(..) )
+import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) )
 import FFICXX.Generate.Type.Class     ( Class(..)
                                       , Function(..)
                                       , ProtectedMethod(..)
@@ -31,6 +31,7 @@ mathcabal =
   , cabal_extralibdirs       = []
   , cabal_extrafiles         = []
   , cabal_pkg_config_depends = []
+  , cabal_buildType          = Custom [CabalName "Cabal", CabalName "base", CabalName "process"]
   }
 
 

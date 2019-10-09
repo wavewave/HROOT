@@ -98,24 +98,6 @@ data ComponentConfig  =
   -- , comp_description   :: Text
   }
 
--- |
-copyPredefinedFiles :: String   -- ^ package name
-                    -> ([String],[String]) -- ^ files in root dir, directories
-                    -> FilePath
-                    -> IO ()
-copyPredefinedFiles pkgname (files,dirs) ibase = do
-    tmpldir <- H.getDataDir >>= return . (</> "template")
-    mapM_ (\x->copyFileWithMD5Check (tmpldir </> pkgname </> x) (ibase </> x)) files
-    forM_ dirs $ \dir -> do
-      createDirectoryIfMissing (ibase </> dir)
-      b <- doesDirectoryExist (tmpldir </> pkgname </> dir)
-      when b $ do
-        contents <- getDirectoryContents (tmpldir </> pkgname </> dir)
-        mapM_ (f (tmpldir </> pkgname </> dir) (ibase </> dir)) contents
-  where
-    f src dest s = if s /= "." && s /= ".."
-                   then copyFileWithMD5Check (src</>s) (dest</>s)
-                   else return ()
 
 
 -- |
