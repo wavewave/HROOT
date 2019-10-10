@@ -148,7 +148,7 @@ makeUmbrellaCabal =
               , ("buildtype", "Build-Type: Custom\ncustom-setup\n  setup-depends: "
                                   <> T.pack (intercalate ", " (map unCabalName setupdeps))
                                   <> "\n")
-              , ("ccOptions", "-std=c++14")
+              , ("cxxOptions", "-std=c++14")
               , ("pkgdeps", T.pack deps)
               , ("extraFiles", cabalIndentation <> "Config.hs" )
               , ("csrcFiles", "")
