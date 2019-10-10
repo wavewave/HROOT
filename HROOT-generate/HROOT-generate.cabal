@@ -51,7 +51,7 @@ Data-files:
 Library
   hs-source-dirs: lib
   ghc-options: 	-Wall -Werror -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
-  ghc-prof-options: -caf-all -auto-all
+  ghc-prof-options: -fprof-cafs -fprof-auto
   Build-Depends: base>4,
                  Cabal,
                  cmdargs,
@@ -92,7 +92,7 @@ Executable HROOT-generate
   Main-is: HROOT-generate.hs
   hs-source-dirs: exe
   ghc-options: 	-Wall -Werror -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
-  ghc-prof-options: -caf-all -auto-all
+  ghc-prof-options: -fprof-cafs -fprof-auto
   Build-Depends: base>4,
                  Cabal,
                  cmdargs,
