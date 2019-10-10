@@ -8,7 +8,10 @@ in
 self: super:
 
 {
-  "HROOT"      = self.callCabal2nix "HROOT" (HROOT-src + "/HROOT") {};
+  "HROOT"      =
+     pkgs.haskell.lib.overrideCabal (self.callCabal2nix "HROOT" (HROOT-src + "/HROOT") {}) {
+       librarySystemDepends = [pkgs.root];
+     };
   "HROOT-core" =
      pkgs.haskell.lib.overrideCabal (self.callCabal2nix "HROOT-core" (HROOT-src + "/HROOT-core") {}) {
        librarySystemDepends = [pkgs.root];
