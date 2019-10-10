@@ -4,6 +4,8 @@
 
 module Main where
 
+import Control.Concurrent    ( forkIO, threadDelay )
+import Control.Monad         ( forever )
 import Data.String           ( IsString(fromString) )
 import Foreign.C.Types       ( CDouble, CInt )
 import Foreign.C.String      ( CString, newCString )
@@ -22,6 +24,7 @@ main = do
     alloca $ \pargv -> do
       poke pargc (0::CInt)
       poke pargv (""::CString)
+      gsys <- gSystem
       tapp <- newTApplication ("test"::CString) pargc pargv
       tcanvas <- newTCanvas ("Test"::CString) ("Test"::CString) 640 480
       h2 <- newTH2F ("test"::CString) ("test"::CString) 100 (-5.0) 5.0 100 (-5.0) 5.0
@@ -37,7 +40,12 @@ main = do
 
       go 100 -- 10000000
       draw h2 ("lego"::CString)
-      run tapp 1
+      -- run tapp 1
+      forkIO $ forever $ do
+        threadDelay 100000
+        print "hello"
+      forever $ do
+        processEvents gsys
       delete h2
       delete tapp
 
