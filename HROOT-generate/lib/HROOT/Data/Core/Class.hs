@@ -449,6 +449,7 @@ tVirtualPad =
   coreclass "TVirtualPad" [tObject]
   [ Virtual self_ "cd" [int "subpadnumber"] Nothing
   , Virtual void_ "Divide" [int "nx", int "ny", float "xmargin", float "ymargin", int "color" ] (Just "divide_tvirtualpad")
+  , Virtual void_ "Range" [double "x1", double "y1", double "x2", double "y2"] Nothing
   , Virtual void_ "SetLogx" [int "value"] Nothing
   , Virtual void_ "SetLogy" [int "value"] Nothing
   , Virtual void_ "SetLogz" [int "value"] Nothing

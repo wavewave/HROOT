@@ -270,6 +270,7 @@ graf_headers =
   , modImports "TGraphPolar" ["ROOT"] ["TGraphPolar.h"]
   , modImports "TGraphQQ"    ["ROOT"] ["TGraphQQ.h"]
   , modImports "TLine"       ["ROOT"] ["TLine.h"]
+  , modImports "TMarker"     ["ROOT"] ["TMarker.h"]
   , modImports "TPad"        ["ROOT"] ["TPad.h"]
   , modImports "TPCON"       ["ROOT"] ["TPCON.h"]
   , modImports "TShape"      ["ROOT"] ["TShape.h"]
