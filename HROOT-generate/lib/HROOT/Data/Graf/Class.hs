@@ -187,9 +187,11 @@ tLine =
 tPad :: Class
 tPad =
   grafclass "TPad" [tVirtualPad]
-  [
+  [ Constructor [cstring "name", cstring "title", double "xlow", double "ylow", double "xup", double "yup"] Nothing
   ]
 
+
+    
 tPCON :: Class
 tPCON =
   grafclass "TPCON" [tShape]
