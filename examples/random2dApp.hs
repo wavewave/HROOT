@@ -6,6 +6,7 @@ module Main where
 
 import Control.Concurrent    ( forkIO, threadDelay )
 import Control.Monad         ( forever )
+import Data.IORef            ( newIORef, readIORef, modifyIORef' )
 import Data.String           ( IsString(fromString) )
 import Foreign.C.Types       ( CDouble, CInt )
 import Foreign.C.String      ( CString, newCString )
@@ -20,6 +21,7 @@ instance IsString CString where
 
 main :: IO ()
 main = do
+  nref <- newIORef (0 :: Int)
   alloca $ \pargc -> do
     alloca $ \pargv -> do
       poke pargc (0::CInt)
@@ -38,13 +40,20 @@ main = do
                    histfill dist1 dist2 h2
                    go (n-1)
 
-      go 100 -- 10000000
-      draw h2 ("lego"::CString)
       -- run tapp 1
+      draw h2 ("lego"::CString)
+
       forkIO $ forever $ do
-        threadDelay 100000
-        print "hello"
+        threadDelay 1000000
+        n <- readIORef nref
+        print n
+        go 10 -- 10000000
+        update tcanvas
+        paint tcanvas (""::CString)
+        modifyIORef' nref (+10)
+
       forever $ do
+        threadDelay (1000000 `div` 60) -- every 1/60 sec
         processEvents gsys
       delete h2
       delete tapp

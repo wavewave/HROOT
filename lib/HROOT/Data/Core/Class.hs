@@ -439,6 +439,7 @@ tVirtualPad =
   , Virtual void_ "SetLogx" [int "value"] Nothing
   , Virtual void_ "SetLogy" [int "value"] Nothing
   , Virtual void_ "SetLogz" [int "value"] Nothing
+  , Virtual void_ "Update"  [] Nothing
   ]
 
 core_classes :: [Class]
