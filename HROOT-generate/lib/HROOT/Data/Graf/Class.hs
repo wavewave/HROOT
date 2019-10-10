@@ -22,7 +22,7 @@ import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       )
 import HROOT.Data.Core.Class          ( modImports
                                       , deletable
-                                      , tAtt3D, tAttFill, tAttLine, tAttText
+                                      , tAtt3D, tAttBBox2D, tAttFill, tAttLine, tAttMarker, tAttText
                                       , tNamed
                                       , tObject
                                       , tVirtualPad
@@ -181,6 +181,20 @@ tLine =
   ]
 
 ----------------
+-- starting M --
+----------------
+
+tMarker :: Class
+tMarker =
+  grafclass "TMarker" [tObject, tAttMarker, tAttBBox2D]
+  [ Constructor [double "x", double "y", int "marker" ] Nothing
+  , NonVirtual double_ "GetX" [] Nothing
+  , NonVirtual double_ "GetY" [] Nothing
+  , Virtual void_ "SetX" [double "x"] Nothing
+  , Virtual void_ "SetY" [double "y"] Nothing
+  ]
+
+----------------
 -- starting P --
 ----------------
 
@@ -232,6 +246,7 @@ graf_classes =
   , tEllipse
   , tGaxis, tGraphPolar, tGraphQQ
   , tLine
+  , tMarker
   , tPad, tPCON
   , tShape, tSPHE
   , tTUBE
