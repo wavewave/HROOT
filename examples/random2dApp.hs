@@ -5,7 +5,7 @@
 module Main where
 
 import Control.Concurrent    ( forkIO, threadDelay )
-import Control.Monad         ( forever )
+import Control.Monad         ( forever, when )
 import Data.IORef            ( newIORef, readIORef, modifyIORef' )
 import Data.String           ( IsString(fromString) )
 import Foreign.C.Types       ( CDouble, CInt )
@@ -44,13 +44,17 @@ main = do
       draw h2 ("lego"::CString)
 
       forkIO $ forever $ do
-        threadDelay 1000000
         n <- readIORef nref
-        print n
-        go 10 -- 10000000
+        when (n `mod` 100 == 0) $
+          print n
+        go 1
+        modifyIORef' nref (+1)
+
+      forkIO $ forever $ do
+        threadDelay (1000000 `div` 60) -- every 1/60 sec
         update tcanvas
         paint tcanvas (""::CString)
-        modifyIORef' nref (+10)
+
 
       forever $ do
         threadDelay (1000000 `div` 60) -- every 1/60 sec
