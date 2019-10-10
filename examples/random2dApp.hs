@@ -4,7 +4,6 @@
 
 module Main where
 
--- import Control.Monad
 import Data.String           ( IsString(fromString) )
 import Foreign.C.Types       ( CDouble, CInt )
 import Foreign.C.String      ( CString, newCString )
@@ -31,12 +30,12 @@ main = do
       let dist1 = gaus tRandom 0 2
           dist2 = gaus tRandom 0 2
 
-      let go n | n < 0 = return ()
+      let go n | n <= 0 = return ()
                | otherwise = do
                    histfill dist1 dist2 h2
                    go (n-1)
 
-      go 1000000
+      go 100 -- 10000000
       draw h2 ("lego"::CString)
       run tapp 1
       delete h2
