@@ -210,8 +210,8 @@ makeUmbrellaPackage config mods = do
 main :: IO ()
 main = do
   cwd <- getCurrentDirectory
-  -- tmpldir <- H.getDataDir >>= return . (</> "template")
-  let tmpldir = "../template"
+  tmpldir <- H.getDataDir >>= return . (</> "template")
+  -- let tmpldir = "../template"
 
   let mkcfg name = FFICXXConfig {
                      fficxxconfig_workingDir     = cwd </> "tmp" </> name </> "working"
