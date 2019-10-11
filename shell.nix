@@ -14,6 +14,7 @@ let
     configurator
     fficxx
     fficxx-runtime
+    monad-loops
   ]);
 
 in

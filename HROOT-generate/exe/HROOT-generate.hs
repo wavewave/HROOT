@@ -211,7 +211,7 @@ main :: IO ()
 main = do
   cwd <- getCurrentDirectory
   tmpldir <- H.getDataDir >>= return . (</> "template")
-  -- let tmpldir = "../template"
+  -- let tmpldir = "../HROOT-generate/template"
 
   let mkcfg name = FFICXXConfig {
                      fficxxconfig_workingDir     = cwd </> "tmp" </> name </> "working"
