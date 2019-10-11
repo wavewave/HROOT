@@ -1,1 +1,1 @@
-../examples/gas.hs
+../examples/gas/gas.hs
