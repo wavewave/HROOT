@@ -13,7 +13,7 @@ import Control.Monad         ( forever
                              , void
                              , when
                              )
-import Control.Monad.Loops   ( iterateM_ )
+import Control.Monad.Loops   ( iterateUntilM )
 import Data.Foldable         ( traverse_ )
 import Data.Function         ( on )
 import Data.IORef            ( newIORef, readIORef, modifyIORef' )
@@ -81,8 +81,8 @@ mkUnitVector (x,y) =
 generate :: TRandom -> Int -> IO [Particle]
 generate tRandom n = do
   for [1..n] $ \i -> do
-    x <- uniform tRandom (-5) 5 -- gaus tRandom 0 0.5
-    y <- uniform tRandom (-5) 5 -- gaus tRandom 0 0.5
+    x <- gaus tRandom 0 0.5
+    y <- gaus tRandom 0 0.5
     r <- uniform tRandom 0 0.05
     θ <- uniform tRandom 0 (2*pi)
     let dx = r * cos θ
@@ -191,11 +191,8 @@ velocity :: Particle -> CDouble
 velocity (Particle _ _ _ dx dy _) = sqrt (sqr dx + sqr dy)
 
 updateHist :: TH1F -> Particle -> IO ()
-updateHist h1 p = void $ fill1 h1 (velocity p) -- (kineticEnergy p)
+updateHist h1 p = void $ fill1 h1 (velocity p)
 
-
--- setup :: [((CDouble,CDouble),(CDouble,CDouble))]
--- setup = [ ((-0.5,0.01),
 
 main :: IO ()
 main = do
@@ -212,6 +209,7 @@ main = do
       tpad2 <- newTPad ("pad2"::CString) ("pad2"::CString) 0.51 0.05 0.95 0.95
 
       h1 <- newTH1F ("velocity"::CString) ("velocity"::CString) 25 (fst plotRange) (snd plotRange)
+      fn <- newTF1 ("MaxwellBoltzmann"::CString) ("[0]*x*exp(-x*x*[1])"::CString) (fst plotRange) (snd plotRange)
 
       cd tcanvas 0
       draw tpad1 (""::CString)
@@ -223,16 +221,19 @@ main = do
       ps₀ <- generate tRandom nParticles
 
       cd tpad2 0
+      traverse_ (updateHist h1) ps₀
       draw h1 (""::CString)
 
-      forkIO $ flip iterateM_ ps₀ $ \ps -> do
-        -- threadDelay 1000
-        ps' <- step mybox ps
-        reset h1 (""::CString)
-        traverse_ (updateHist h1) ps'
-        print (sum (map kineticEnergy ps'))
-        -- traverse_ print (map (format mybox) $ mkNeighborMap mybox ps')
-        pure ps'
+      forkIO $ do
+        threadDelay 2000000
+        void $ flip (iterateUntilM (\(_,n) -> n > 100)) (ps₀,0) $ \(ps,n) -> do
+          ps' <- step mybox ps
+          reset h1 (""::CString)
+          traverse_ (updateHist h1) ps'
+          print (sum (map kineticEnergy ps'))
+          pure (ps',n+1)
+        void $ fit h1 fn (""::CString) (""::CString) (fst plotRange) (snd plotRange)
+
 
       forkIO $ forever $ do
         threadDelay (1000000 `div` 60) -- every 1/60 sec
