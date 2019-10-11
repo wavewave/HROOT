@@ -29,6 +29,12 @@ import HROOT
 instance IsString CString where
   fromString s = unsafePerformIO $ newCString s
 
+data Box =
+  Box {
+    boxLowerLeft  :: (CDouble,CDouble)
+  , boxUpperRight :: (CDouble,CDouble)
+  }
+
 data Particle =
   Particle {
     ptlX :: CDouble
@@ -37,6 +43,9 @@ data Particle =
   , ptlPy :: CDouble
   , ptlMarker :: TMarker
   }
+
+mybox :: Box
+mybox = Box (-5,-5) (5,5)
 
 generate :: TRandom -> Int -> IO [Particle]
 generate tRandom n = do
@@ -47,19 +56,33 @@ generate tRandom n = do
     dy <- gaus tRandom 0 0.05
     m1 <- newTMarker x y 3
     draw m1 (""::CString)
-
     pure (Particle x y dx dy m1)
 
-step1 :: Particle -> IO Particle
-step1 (Particle x y dx dy m) = do
-  let x' = x + dx
-      y' = y + dy
-  setX m x
-  setY m y
+fitInS₁ (minx,maxx) x
+  | x < minx   = maxx
+  | x > maxx   = minx
+  | otherwise  = x
+
+
+updateInTorus ::
+     Box
+  -> (CDouble,CDouble)
+  -> (CDouble,CDouble)
+  -> (CDouble,CDouble)
+updateInTorus (Box (minx,miny) (maxx,maxy)) (x,y) (dx,dy) =
+  let x' = fitInS₁ (minx,maxx) (x + dx)
+      y' = fitInS₁ (miny,maxy) (y + dy)
+  in (x',y')
+
+step1 :: Box -> Particle -> IO Particle
+step1 box (Particle x y dx dy m) = do
+  let (x',y') = updateInTorus box (x,y) (dx,dy)
+  setX m x'
+  setY m y'
   pure $ Particle x' y' dx dy m
 
-step :: [Particle] -> IO [Particle]
-step ps = traverse step1 ps
+step :: Box -> [Particle] -> IO [Particle]
+step box ps = traverse (step1 box) ps
 
 release :: Particle -> IO ()
 release (Particle _ _ _ _ m) = delete m
@@ -73,14 +96,15 @@ main = do
       gsys <- gSystem
       tapp <- newTApplication ("test"::CString) pargc pargv
       tcanvas <- newTCanvas ("Test"::CString) ("Test"::CString) 640 480
-      range tcanvas (-5.0) (-5.0) 5.0 5.0
+      let Box (x1,y1) (x2,y2) = mybox
+      range tcanvas x1 y1 x2 y2
       tRandom <- newTRandom 65535
 
       ps₀ <- generate tRandom 100
 
       forkIO $ flip iterateM_ ps₀ $ \ps -> do
-        threadDelay 100000
-        ps' <- step ps
+        threadDelay 10000
+        ps' <- step mybox ps
         pure ps'
 
       forkIO $ forever $ do
