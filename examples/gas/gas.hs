@@ -1,5 +1,7 @@
+{-# LANGUAGE BangPatterns      #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE StrictData        #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Main where
@@ -32,7 +34,7 @@ instance IsString CString where
   fromString s = unsafePerformIO $ newCString s
 
 sqr :: CDouble -> CDouble
-sqr x = x*x
+sqr !x = x*x
 
 data Box =
   Box {
@@ -54,26 +56,37 @@ mybox :: Box
 mybox = Box (-5,-5) (5,5)
 
 nParticles :: Int
-nParticles = 1000
+nParticles = 500
 
 neighborDist :: CDouble
-neighborDist = 0.1
+neighborDist = 0.05
 
 accelParam :: CDouble
-accelParam = 0.1
+accelParam = 0.01
+
+plotRange :: (CDouble,CDouble)
+plotRange = (0,0.05)
+
+eps = 1e-10
 
 mkUnitVector :: (CDouble,CDouble) -> (CDouble,CDouble)
 mkUnitVector (x,y) =
-  let n = sqrt (sqr x + sqr y)
-  in (x/n,y/n)
+  let n² = sqr x + sqr y
+  in if n² < eps
+     then (0,0)
+     else let n = sqrt n²
+          in (x/n,y/n)
+
 
 generate :: TRandom -> Int -> IO [Particle]
 generate tRandom n = do
   for [1..n] $ \i -> do
-    x <- gaus tRandom 0 0.5
-    y <- gaus tRandom 0 0.5
-    dx <- gaus tRandom 0 0.05
-    dy <- gaus tRandom 0 0.05
+    x <- uniform tRandom (-5) 5 -- gaus tRandom 0 0.5
+    y <- uniform tRandom (-5) 5 -- gaus tRandom 0 0.5
+    r² <- uniform tRandom 0 0.05
+    θ <- uniform tRandom 0 (2*pi)
+    let dx = sqrt r² * cos θ
+        dy = sqrt r² * sin θ
     m1 <- newTMarker x y 3
     draw m1 (""::CString)
     pure (Particle i x y dx dy m1)
@@ -169,9 +182,16 @@ step box ps = do
 release :: Particle -> IO ()
 release (Particle _ _ _ _ _ m) = delete m
 
+
+kineticEnergy :: Particle -> CDouble
+kineticEnergy (Particle _ _ _ dx dy _) = 0.5 * (sqr dx + sqr dy)
+
 updateHist :: TH1F -> Particle -> IO ()
-updateHist h1 (Particle _ _ _ dx dy _) =
-  void $ fill1 h1 (0.5*(dx*dx+dy*dy)) -- kinetic energy
+updateHist h1 p = void $ fill1 h1 (kineticEnergy p)
+
+
+-- setup :: [((CDouble,CDouble),(CDouble,CDouble))]
+-- setup = [ ((-0.5,0.01),
 
 main :: IO ()
 main = do
@@ -187,7 +207,7 @@ main = do
       range tpad1 x1 y1 x2 y2
       tpad2 <- newTPad ("pad2"::CString) ("pad2"::CString) 0.51 0.05 0.95 0.95
 
-      h1 <- newTH1F ("energy"::CString) ("energy"::CString) 100 0 1.0
+      h1 <- newTH1F ("energy"::CString) ("energy"::CString) 20 (fst plotRange) (snd plotRange)
 
       cd tcanvas 0
       draw tpad1 (""::CString)
@@ -202,10 +222,11 @@ main = do
       draw h1 (""::CString)
 
       forkIO $ flip iterateM_ ps₀ $ \ps -> do
-        threadDelay 100
+        -- threadDelay 1000
         ps' <- step mybox ps
         reset h1 (""::CString)
         traverse_ (updateHist h1) ps'
+        print (sum (map kineticEnergy ps'))
         -- traverse_ print (map (format mybox) $ mkNeighborMap mybox ps')
         pure ps'
 
