@@ -15,7 +15,7 @@ import Control.Monad.Loops   ( iterateM_ )
 import Data.Foldable         ( traverse_ )
 import Data.IORef            ( newIORef, readIORef, modifyIORef' )
 import Data.String           ( IsString(fromString) )
-import Data.Traversable      ( traverse )
+import Data.Traversable      ( for, traverse )
 import Foreign.C.Types       ( CDouble, CInt )
 import Foreign.C.String      ( CString, newCString )
 import Foreign.Marshal.Alloc ( alloca )
@@ -29,6 +29,9 @@ import HROOT
 instance IsString CString where
   fromString s = unsafePerformIO $ newCString s
 
+sqr :: CDouble -> CDouble
+sqr x = x*x
+
 data Box =
   Box {
     boxLowerLeft  :: (CDouble,CDouble)
@@ -37,7 +40,8 @@ data Box =
 
 data Particle =
   Particle {
-    ptlX :: CDouble
+    ptlId :: Int
+  , ptlX :: CDouble
   , ptlY :: CDouble
   , ptlPx :: CDouble
   , ptlPy :: CDouble
@@ -48,18 +52,35 @@ mybox :: Box
 mybox = Box (-5,-5) (5,5)
 
 nParticles :: Int
-nParticles = 1000
+nParticles = 10
+
+neighborDist :: CDouble
+neighborDist = 5
+
 
 generate :: TRandom -> Int -> IO [Particle]
 generate tRandom n = do
-  replicateM n $ do
+  for [1..n] $ \i -> do
     x <- gaus tRandom 0 0.5
     y <- gaus tRandom 0 0.5
     dx <- gaus tRandom 0 0.05
     dy <- gaus tRandom 0 0.05
     m1 <- newTMarker x y 3
     draw m1 (""::CString)
-    pure (Particle x y dx dy m1)
+    pure (Particle i x y dx dy m1)
+
+distanceSqr :: Particle -> Particle -> CDouble
+distanceSqr (Particle _ x1 y1 _ _ _) (Particle _ x2 y2 _ _ _) =
+  sqr (x1-x2) + sqr (y1-y2)
+
+
+findNeighbor :: [Particle] -> Particle -> [Particle]
+findNeighbor ps p =
+  filter (\p' -> ptlId p /= ptlId p' && distanceSqr p p' < sqr neighborDist) ps
+
+mkNeighborMap :: [Particle] -> [(Int,[Int])]
+mkNeighborMap ps =
+  map (\p -> (ptlId p, map ptlId (findNeighbor ps p))) ps
 
 
 fitInS₁ :: (CDouble,CDouble) -> CDouble -> CDouble
@@ -67,7 +88,6 @@ fitInS₁ (minx,maxx) x
   | x < minx   = maxx
   | x > maxx   = minx
   | otherwise  = x
-
 
 updateInTorus ::
      Box
@@ -80,20 +100,20 @@ updateInTorus (Box (minx,miny) (maxx,maxy)) (x,y) (dx,dy) =
   in (x',y')
 
 step1 :: Box -> Particle -> IO Particle
-step1 box (Particle x y dx dy m) = do
+step1 box (Particle i x y dx dy m) = do
   let (x',y') = updateInTorus box (x,y) (dx,dy)
   setX m x'
   setY m y'
-  pure $ Particle x' y' dx dy m
+  pure $ Particle i x' y' dx dy m
 
 step :: Box -> [Particle] -> IO [Particle]
 step box ps = traverse (step1 box) ps
 
 release :: Particle -> IO ()
-release (Particle _ _ _ _ m) = delete m
+release (Particle _ _ _ _ _ m) = delete m
 
 updateHist :: TH1F -> Particle -> IO ()
-updateHist h1 (Particle _ _ dx dy _) =
+updateHist h1 (Particle _ _ _ dx dy _) =
   void $ fill1 h1 (0.5*(dx*dx+dy*dy)) -- kinetic energy
 
 main :: IO ()
@@ -125,10 +145,12 @@ main = do
       draw h1 (""::CString)
 
       forkIO $ flip iterateM_ ps₀ $ \ps -> do
-        threadDelay 10000
+        threadDelay 100000
         ps' <- step mybox ps
         reset h1 (""::CString)
         traverse_ (updateHist h1) ps'
+
+        traverse_ print (mkNeighborMap ps')
         pure ps'
 
       forkIO $ forever $ do
