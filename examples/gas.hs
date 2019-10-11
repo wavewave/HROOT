@@ -93,7 +93,8 @@ release :: Particle -> IO ()
 release (Particle _ _ _ _ m) = delete m
 
 updateHist :: TH1F -> Particle -> IO ()
-updateHist h1 (Particle x _ _ _ _) = void $ fill1 h1 x
+updateHist h1 (Particle _ _ dx dy _) =
+  void $ fill1 h1 (0.5*(dx*dx+dy*dy)) -- kinetic energy
 
 main :: IO ()
 main = do
@@ -109,7 +110,7 @@ main = do
       range tpad1 x1 y1 x2 y2
       tpad2 <- newTPad ("pad2"::CString) ("pad2"::CString) 0.51 0.05 0.95 0.95
 
-      h1 <- newTH1F ("histx"::CString) ("histx"::CString) 100 (-5.0) 5.0
+      h1 <- newTH1F ("energy"::CString) ("energy"::CString) 100 0 0.05
 
       cd tcanvas 0
       draw tpad1 (""::CString)
