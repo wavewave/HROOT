@@ -13,7 +13,9 @@ import Control.Monad         ( forever
                              )
 import Control.Monad.Loops   ( iterateM_ )
 import Data.Foldable         ( traverse_ )
+import Data.Function         ( on )
 import Data.IORef            ( newIORef, readIORef, modifyIORef' )
+import Data.List             ( minimumBy )
 import Data.String           ( IsString(fromString) )
 import Data.Traversable      ( for, traverse )
 import Foreign.C.Types       ( CDouble, CInt )
@@ -55,8 +57,15 @@ nParticles :: Int
 nParticles = 10
 
 neighborDist :: CDouble
-neighborDist = 5
+neighborDist = 0.1
 
+accelParam :: CDouble
+accelParam = 0.5
+
+mkUnitVector :: (CDouble,CDouble) -> (CDouble,CDouble)
+mkUnitVector (x,y) =
+  let n = sqrt (sqr x + sqr y)
+  in (x/n,y/n)
 
 generate :: TRandom -> Int -> IO [Particle]
 generate tRandom n = do
@@ -90,9 +99,37 @@ findNeighbor box ps p =
   let cond p' = ptlId p /= ptlId p' && distanceSqr box p p' < sqr neighborDist
   in filter cond ps
 
-mkNeighborMap :: Box -> [Particle] -> [(Int,[Int])]
-mkNeighborMap box ps =
-  map (\p -> (ptlId p, map ptlId (findNeighbor box ps p))) ps
+mkNeighborMap :: Box -> [Particle] -> [(Particle,[Particle])]
+mkNeighborMap box ps = map (\p -> (p, findNeighbor box ps p)) ps
+
+
+
+nearCoordInS₁ :: (CDouble,CDouble) -> CDouble -> CDouble -> CDouble
+nearCoordInS₁ (xmin,xmax) x1 x2 =
+  let l = xmax - xmin
+      d1 = sqr (x1 - x2)
+      d2 = sqr (x1 - x2 + l)
+      d3 = sqr (x1 - x2 - l)
+  in snd $ minimumBy (compare `on` fst) [(d1,x2),(d2,x2-l),(d3,x2+l)]
+
+directionInTorus ::
+     Box
+  -> (CDouble,CDouble)
+  -> (CDouble,CDouble)
+  -> (CDouble,CDouble)
+directionInTorus (Box (xmin,ymin) (xmax,ymax)) (x1,y1) (x2,y2) =
+  let x2' = nearCoordInS₁ (xmin,xmax) x1 x2
+      y2' = nearCoordInS₁ (ymin,ymax) y1 y2
+      (rx,ry) = mkUnitVector (x2'-x1,y2'-y1)
+  in (rx,ry)
+
+neighborDir :: Box -> Particle -> Particle -> (CDouble,CDouble)
+neighborDir box f t =
+  directionInTorus box (ptlX f,ptlY f) (ptlX t,ptlY t)
+
+format :: Box -> (Particle,[Particle]) -> (Int,[(CDouble,CDouble)])
+format box (p,ps) = (ptlId p,map (neighborDir box p) ps)
+
 
 fitInS₁ :: (CDouble,CDouble) -> CDouble -> CDouble
 fitInS₁ (minx,maxx) x
@@ -161,14 +198,13 @@ main = do
         reset h1 (""::CString)
         traverse_ (updateHist h1) ps'
 
-        traverse_ print (mkNeighborMap mybox ps')
+        traverse_ print (map (format mybox) $ mkNeighborMap mybox ps')
         pure ps'
 
       forkIO $ forever $ do
         threadDelay (1000000 `div` 60) -- every 1/60 sec
         update tcanvas
         paint tcanvas (""::CString)
-
 
       forever $ do
         threadDelay (1000000 `div` 60) -- every 1/60 sec
