@@ -54,13 +54,13 @@ mybox :: Box
 mybox = Box (-5,-5) (5,5)
 
 nParticles :: Int
-nParticles = 10
+nParticles = 1000
 
 neighborDist :: CDouble
 neighborDist = 0.1
 
 accelParam :: CDouble
-accelParam = 0.5
+accelParam = 0.1
 
 mkUnitVector :: (CDouble,CDouble) -> (CDouble,CDouble)
 mkUnitVector (x,y) =
@@ -102,8 +102,6 @@ findNeighbor box ps p =
 mkNeighborMap :: Box -> [Particle] -> [(Particle,[Particle])]
 mkNeighborMap box ps = map (\p -> (p, findNeighbor box ps p)) ps
 
-
-
 nearCoordInS₁ :: (CDouble,CDouble) -> CDouble -> CDouble -> CDouble
 nearCoordInS₁ (xmin,xmax) x1 x2 =
   let l = xmax - xmin
@@ -126,6 +124,14 @@ directionInTorus (Box (xmin,ymin) (xmax,ymax)) (x1,y1) (x2,y2) =
 neighborDir :: Box -> Particle -> Particle -> (CDouble,CDouble)
 neighborDir box f t =
   directionInTorus box (ptlX f,ptlY f) (ptlX t,ptlY t)
+
+
+addAccel :: (Particle, [(CDouble,CDouble)] )-> Particle
+addAccel (Particle i x y dx dy m, vs) =
+  let ddx = accelParam * sum (map fst vs)
+      ddy = accelParam * sum (map snd vs)
+  in Particle i x y (dx+ddx) (dy+ddy) m
+
 
 format :: Box -> (Particle,[Particle]) -> (Int,[(CDouble,CDouble)])
 format box (p,ps) = (ptlId p,map (neighborDir box p) ps)
@@ -155,7 +161,10 @@ step1 box (Particle i x y dx dy m) = do
   pure $ Particle i x' y' dx dy m
 
 step :: Box -> [Particle] -> IO [Particle]
-step box ps = traverse (step1 box) ps
+step box ps = do
+  let nmap = mkNeighborMap box ps
+      ps' = map addAccel $ map (\(x,xs) -> (x,map (neighborDir box x) xs)) nmap
+  traverse (step1 box) ps'
 
 release :: Particle -> IO ()
 release (Particle _ _ _ _ _ m) = delete m
@@ -178,7 +187,7 @@ main = do
       range tpad1 x1 y1 x2 y2
       tpad2 <- newTPad ("pad2"::CString) ("pad2"::CString) 0.51 0.05 0.95 0.95
 
-      h1 <- newTH1F ("energy"::CString) ("energy"::CString) 100 0 0.05
+      h1 <- newTH1F ("energy"::CString) ("energy"::CString) 100 0 1.0
 
       cd tcanvas 0
       draw tpad1 (""::CString)
@@ -193,12 +202,11 @@ main = do
       draw h1 (""::CString)
 
       forkIO $ flip iterateM_ ps₀ $ \ps -> do
-        threadDelay 100000
+        threadDelay 100
         ps' <- step mybox ps
         reset h1 (""::CString)
         traverse_ (updateHist h1) ps'
-
-        traverse_ print (map (format mybox) $ mkNeighborMap mybox ps')
+        -- traverse_ print (map (format mybox) $ mkNeighborMap mybox ps')
         pure ps'
 
       forkIO $ forever $ do
