@@ -69,19 +69,30 @@ generate tRandom n = do
     draw m1 (""::CString)
     pure (Particle i x y dx dy m1)
 
-distanceSqr :: Particle -> Particle -> CDouble
-distanceSqr (Particle _ x1 y1 _ _ _) (Particle _ x2 y2 _ _ _) =
-  sqr (x1-x2) + sqr (y1-y2)
+distanceSqrInS₁ :: (CDouble,CDouble) -> CDouble -> CDouble -> CDouble
+distanceSqrInS₁ (xmin,xmax) x1 x2 =
+  let l = xmax - xmin
+      d1 = sqr (x1 - x2)
+      d2 = sqr (x1 - x2 + l)
+      d3 = sqr (x1 - x2 - l)
+  in minimum [d1,d2,d3]
 
+distanceSqr :: Box -> Particle -> Particle -> CDouble
+distanceSqr (Box (xmin,ymin) (xmax,ymax)) p1 p2 =
+  let (x1,y1) = (ptlX p1, ptlY p1)
+      (x2,y2) = (ptlX p2, ptlY p2)
+      dx² = distanceSqrInS₁ (xmin,xmax) x1 x2
+      dy² = distanceSqrInS₁ (ymin,ymax) y1 y2
+  in dx² + dy²
 
-findNeighbor :: [Particle] -> Particle -> [Particle]
-findNeighbor ps p =
-  filter (\p' -> ptlId p /= ptlId p' && distanceSqr p p' < sqr neighborDist) ps
+findNeighbor :: Box -> [Particle] -> Particle -> [Particle]
+findNeighbor box ps p =
+  let cond p' = ptlId p /= ptlId p' && distanceSqr box p p' < sqr neighborDist
+  in filter cond ps
 
-mkNeighborMap :: [Particle] -> [(Int,[Int])]
-mkNeighborMap ps =
-  map (\p -> (ptlId p, map ptlId (findNeighbor ps p))) ps
-
+mkNeighborMap :: Box -> [Particle] -> [(Int,[Int])]
+mkNeighborMap box ps =
+  map (\p -> (ptlId p, map ptlId (findNeighbor box ps p))) ps
 
 fitInS₁ :: (CDouble,CDouble) -> CDouble -> CDouble
 fitInS₁ (minx,maxx) x
@@ -150,7 +161,7 @@ main = do
         reset h1 (""::CString)
         traverse_ (updateHist h1) ps'
 
-        traverse_ print (mkNeighborMap ps')
+        traverse_ print (mkNeighborMap mybox ps')
         pure ps'
 
       forkIO $ forever $ do
