@@ -65,7 +65,7 @@ accelParam :: CDouble
 accelParam = 0.01
 
 plotRange :: (CDouble,CDouble)
-plotRange = (0,0.05)
+plotRange = (0,0.15)
 
 eps = 1e-10
 
@@ -83,10 +83,10 @@ generate tRandom n = do
   for [1..n] $ \i -> do
     x <- uniform tRandom (-5) 5 -- gaus tRandom 0 0.5
     y <- uniform tRandom (-5) 5 -- gaus tRandom 0 0.5
-    r² <- uniform tRandom 0 0.05
+    r <- uniform tRandom 0 0.05
     θ <- uniform tRandom 0 (2*pi)
-    let dx = sqrt r² * cos θ
-        dy = sqrt r² * sin θ
+    let dx = r * cos θ
+        dy = r * sin θ
     m1 <- newTMarker x y 3
     draw m1 (""::CString)
     pure (Particle i x y dx dy m1)
@@ -186,8 +186,12 @@ release (Particle _ _ _ _ _ m) = delete m
 kineticEnergy :: Particle -> CDouble
 kineticEnergy (Particle _ _ _ dx dy _) = 0.5 * (sqr dx + sqr dy)
 
+
+velocity :: Particle -> CDouble
+velocity (Particle _ _ _ dx dy _) = sqrt (sqr dx + sqr dy)
+
 updateHist :: TH1F -> Particle -> IO ()
-updateHist h1 p = void $ fill1 h1 (kineticEnergy p)
+updateHist h1 p = void $ fill1 h1 (velocity p) -- (kineticEnergy p)
 
 
 -- setup :: [((CDouble,CDouble),(CDouble,CDouble))]
@@ -207,7 +211,7 @@ main = do
       range tpad1 x1 y1 x2 y2
       tpad2 <- newTPad ("pad2"::CString) ("pad2"::CString) 0.51 0.05 0.95 0.95
 
-      h1 <- newTH1F ("energy"::CString) ("energy"::CString) 20 (fst plotRange) (snd plotRange)
+      h1 <- newTH1F ("velocity"::CString) ("velocity"::CString) 25 (fst plotRange) (snd plotRange)
 
       cd tcanvas 0
       draw tpad1 (""::CString)
