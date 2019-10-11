@@ -47,6 +47,9 @@ data Particle =
 mybox :: Box
 mybox = Box (-5,-5) (5,5)
 
+nParticles :: Int
+nParticles = 1000
+
 generate :: TRandom -> Int -> IO [Particle]
 generate tRandom n = do
   replicateM n $ do
@@ -58,6 +61,8 @@ generate tRandom n = do
     draw m1 (""::CString)
     pure (Particle x y dx dy m1)
 
+
+fitInS₁ :: (CDouble,CDouble) -> CDouble -> CDouble
 fitInS₁ (minx,maxx) x
   | x < minx   = maxx
   | x > maxx   = minx
@@ -87,6 +92,9 @@ step box ps = traverse (step1 box) ps
 release :: Particle -> IO ()
 release (Particle _ _ _ _ m) = delete m
 
+updateHist :: TH1F -> Particle -> IO ()
+updateHist h1 (Particle x _ _ _ _) = void $ fill1 h1 x
+
 main :: IO ()
 main = do
   alloca $ \pargc -> do
@@ -95,16 +103,31 @@ main = do
       poke pargv (""::CString)
       gsys <- gSystem
       tapp <- newTApplication ("test"::CString) pargc pargv
-      tcanvas <- newTCanvas ("Test"::CString) ("Test"::CString) 640 480
+      tcanvas <- newTCanvas ("Test"::CString) ("Test"::CString) 1280 480
+      tpad1 <- newTPad ("pad1"::CString) ("pad1"::CString) 0.05 0.05 0.49 0.95
       let Box (x1,y1) (x2,y2) = mybox
-      range tcanvas x1 y1 x2 y2
-      tRandom <- newTRandom 65535
+      range tpad1 x1 y1 x2 y2
+      tpad2 <- newTPad ("pad2"::CString) ("pad2"::CString) 0.51 0.05 0.95 0.95
 
-      ps₀ <- generate tRandom 100
+      h1 <- newTH1F ("histx"::CString) ("histx"::CString) 100 (-5.0) 5.0
+
+      cd tcanvas 0
+      draw tpad1 (""::CString)
+      cd tcanvas 0
+      draw tpad2 (""::CString)
+
+      cd tpad1 0
+      tRandom <- newTRandom 65535
+      ps₀ <- generate tRandom nParticles
+
+      cd tpad2 0
+      draw h1 (""::CString)
 
       forkIO $ flip iterateM_ ps₀ $ \ps -> do
         threadDelay 10000
         ps' <- step mybox ps
+        reset h1 (""::CString)
+        traverse_ (updateHist h1) ps'
         pure ps'
 
       forkIO $ forever $ do
