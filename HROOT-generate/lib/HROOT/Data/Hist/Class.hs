@@ -147,9 +147,11 @@ tF1 =
   , Virtual double_ "GetX" [double "y", double "xmin", double "xmax", double "epsilon", int "maxiter"] Nothing
   , Virtual double_ "GetXmin" [] Nothing
   , Virtual double_ "GetXmax" [] Nothing
+
   , NonVirtual (cppclass_ tAxis) "GetXaxis" [] Nothing
   , NonVirtual (cppclass_ tAxis) "GetYaxis" [] Nothing
   , NonVirtual (cppclass_ tAxis) "GetZaxis" [] Nothing
+
   , Virtual double_ "GradientPar" [int "ipar", doublep "x", double "eps"] Nothing
   , Virtual void_ "InitArgs" [doublep "x", doublep "params"] Nothing
   , Static  void_ "InitStandardFunctions" [] Nothing
