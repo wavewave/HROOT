@@ -85,7 +85,13 @@ tAxis =
   -- GetCenter
   , NonVirtual bool_ "GetCenterLabels" [] Nothing
   , NonVirtual bool_ "GetCenterTitle" [] Nothing
+  , NonVirtual int_ "GetFirst" [] Nothing
+  , NonVirtual int_ "GetLast" [] Nothing
   -- GetLowEdge
+  , NonVirtual int_ "GetNbins" [] Nothing
+  , NonVirtual (cppclass_ tArrayD) "GetXbins" [] Nothing
+  , NonVirtual double_ "GetXmax" [] Nothing
+  , NonVirtual double_ "GetXmin" [] Nothing
   , Virtual void_ "SetTimeDisplay" [ int "value" ] Nothing
   , Virtual void_ "SetTimeFormat" [ cstring "format" ] Nothing
   , Virtual void_ "SetTimeOffset" [double "toffset", cstring "option"] Nothing
