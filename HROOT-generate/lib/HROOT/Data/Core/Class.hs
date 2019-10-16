@@ -100,7 +100,7 @@ tArray =
   coreclass "TArray" [deletable]
   [ Virtual double_ "GetAt" [ int "i" ] Nothing
   , NonVirtual int_ "GetSize" [] Nothing
-  , Virtual void_ "Set" [ int "n" ] Nothing
+  , Virtual void_ "Set" [ int "n" ] (Just "SetArray")
   , Virtual void_ "SetAt" [ double "v", int "i" ] Nothing
   ]
 
