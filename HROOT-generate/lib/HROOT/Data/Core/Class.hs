@@ -5,8 +5,9 @@ module HROOT.Data.Core.Class where
 import FFICXX.Generate.Code.Primitive ( bool    , bool_
                                       , charpp
                                       , cppclass, cppclass_
+                                      , cstar_
                                       , cstring , cstring_
-                                      , double
+                                      , double  , double_
                                       , float   , float_
                                       , int     , int_
                                       , intp
@@ -16,6 +17,7 @@ import FFICXX.Generate.Code.Primitive ( bool    , bool_
                                       )
 import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) )
 import FFICXX.Generate.Type.Class     ( Class(..)
+                                      , CTypes(CTDouble)
                                       , Function(..)
                                       , ProtectedMethod(..)
                                       , TopLevelFunction(..)
@@ -94,16 +96,24 @@ tApplication = coreclass "TApplication" [tObject, tQObject]
                ]
 
 tArray :: Class
-tArray = coreclass "TArray" [deletable]
-         []
+tArray =
+  coreclass "TArray" [deletable]
+  [ Virtual double_ "GetAt" [ int "i" ] Nothing
+  , NonVirtual int_ "GetSize" [] Nothing
+  , Virtual void_ "Set" [ int "n" ] Nothing
+  , Virtual void_ "SetAt" [ double "v", int "i" ] Nothing
+  ]
 
 tArrayC :: Class
 tArrayC = coreclass "TArrayC" [tArray]
           []
 
 tArrayD :: Class
-tArrayD = coreclass "TArrayD" [tArray]
-          []
+tArrayD =
+  coreclass "TArrayD" [tArray]
+  [ NonVirtual double_ "At" [ int "i" ] Nothing
+  , NonVirtual (cstar_ CTDouble) "GetArray" [] Nothing
+  ]
 
 tArrayF :: Class
 tArrayF = coreclass "TArrayF" [tArray]
