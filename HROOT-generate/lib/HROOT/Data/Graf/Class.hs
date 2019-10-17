@@ -251,6 +251,7 @@ tView =
   , Virtual double_ "GetLongitude"   [] Nothing
   , Virtual double_ "GetPsi"         [] Nothing
   , Virtual bool_   "IsViewChanged"  [] Nothing
+  , Virtual void_   "RotateView"     [double "phi", double "theta"] Nothing
   , Virtual void_   "SetLatitude"    [double "latitude" ] Nothing
   , Virtual void_   "SetLongitude"   [double "longitude"] Nothing
   , Virtual void_   "SetPsi"         [double "psi"      ] Nothing
