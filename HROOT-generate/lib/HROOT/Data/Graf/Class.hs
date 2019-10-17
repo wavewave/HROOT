@@ -2,13 +2,12 @@
 
 module HROOT.Data.Graf.Class where
 
-import FFICXX.Generate.Code.Primitive ( bool    , bool_
+import FFICXX.Generate.Code.Primitive ( bool, bool_
                                       , cppclass, cppclass_
                                       , cstring
-                                      , double  , double_
-                                      , doublep
+                                      , double, double_, doublep
                                       , float
-                                      , int
+                                      , int, intref
                                       , void_
                                       )
 import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) )
@@ -208,7 +207,7 @@ tPad =
   ]
 
 
-    
+
 tPCON :: Class
 tPCON =
   grafclass "TPCON" [tShape]
@@ -248,13 +247,15 @@ tTUBE =
 tView :: Class
 tView =
   grafclass "TView" [tObject, tAttLine]
-  [ Virtual double_ "GetLatitude"  [] Nothing
-  , Virtual double_ "GetLongitude" [] Nothing
-  , Virtual double_ "GetPsi"       [] Nothing
-  , Virtual bool_ "IsViewChanged" [] Nothing
-  , Virtual void_   "SetLatitude"  [double "latitude" ] Nothing
-  , Virtual void_   "SetLongitude" [double "longitude"] Nothing
-  , Virtual void_   "SetPsi"       [double "psi"      ] Nothing
+  [ Virtual double_ "GetLatitude"    [] Nothing
+  , Virtual double_ "GetLongitude"   [] Nothing
+  , Virtual double_ "GetPsi"         [] Nothing
+  , Virtual bool_   "IsViewChanged"  [] Nothing
+  , Virtual void_   "SetLatitude"    [double "latitude" ] Nothing
+  , Virtual void_   "SetLongitude"   [double "longitude"] Nothing
+  , Virtual void_   "SetPsi"         [double "psi"      ] Nothing
+  , Virtual void_   "SetView"        [double "longitude", double "latitude", double "psi", intref "irep"] (Just "SetView1")
+  , Virtual void_   "SetViewChanged" [bool "flag"] Nothing
   ]
 
 
