@@ -3,7 +3,7 @@
 module HROOT.Data.Graf.Class where
 
 import FFICXX.Generate.Code.Primitive ( bool    , bool_
-                                      , cppclass_
+                                      , cppclass, cppclass_
                                       , cstring
                                       , double  , double_
                                       , doublep
@@ -202,6 +202,9 @@ tPad :: Class
 tPad =
   grafclass "TPad" [tVirtualPad]
   [ Constructor [cstring "name", cstring "title", double "xlow", double "ylow", double "xup", double "yup"] Nothing
+  , Virtual (cppclass_ tView) "GetView" [] Nothing
+  , Virtual void_ "SetView" [] (Just "SetView0")
+  , Virtual void_ "SetView" [ cppclass tView "view" ] Nothing
   ]
 
 
@@ -238,6 +241,17 @@ tTUBE =
   [ Constructor [cstring "name", cstring "title", cstring "material", float "rmin", float "rmax", float "dz", float "aspect"] Nothing
   ]
 
+----------------
+-- starting V --
+----------------
+
+tView :: Class
+tView =
+  grafclass "TView" [tObject, tAttLine]
+  [ Virtual bool_ "IsViewChanged" [] Nothing
+  ]
+
+
 graf_classes :: [Class]
 graf_classes =
   [ tArc, tArrow, tAttImage
@@ -250,6 +264,7 @@ graf_classes =
   , tPad, tPCON
   , tShape, tSPHE
   , tTUBE
+  , tView
   ]
 
 graf_topfunctions :: [TopLevelFunction]
@@ -276,6 +291,7 @@ graf_headers =
   , modImports "TShape"      ["ROOT"] ["TShape.h"]
   , modImports "TSPHE"       ["ROOT"] ["TSPHE.h"]
   , modImports "TTUBE"       ["ROOT"] ["TTUBE.h"]
+  , modImports "TView"       ["ROOT"] ["TView.h"]
   ]
 
 graf_extraLib :: [String]

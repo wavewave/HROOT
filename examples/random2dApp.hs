@@ -5,7 +5,7 @@
 module Main where
 
 import Control.Concurrent    ( forkIO, threadDelay )
-import Control.Monad         ( forever, when )
+import Control.Monad         ( forever, replicateM_, when )
 import Data.IORef            ( newIORef, readIORef, modifyIORef' )
 import Data.String           ( IsString(fromString) )
 import Foreign.C.Types       ( CDouble, CInt )
@@ -43,7 +43,7 @@ main = do
       -- run tapp 1
       draw h2 ("lego"::CString)
 
-      forkIO $ forever $ do
+      forkIO $ replicateM_ 1000000 $ do
         n <- readIORef nref
         when (n `mod` 100 == 0) $
           print n
@@ -59,6 +59,12 @@ main = do
       forever $ do
         threadDelay (1000000 `div` 60) -- every 1/60 sec
         processEvents gsys
+        v <- getView tcanvas
+        b <- isViewChanged v
+        when (b /= 0) $
+          printObj v (""::CString)
+
+
       delete h2
       delete tapp
 
