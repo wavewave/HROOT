@@ -248,8 +248,20 @@ tTUBE =
 tView :: Class
 tView =
   grafclass "TView" [tObject, tAttLine]
-  [ Virtual bool_ "IsViewChanged" [] Nothing
+  [ Virtual double_ "GetLatitude"  [] Nothing
+  , Virtual double_ "GetLongitude" [] Nothing
+  , Virtual double_ "GetPsi"       [] Nothing
+  , Virtual bool_ "IsViewChanged" [] Nothing
+  , Virtual void_   "SetLatitude"  [double "latitude" ] Nothing
+  , Virtual void_   "SetLongitude" [double "longitude"] Nothing
+  , Virtual void_   "SetPsi"       [double "psi"      ] Nothing
   ]
+
+
+tView3D :: Class
+tView3D =
+  grafclass "TView3D" [tView]
+  []
 
 
 graf_classes :: [Class]
@@ -264,7 +276,7 @@ graf_classes =
   , tPad, tPCON
   , tShape, tSPHE
   , tTUBE
-  , tView
+  , tView, tView3D
   ]
 
 graf_topfunctions :: [TopLevelFunction]
@@ -292,6 +304,7 @@ graf_headers =
   , modImports "TSPHE"       ["ROOT"] ["TSPHE.h"]
   , modImports "TTUBE"       ["ROOT"] ["TTUBE.h"]
   , modImports "TView"       ["ROOT"] ["TView.h"]
+  , modImports "TView3D"     ["ROOT"] ["TView3D.h"]
   ]
 
 graf_extraLib :: [String]
