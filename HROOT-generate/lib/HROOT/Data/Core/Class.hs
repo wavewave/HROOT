@@ -444,6 +444,12 @@ tString =
   [ Constructor [ cstring "s" ] Nothing
   ]
 
+tStyle :: Class
+tStyle =
+  coreclass "TStyle" [tNamed, tAttLine, tAttFill, tAttMarker, tAttText]
+  [ NonVirtual void_ "SetCanvasPreferGL" [bool "prefer"] Nothing
+  ]
+
 tSystem :: Class
 tSystem =
   coreclass "TSystem" [tNamed]
@@ -479,15 +485,16 @@ core_classes =
   , tObjArray, tObject
   , tQObject
   , tROOT
-  , tSeqCollection, tSystem
+  , tSeqCollection, tStyle, tSystem
   , tVirtualPad
   ]
 
 core_topfunctions :: [TopLevelFunction]
 core_topfunctions =
-  [ TopLevelFunction (cppclass_ tROOT) "GetROOT" [] Nothing
-  , TopLevelVariable (cppclass_ tROOT) "gROOT" Nothing
+  [ TopLevelFunction (cppclass_ tROOT)   "GetROOT" [] Nothing
+  , TopLevelVariable (cppclass_ tROOT)   "gROOT" Nothing
   , TopLevelVariable (cppclass_ tSystem) "gSystem" Nothing
+  , TopLevelVariable (cppclass_ tStyle)  "gStyle" Nothing
   ]
 
 core_headers :: [(ModuleUnit,ModuleUnitImports)]
@@ -523,6 +530,7 @@ core_headers =
   , modImports "TQObject"       ["ROOT"] ["TQObject.h"]
   , modImports "TROOT"          ["ROOT"] ["TROOT.h"]
   , modImports "TSeqCollection" ["ROOT"] ["TSeqCollection.h"]
+  , modImports "TStyle"         ["ROOT"] ["TStyle.h"]
   , modImports "TSystem"        ["ROOT"] ["TSystem.h"]
   , modImports "TVirtualPad"    ["ROOT"] ["TVirtualPad.h"]
   ]
