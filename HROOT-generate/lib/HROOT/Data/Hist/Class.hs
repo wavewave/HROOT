@@ -250,7 +250,6 @@ tFormula = histclass "TFormula" [tNamed] mempty
 -- starting G --
 ----------------
 
-
 tGraph :: Class
 tGraph =
   histclass "TGraph" [tNamed, tAttLine, tAttFill, tAttMarker] (Protected [])
@@ -315,6 +314,14 @@ tGraph =
   , Virtual void_ "SetPoint" [int "i", double "x", double "y"] Nothing
   -- Zero
   ]
+
+tGraph2D :: Class
+tGraph2D =
+  histclass "TGraph2D" [tNamed, tAttLine, tAttFill, tAttMarker] (Protected [])
+  [ Constructor [int "n", doublep "x", doublep "y", doublep "z"] Nothing
+  , Virtual void_ "SetPoint" [int "i", double "x", double "y", double "z"] (Just "SetPoint2")
+  ]
+
 
 tGraphAsymmErrors :: Class
 tGraphAsymmErrors =
@@ -637,7 +644,7 @@ hist_classes :: [Class]
 hist_classes =
   [ tAxis
   , tF1, tFitResult, tFitResultPtr -- , tFormula
-  , tGraph, tGraphAsymmErrors, tGraphBentErrors, tGraphErrors
+  , tGraph, tGraph2D, tGraphAsymmErrors, tGraphBentErrors, tGraphErrors
   , tH1, tH1C, tH1D, tH1F, tH1I, tH1K, tH1S, tH2, tH2C, tH2D, tH2F, tH2I, tH2Poly, tH2S, tH3, tH3C, tH3D, tH3F, tH3I, tH3S, tHStack ]
 
 hist_topfunctions :: [TopLevelFunction]
@@ -650,6 +657,7 @@ hist_headers =
   , modImports "TFitResult"        ["ROOT"] ["TFitResult.h"]
   , modImports "TFitResultPtr"     ["ROOT"] ["TFitResultPtr.h"]
   , modImports "TGraph"            ["ROOT"] ["TGraph.h"]
+  , modImports "TGraph2D"          ["ROOT"] ["TGraph2D.h"]
   , modImports "TGraphAsymmErrors" ["ROOT"] ["TGraphAsymmErrors.h"]
   , modImports "TGraphBentErrors"  ["ROOT"] ["TGraphBentErrors.h"]
   , modImports "TGraphErrors"      ["ROOT"] ["TGraphErrors.h"]
