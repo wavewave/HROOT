@@ -18,6 +18,7 @@ import qualified Data.Text as T
 import           Data.Typeable           ( Typeable )
 import           System.Console.CmdArgs  ( cmdArgs, modes )
 import           System.Directory        ( createDirectoryIfMissing, getCurrentDirectory )
+import           System.Environment      ( getArgs )
 import           System.FilePath         ( (</>), (<.>) )
 import           System.IO               ( IOMode(..), hPutStrLn, withFile )
 --
@@ -209,9 +210,12 @@ makeUmbrellaPackage config mods = do
 
 main :: IO ()
 main = do
+  args <- getArgs
   cwd <- getCurrentDirectory
-  tmpldir <- H.getDataDir >>= return . (</> "template")
-  -- let tmpldir = "../HROOT-generate/template"
+  tmpldir <-
+    if length args == 1
+      then pure (args !! 0)
+      else H.getDataDir >>= pure . (</> "template")
 
   let mkcfg name = FFICXXConfig {
                      fficxxconfig_workingDir     = cwd </> "tmp" </> name </> "working"

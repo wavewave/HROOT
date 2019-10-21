@@ -318,8 +318,10 @@ tGraph =
 tGraph2D :: Class
 tGraph2D =
   histclass "TGraph2D" [tNamed, tAttLine, tAttFill, tAttMarker] (Protected [])
-  [ Constructor [int "n", doublep "x", doublep "y", doublep "z"] Nothing
-  , Virtual void_ "SetPoint" [int "i", double "x", double "y", double "z"] (Just "SetPoint2")
+  [ Constructor [] (Just "newTGraph2D_")
+  , Constructor [int "n", doublep "x", doublep "y", doublep "z"] Nothing
+  , Virtual void_ "Set" [int "n"] (Just "SetN")
+  , Virtual void_ "SetPoint" [int "i", double "x", double "y", double "z"] (Just "SetPointXYZ")
   ]
 
 
