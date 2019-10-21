@@ -646,12 +646,26 @@ tHStack = histclass "THStack" [tNamed] (Protected [])
           [ Constructor [cstring "name",cstring "title"] Nothing
           ]
 
+----------------
+-- starting M --
+----------------
+
+tMultiGraph :: Class
+tMultiGraph =
+  histclass "TMultiGraph" [tNamed] (Protected [])
+  [ Constructor [cstring "name",cstring "title"] Nothing
+  , Virtual void_ "Add" [cppclass tGraph "graph", cstring "chopt"] (Just "AddG")
+  ]
+
+
 hist_classes :: [Class]
 hist_classes =
   [ tAxis
   , tF1, tFitResult, tFitResultPtr -- , tFormula
   , tGraph, tGraph2D, tGraphAsymmErrors, tGraphBentErrors, tGraphErrors
-  , tH1, tH1C, tH1D, tH1F, tH1I, tH1K, tH1S, tH2, tH2C, tH2D, tH2F, tH2I, tH2Poly, tH2S, tH3, tH3C, tH3D, tH3F, tH3I, tH3S, tHStack ]
+  , tH1, tH1C, tH1D, tH1F, tH1I, tH1K, tH1S, tH2, tH2C, tH2D, tH2F, tH2I, tH2Poly, tH2S, tH3, tH3C, tH3D, tH3F, tH3I, tH3S, tHStack
+  , tMultiGraph
+  ]
 
 hist_topfunctions :: [TopLevelFunction]
 hist_topfunctions = []
@@ -688,6 +702,7 @@ hist_headers =
   , modImports "TH3I"              ["ROOT"] ["TH3I.h"]
   , modImports "TH3S"              ["ROOT"] ["TH3S.h"]
   , modImports "THStack"           ["ROOT"] ["THStack.h"]
+  , modImports "TMultiGraph"       ["ROOT"] ["TMultiGraph.h"]
   ]
 
 hist_extraLib :: [String]
