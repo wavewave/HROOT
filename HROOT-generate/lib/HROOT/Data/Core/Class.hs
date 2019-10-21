@@ -482,6 +482,14 @@ tStyle :: Class
 tStyle =
   coreclass "TStyle" [tNamed, tAttLine, tAttFill, tAttMarker, tAttText]
   [ NonVirtual void_ "SetCanvasPreferGL" [bool "prefer"] Nothing
+  , NonVirtual void_ "SetOptDate" [int "optdate"] Nothing
+  , NonVirtual void_ "SetOptFile" [int "file"] Nothing
+  , NonVirtual void_ "SetOptFit"  [int "mode"] Nothing
+  , NonVirtual void_ "SetOptLogx" [int "logx"] Nothing
+  , NonVirtual void_ "SetOptLogy" [int "logy"] Nothing
+  , NonVirtual void_ "SetOptLogz" [int "logz"] Nothing
+  , NonVirtual void_ "SetOptStat" [int "mode"] Nothing
+  , NonVirtual void_ "SetOptTitle" [int "tit"] Nothing
   ]
 
 tSystem :: Class

@@ -589,8 +589,12 @@ tH2I = histclass "TH2I" [tH2, tArrayI] (Protected ["fill1"])
        []
 
 tH2Poly :: Class
-tH2Poly = histclass "TH2Poly" [tH2] (Protected ["fill1"])
-          []
+tH2Poly =
+  histclass "TH2Poly" [tH2] (Protected ["fill1"])
+  [ Constructor [cstring "name", cstring "title", double "xlow", double "xup", double "ylow", double "yup"] Nothing
+  , Virtual int_ "AddBin" [cppclass tObject "poly"] Nothing
+  , Virtual int_ "Fill" [cstring "name", double "w"] (Just "FillS")
+  ]
 
 tH2S :: Class
 tH2S = histclass "TH2S" [tH2, tArrayS] (Protected ["fill1"])
