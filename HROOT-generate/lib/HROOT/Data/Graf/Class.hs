@@ -104,6 +104,10 @@ tCanvas :: Class
 tCanvas =
   grafclass "TCanvas" [tPad]
   [ Constructor [cstring "name",cstring "title",int "ww",int "wh"] Nothing
+  , Virtual void_ "ToggleEditor"      [] Nothing
+  , Virtual void_ "ToggleEventStatus" [] Nothing
+  , Virtual void_ "ToggleToolBar"     [] Nothing
+  , Virtual void_ "ToggleToolTips"    [] Nothing
   ]
 
 tCrown :: Class

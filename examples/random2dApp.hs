@@ -29,6 +29,10 @@ main = do
       gsys <- gSystem
       tapp <- newTApplication ("test"::CString) pargc pargv
       tcanvas <- newTCanvas ("Test"::CString) ("Test"::CString) 640 480
+      toggleEditor tcanvas
+      toggleEventStatus tcanvas
+      toggleToolBar tcanvas
+      toggleToolTips tcanvas
       h2 <- newTH2F ("test"::CString) ("test"::CString) 100 (-5.0) 5.0 100 (-5.0) 5.0
       tRandom <- newTRandom 65535
 
@@ -59,11 +63,6 @@ main = do
       forever $ do
         threadDelay (1000000 `div` 60) -- every 1/60 sec
         processEvents gsys
-        v <- getView tcanvas
-        b <- isViewChanged v
-        when (b /= 0) $
-          printObj v (""::CString)
-
 
       delete h2
       delete tapp
