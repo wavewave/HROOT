@@ -4,7 +4,7 @@ module HROOT.Data.Core.Class where
 
 import FFICXX.Generate.Code.Primitive ( bool    , bool_
                                       , charpp
-                                      , cppclass, cppclass_
+                                      , cppclass, cppclass_, cppclasscopy_
                                       , cstar_
                                       , cstring , cstring_
                                       , double  , double_
@@ -210,7 +210,7 @@ tAttBBox2D =
     , class_protected  = Protected []
     , class_alias      = Nothing
     , class_funcs      =
-      [ Virtual (cppclass_ rectangle_t) "GetBBox" [] Nothing
+      [ Virtual (cppclasscopy_ rectangle_t) "GetBBox" [] Nothing
       , Virtual void_ "SetBBoxX1" [ int "x" ] Nothing
       , Virtual void_ "SetBBoxX2" [ int "x" ] Nothing
       , Virtual void_ "SetBBoxY1" [ int "y" ] Nothing
