@@ -17,10 +17,13 @@ import FFICXX.Generate.Code.Primitive ( bool    , bool_
                                       )
 import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) )
 import FFICXX.Generate.Type.Class     ( Class(..)
-                                      , CTypes(CTDouble)
+                                      , CTypes(CTShort,CTDouble,CTUShort)
                                       , Function(..)
+                                      , IsConst(..)
                                       , ProtectedMethod(..)
                                       , TopLevelFunction(..)
+                                      , Types(..)
+                                      , Variable(..)
                                       )
 import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       , ModuleUnitImports(..)
@@ -84,6 +87,31 @@ deletable =
     , class_vars       = []
     , class_tmpl_funcs = []
     }
+
+----------------
+-- pod struct --
+----------------
+-- This part should be reimplemented as Haskell Storable as fficxx will support.
+-- For now, these are implemented as "classes"
+
+rectangle_t :: Class
+rectangle_t =
+  Class {
+      class_cabal      = corecabal
+    , class_name       = "Rectangle_t"
+    , class_parents    = [deletable]
+    , class_protected  = Protected []
+    , class_alias      = Nothing
+    , class_funcs      = []
+    , class_vars       =
+      [ Variable (CT CTUShort NoConst) "fHeight"
+      , Variable (CT CTUShort NoConst) "fWidth"
+      , Variable (CT CTShort NoConst) "fX"
+      , Variable (CT CTShort NoConst) "fY"
+      ]
+    , class_tmpl_funcs = []
+    }
+
 
 ----------------
 -- starting A --
@@ -181,7 +209,13 @@ tAttBBox2D =
     , class_parents    = [deletable]
     , class_protected  = Protected []
     , class_alias      = Nothing
-    , class_funcs      = []
+    , class_funcs      =
+      [ Virtual (cppclass_ rectangle_t) "GetBBox" [] Nothing
+      , Virtual void_ "SetBBoxX1" [ int "x" ] Nothing
+      , Virtual void_ "SetBBoxX2" [ int "x" ] Nothing
+      , Virtual void_ "SetBBoxY1" [ int "y" ] Nothing
+      , Virtual void_ "SetBBoxY2" [ int "y" ] Nothing
+      ]
     , class_vars       = []
     , class_tmpl_funcs = []
     }
@@ -476,6 +510,7 @@ tVirtualPad =
 core_classes :: [Class]
 core_classes =
   [ deletable
+  , rectangle_t
   , tApplication, tArray, tArrayC, tArrayD, tArrayF, tArrayI, tArrayL, tArrayL64, tArrayS
   , tAtt3D, tAttAxis, tAttBBox, tAttBBox2D, tAttCanvas, tAttFill, tAttLine, tAttMarker, tAttPad, tAttText
   , tClass, tCollection
@@ -500,7 +535,8 @@ core_topfunctions =
 
 core_headers :: [(ModuleUnit,ModuleUnitImports)]
 core_headers =
-  [ modImports "TApplication"   ["ROOT"] ["TApplication.h"]
+  [ modImports "Rectangle_t"    []       ["GuiTypes.h"]
+  , modImports "TApplication"   ["ROOT"] ["TApplication.h"]
   , modImports "TArray"         ["ROOT"] ["TArray.h"]
   , modImports "TArrayC"        ["ROOT"] ["TArrayC.h"]
   , modImports "TArrayD"        ["ROOT"] ["TArrayD.h"]
