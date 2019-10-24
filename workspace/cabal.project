@@ -3,6 +3,7 @@ packages: HROOT-core/
           HROOT-hist/
           HROOT-io/
 	  HROOT-math/
+	  HROOT-net/
 	  HROOT-tree/
 	  HROOT-RooFit/
 	  HROOT-RooFit-RooStats/

@@ -69,6 +69,13 @@ import           HROOT.Data.Graf.Class             ( grafcabal
                                                    , graf_headers
                                                    , graf_topfunctions
                                                    )
+import           HROOT.Data.IO.Class               ( iocabal
+                                                   , io_classes
+                                                   , io_extraLib
+                                                   , io_extraDep
+                                                   , io_headers
+                                                   , io_topfunctions
+                                                   )
 import           HROOT.Data.Math.Class             ( mathcabal
                                                    , math_classes
                                                    , math_extraDep
@@ -76,12 +83,12 @@ import           HROOT.Data.Math.Class             ( mathcabal
                                                    , math_headers
                                                    , math_topfunctions
                                                    )
-import           HROOT.Data.IO.Class               ( iocabal
-                                                   , io_classes
-                                                   , io_extraLib
-                                                   , io_extraDep
-                                                   , io_headers
-                                                   , io_topfunctions
+import           HROOT.Data.Net.Class              ( netcabal
+                                                   , net_classes
+                                                   , net_extraDep
+                                                   , net_extraLib
+                                                   , net_headers
+                                                   , net_topfunctions
                                                    )
 import           HROOT.Data.RooFit.Class           ( roofitcabal
                                                    , roofit_classes
@@ -126,8 +133,13 @@ makeUmbrellaCabal =
       -- TODO: this should be factored out.
       version = "0.10.0.1"
       pkg_summarymodule = "HROOT"
-      pkg_deps = [ "HROOT-core", "HROOT-hist", "HROOT-math"
-                 , "HROOT-tree", "HROOT-graf","HROOT-io"
+      pkg_deps = [ "HROOT-core"
+                 , "HROOT-graf"
+                 , "HROOT-hist"
+                 , "HROOT-io"
+                 , "HROOT-math"
+                 , "HROOT-net"
+                 , "HROOT-tree"
                  ]
       pkg_synopsis = "Haskell binding to the ROOT data analysis framework"
       pkg_description = "HROOT is a haskell Foreign Function Interface (FFI) binding to ROOT. ROOT(http://root.cern.ch) is an object-oriented program and library developed by CERN for physics data analysis."
@@ -277,6 +289,17 @@ main = do
                    , sbcExtraDeps  = math_extraDep
                    , sbcStaticFiles = ["CHANGES","Config.hs","LICENSE","Setup.lhs"]
                    }
+      sbc_net    = SimpleBuilderConfig {
+                     sbcTopModule  = "HROOT.Net"
+                   , sbcModUnitMap = ModuleUnitMap (HM.fromList net_headers)
+                   , sbcCabal      = netcabal
+                   , sbcClasses    = net_classes
+                   , sbcTopLevels  = net_topfunctions
+                   , sbcTemplates  = []
+                   , sbcExtraLibs  = net_extraLib
+                   , sbcExtraDeps  = net_extraDep
+                   , sbcStaticFiles = ["CHANGES","Config.hs","LICENSE","Setup.lhs"]
+                   }
       sbc_tree   = SimpleBuilderConfig {
                      sbcTopModule  = "HROOT.Tree"
                    , sbcModUnitMap = ModuleUnitMap (HM.fromList tree_headers)
@@ -316,9 +339,17 @@ main = do
   simpleBuilder (mkcfg "HROOT-hist")            sbc_hist
   simpleBuilder (mkcfg "HROOT-io")              sbc_io
   simpleBuilder (mkcfg "HROOT-math")            sbc_math
+  simpleBuilder (mkcfg "HROOT-net")             sbc_net
   simpleBuilder (mkcfg "HROOT-RooFit")          sbc_roofit
   simpleBuilder (mkcfg "HROOT-RooFit-RooStats") sbc_roostats
   simpleBuilder (mkcfg "HROOT-tree")            sbc_tree
 
   -- RooFit and RooStats are not part of main HROOT.
-  makeUmbrellaPackage (mkcfg "HROOT") [ "HROOT.Core", "HROOT.Hist", "HROOT.Graf", "HROOT.IO", "HROOT.Math", "HROOT.Tree" ]
+  makeUmbrellaPackage (mkcfg "HROOT") [ "HROOT.Core"
+                                      , "HROOT.Hist"
+                                      , "HROOT.Graf"
+                                      , "HROOT.IO"
+                                      , "HROOT.Math"
+                                      , "HROOT.Net"
+                                      , "HROOT.Tree"
+                                      ]

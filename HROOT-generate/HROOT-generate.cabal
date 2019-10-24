@@ -21,14 +21,18 @@ Data-files:
                 template/HROOT-graf/Config.hs
                 template/HROOT-graf/LICENSE
                 template/HROOT-graf/Setup.lhs
-                template/HROOT-math/CHANGES
-                template/HROOT-math/Config.hs
-                template/HROOT-math/LICENSE
-                template/HROOT-math/Setup.lhs
                 template/HROOT-io/CHANGES
                 template/HROOT-io/Config.hs
                 template/HROOT-io/LICENSE
                 template/HROOT-io/Setup.lhs
+                template/HROOT-math/CHANGES
+                template/HROOT-math/Config.hs
+                template/HROOT-math/LICENSE
+                template/HROOT-math/Setup.lhs
+                template/HROOT-net/CHANGES
+                template/HROOT-net/Config.hs
+                template/HROOT-net/LICENSE
+                template/HROOT-net/Setup.lhs
                 template/HROOT-RooFit/CHANGES
                 template/HROOT-RooFit/Config.hs
                 template/HROOT-RooFit/LICENSE
@@ -78,6 +82,7 @@ Library
                    HROOT.Data.Graf.Class
                    -- HROOT.Data.Math.Annotate
                    HROOT.Data.Math.Class
+                   HROOT.Data.Net.Class
                    -- HROOT.Data.IO.Annotate
                    HROOT.Data.IO.Class
                    -- HROOT.Data.RooFit.Annotate
