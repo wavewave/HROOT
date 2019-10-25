@@ -133,8 +133,9 @@ tArray =
   ]
 
 tArrayC :: Class
-tArrayC = coreclass "TArrayC" [tArray]
-          []
+tArrayC =
+  coreclass "TArrayC" [tArray]
+  []
 
 tArrayD :: Class
 tArrayD =
@@ -144,28 +145,34 @@ tArrayD =
   ]
 
 tArrayF :: Class
-tArrayF = coreclass "TArrayF" [tArray]
-          []
+tArrayF =
+  coreclass "TArrayF" [tArray]
+  []
 
 tArrayI :: Class
-tArrayI = coreclass "TArrayI" [tArray]
-          []
+tArrayI =
+  coreclass "TArrayI" [tArray]
+  []
 
 tArrayL :: Class
-tArrayL = coreclass "TArrayL" [tArray]
-          []
+tArrayL =
+  coreclass "TArrayL" [tArray]
+  []
 
 tArrayL64 :: Class
-tArrayL64 = coreclass "TArrayL64" [tArray]
-            []
+tArrayL64 =
+  coreclass "TArrayL64" [tArray]
+  []
 
 tArrayS :: Class
-tArrayS = coreclass "TArrayS" [tArray]
-          []
+tArrayS =
+  coreclass "TArrayS" [tArray]
+  []
 
 tAtt3D :: Class
-tAtt3D = coreclass "TAtt3D" [deletable]
-         []
+tAtt3D =
+  coreclass "TAtt3D" [deletable]
+  []
 
 tAttAxis :: Class
 tAttAxis =
@@ -196,10 +203,10 @@ tAttAxis =
 
   ]
 
-
 tAttBBox :: Class
-tAttBBox = coreclass "TAttBBox" [deletable]
-           []
+tAttBBox =
+  coreclass "TAttBBox" [deletable]
+  []
 
 tAttBBox2D :: Class
 tAttBBox2D =
@@ -221,16 +228,18 @@ tAttBBox2D =
     }
 
 tAttCanvas :: Class
-tAttCanvas = coreclass "TAttCanvas" [deletable]
-             [ Constructor []  Nothing
-             ]
+tAttCanvas =
+  coreclass "TAttCanvas" [deletable]
+  [ Constructor []  Nothing
+  ]
 
 tAttFill :: Class
-tAttFill = coreclass "TAttFill" [deletable]
-           [ Constructor [short "fcolor", short "fstyle"] Nothing
-           , Virtual void_   "SetFillColor"    [int "color" ] Nothing
-           , Virtual void_   "SetFillStyle"    [int "style" ] Nothing
-           ]
+tAttFill =
+  coreclass "TAttFill" [deletable]
+  [ Constructor [short "fcolor", short "fstyle"] Nothing
+  , Virtual void_   "SetFillColor"    [int "color" ] Nothing
+  , Virtual void_   "SetFillStyle"    [int "style" ] Nothing
+  ]
 
 tAttLine :: Class
 tAttLine =
@@ -434,11 +443,11 @@ tObject =
   , Virtual (cppclass_ tObject) "FindObject" [cstring "name"] Nothing
   , Virtual  cstring_ "GetName" [] Nothing
   , Virtual (cppclass_ tClass) "IsA" [] Nothing
-  , Virtual void_ "Paint" [cstring "option"] Nothing
-  , Virtual void_ "Print" [cstring "option"] (Just "printObj")
-  , Virtual void_    "SaveAs"  [cstring "filename", cstring "option"] Nothing
-  , Virtual int_     "Write"   [cstring "name", int "option", int "bufsize" ] Nothing
-
+  , Virtual void_ "Paint"  [cstring "option"] Nothing
+  , Virtual void_ "Print"  [cstring "option"] (Just "printObj")
+  , Virtual void_ "SaveAs" [cstring "filename", cstring "option"] Nothing
+  , Virtual int_  "Write"  [cstring "name", int "option", int "bufsize" ] Nothing
+  , Virtual int_  "Write"  [] (Just "Write_")
   , Static  bool_    "GetObjectStat" [] Nothing
   ]
 

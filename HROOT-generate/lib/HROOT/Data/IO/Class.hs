@@ -54,14 +54,24 @@ tDirectoryFile =
   ]
 
 tFile :: Class
-tFile = ioclass "TFile" [tDirectoryFile]
-        [ Constructor [cstring "fname", cstring "option", cstring "ftitle", int "compress" ] Nothing
-        ]
+tFile =
+  ioclass "TFile" [tDirectoryFile]
+  [ Constructor [cstring "fname", cstring "option", cstring "ftitle", int "compress" ] Nothing
+  ]
+
+tMemFile :: Class
+tMemFile =
+  ioclass "TMemFile" [tFile]
+  [ Constructor [cstring "path", cstring "option", cstring "ftitle", int "compress" ] Nothing
+  ]
 
 
 io_classes :: [Class]
 io_classes =
-  [ tDirectoryFile, tFile ]
+  [ tDirectoryFile
+  , tFile
+  , tMemFile
+  ]
 
 io_topfunctions :: [TopLevelFunction]
 io_topfunctions = []
@@ -70,6 +80,7 @@ io_headers :: [(ModuleUnit,ModuleUnitImports)]
 io_headers =
   [ modImports "TDirectoryFile" ["ROOT"] ["TDirectoryFile.h"]
   , modImports "TFile"          ["ROOT"] ["TFile.h"]
+  , modImports "TMemFile"       ["ROOT"] ["TMemFile.h"]
   ]
 
 io_extraLib :: [String]

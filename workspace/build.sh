@@ -4,4 +4,5 @@ cd ../HROOT-generate; cabal new-build ; cd ../workspace
 cabal new-build HROOT
 cabal new-exec -- ghc random2dApp.hs -lstdc++
 cabal new-exec -- ghc graph2d.hs -lstdc++
+cabal new-exec -- ghc httpserver.hs -lstdc++
 

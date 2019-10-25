@@ -2,7 +2,7 @@
 
 module HROOT.Data.Net.Class where
 
-import FFICXX.Generate.Code.Primitive ( cstring )
+import FFICXX.Generate.Code.Primitive ( bool, cstring, void_ )
 import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) )
 import FFICXX.Generate.Type.Class     ( Class(..)
                                       , Function(..)
@@ -51,9 +51,8 @@ tHttpServer :: Class
 tHttpServer =
   netclass "THttpServer" [tNamed]
   [ Constructor [cstring "engine"] Nothing
-
+  , NonVirtual void_ "SetReadOnly" [bool "readonly"] Nothing
   ]
-
 
 net_classes :: [Class]
 net_classes =
@@ -68,7 +67,7 @@ net_headers =
   ]
 
 net_extraLib :: [String]
-net_extraLib = []
+net_extraLib = [ "RHTTP" ]
 
 net_extraDep :: [(String,[String])]
 net_extraDep = []
