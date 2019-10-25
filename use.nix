@@ -10,8 +10,7 @@ let
   };
 
   hsenv = newHaskellPackages.ghcWithPackages (p: with p; [
-    HROOT-core
-    HROOT-RooFit
+    HROOT
     HROOT-RooFit-RooStats
   ]);
 

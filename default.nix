@@ -33,7 +33,7 @@ self: super:
        librarySystemDepends = [pkgs.root];
      };
   "HROOT-net" =
-     pkgs.haskell.lib.overrideCabal (self.callCabal2nix "HROOT-net" (HROOT-src + "/HROOT-net") {}) {
+     pkgs.haskell.lib.overrideCabal (self.callCabal2nix "HROOT-net" (HROOT-src + "/HROOT-net") { RHTTP = null;  }) {
        librarySystemDepends = [pkgs.root];
      };
   "HROOT-tree" =
