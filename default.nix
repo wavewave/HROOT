@@ -32,6 +32,10 @@ self: super:
      pkgs.haskell.lib.overrideCabal (self.callCabal2nix "HROOT-math" (HROOT-src + "/HROOT-math") {}) {
        librarySystemDepends = [pkgs.root];
      };
+  "HROOT-net" =
+     pkgs.haskell.lib.overrideCabal (self.callCabal2nix "HROOT-net" (HROOT-src + "/HROOT-net") {}) {
+       librarySystemDepends = [pkgs.root];
+     };
   "HROOT-tree" =
      pkgs.haskell.lib.overrideCabal (self.callCabal2nix "HROOT-tree" (HROOT-src + "/HROOT-tree") {}) {
        librarySystemDepends = [pkgs.root];
