@@ -1,8 +1,9 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixpkgs> {}, fficxxSrc }:
 
 let
 
-  HROOT-src = pkgs.callPackage ./gen.nix {};
+  HROOT-src = pkgs.callPackage ./gen.nix { inherit fficxxSrc; };
+
 in
 
 self: super:
