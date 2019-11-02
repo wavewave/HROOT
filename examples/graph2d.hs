@@ -14,13 +14,14 @@ import Foreign.Storable      ( poke )
 import System.IO.Unsafe      ( unsafePerformIO )
 --
 import HROOT
+import STD.Deletable.Interface (delete)
+
 
 instance IsString CString where
   fromString s = unsafePerformIO $ newCString s
 
 eps :: CDouble
 eps = 0.001
-
 
 main1 :: IO ()
 main1 = do

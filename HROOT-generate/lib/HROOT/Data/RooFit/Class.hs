@@ -33,7 +33,8 @@ roofitcabal =
   , cabal_moduleprefix       = "HROOT.RooFit"
   , cabal_additional_c_incs  = []
   , cabal_additional_c_srcs  = []
-  , cabal_additional_pkgdeps = [ CabalName "HROOT-core"
+  , cabal_additional_pkgdeps = [ CabalName "stdcxx"
+                               , CabalName "HROOT-core"
                                , CabalName "HROOT-hist"
                                , CabalName "HROOT-math"
                                ]

@@ -14,6 +14,8 @@ import Foreign.Marshal.Utils ( fromBool )
 import System.IO.Unsafe      ( unsafePerformIO )
 --
 import HROOT
+import STD.Deletable.Interface (delete)
+
 
 kUseGlobal :: CInt
 kUseGlobal = 0

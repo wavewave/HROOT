@@ -7,8 +7,6 @@ module Main where
 
 import           Control.Applicative ()
 import           Control.Monad           ( liftM3 )
-import           Data.Configurator as C
-import           Data.Configurator.Types ()
 import           Data.Data (Data)
 import qualified Data.HashMap.Strict as HM
 import           Data.Monoid             ( mempty )

@@ -101,7 +101,6 @@ Executable HROOT-generate
   Build-Depends: base>4,
                  Cabal,
                  cmdargs,
-                 configurator >= 0.2,
                  containers,
                  directory,
                  fficxx >= 0.5,

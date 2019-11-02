@@ -15,6 +15,8 @@ import Foreign.Storable      ( poke )
 import System.IO.Unsafe      ( unsafePerformIO )
 --
 import HROOT
+import STD.Deletable.Interface (delete)
+
 
 instance IsString CString where
   fromString s = unsafePerformIO $ newCString s
