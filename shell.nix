@@ -12,7 +12,10 @@ with pkgs;
 let
 
   newHaskellPackages0 = haskellPackages.override {
-    overrides = callPackage ./nix/config.nix { inherit fficxxSrc; };
+    overrides = self: super: {
+      "fficxx-runtime" = self.callCabal2nix "fficxx-runtime" (fficxxSrc + "/fficxx-runtime") {};
+      "fficxx"         = self.callCabal2nix "fficxx"         (fficxxSrc + "/fficxx")         {};
+    };
   };
 
   stdcxxNix = import ./nix/config-stdcxx.nix {
@@ -20,9 +23,11 @@ let
   };
 
   newHaskellPackages = haskellPackages.override {
-    overrides = self: super:
-      callPackage ./nix/config.nix { inherit fficxxSrc; } self super //
-      { "stdcxx" = self.callPackage stdcxxNix {}; };
+    overrides = self: super: {
+      "fficxx-runtime" = self.callCabal2nix "fficxx-runtime" (fficxxSrc + "/fficxx-runtime") {};
+      "fficxx"         = self.callCabal2nix "fficxx"         (fficxxSrc + "/fficxx")         {};
+      "stdcxx"         = self.callPackage stdcxxNix {};
+    };
 
   };
 
