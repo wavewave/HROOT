@@ -1,13 +1,15 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixpkgs> {}
+, fficxxSrc ?
+    pkgs.fetchgit {
+      url = "git://github.com/wavewave/fficxx.git";
+      rev = "21487f389b9f88cad6f506fb0db06534ed96bc28";
+      sha256 = "1b8plcpawd2dv0vy0dzy4dms0afm5dc09yxxgk68x2ghqb1cd0wf";
+    }
+}:
 
 with pkgs;
 
 let
-  fficxxSrc = fetchgit {
-    url = "git://github.com/wavewave/fficxx.git";
-    rev = "21487f389b9f88cad6f506fb0db06534ed96bc28";
-    sha256 = "1b8plcpawd2dv0vy0dzy4dms0afm5dc09yxxgk68x2ghqb1cd0wf";
-  };
 
   newHaskellPackages0 = haskellPackages.override {
     overrides = callPackage ./nix/config.nix { inherit fficxxSrc; };
