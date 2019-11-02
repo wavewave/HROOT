@@ -35,8 +35,6 @@ import FFICXX.Generate.Type.PackageInterface ( Namespace(..), HeaderName(..) )
 -- import from stdcxx --
 ------------------------
 
--- import from stdcxx
-
 stdcxx_cabal :: Cabal
 stdcxx_cabal = Cabal {
     cabal_pkgname            = CabalName "stdcxx"
@@ -55,7 +53,6 @@ stdcxx_cabal = Cabal {
   , cabal_buildType          = Simple
   }
 
--- import from stdcxx
 deletable :: Class
 deletable =
   AbstractClass {
@@ -556,8 +553,7 @@ tVirtualPad =
 
 core_classes :: [Class]
 core_classes =
-  [ deletable
-  , rectangle_t
+  [ rectangle_t
   , tApplication, tArray, tArrayC, tArrayD, tArrayF, tArrayI, tArrayL, tArrayL64, tArrayS
   , tAtt3D, tAttAxis, tAttBBox, tAttBBox2D, tAttCanvas, tAttFill, tAttLine, tAttMarker, tAttPad, tAttText
   , tClass, tCollection
