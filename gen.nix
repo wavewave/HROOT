@@ -11,8 +11,9 @@ let
     };
   };
 
-  stdcxxNix = import ./nix/config-stdcxx.nix {
-    inherit fficxxSrc stdenv fetchgit; packages = newHaskellPackages0;
+  stdcxxNix = import (fficxxSrc + "/stdcxx-gen/default.nix") {
+    inherit stdenv;
+    haskellPackages = newHaskellPackages0;
   };
 
   newHaskellPackages = haskellPackages.override {
