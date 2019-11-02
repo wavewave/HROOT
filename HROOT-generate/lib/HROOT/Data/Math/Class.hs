@@ -24,7 +24,9 @@ mathcabal =
   , cabal_moduleprefix  = "HROOT.Math"
   , cabal_additional_c_incs  = []
   , cabal_additional_c_srcs  = []
-  , cabal_additional_pkgdeps = [ CabalName "HROOT-core" ]
+  , cabal_additional_pkgdeps = [ CabalName "stdcxx"
+                               , CabalName "HROOT-core"
+                               ]
   , cabal_license            = Nothing
   , cabal_licensefile        = Nothing
   , cabal_extraincludedirs   = []

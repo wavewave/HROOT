@@ -31,6 +31,48 @@ import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
 import FFICXX.Generate.Type.PackageInterface ( Namespace(..), HeaderName(..) )
 
 
+------------------------
+-- import from stdcxx --
+------------------------
+
+-- import from stdcxx
+
+stdcxx_cabal :: Cabal
+stdcxx_cabal = Cabal {
+    cabal_pkgname            = CabalName "stdcxx"
+  , cabal_version            = "0.5"
+  , cabal_cheaderprefix      = "STD"
+  , cabal_moduleprefix       = "STD"
+  , cabal_additional_c_incs  = []
+  , cabal_additional_c_srcs  = []
+  , cabal_additional_pkgdeps = []
+  , cabal_license            = Nothing
+  , cabal_licensefile        = Nothing
+  , cabal_extraincludedirs   = []
+  , cabal_extralibdirs       = []
+  , cabal_extrafiles         = []
+  , cabal_pkg_config_depends = []
+  , cabal_buildType          = Simple
+  }
+
+-- import from stdcxx
+deletable :: Class
+deletable =
+  AbstractClass {
+      class_cabal      = stdcxx_cabal
+    , class_name       = "Deletable"
+    , class_parents    = []
+    , class_protected  = Protected []
+    , class_alias      = Nothing
+    , class_funcs      = [ Destructor Nothing ]
+    , class_vars       = []
+    , class_tmpl_funcs = []
+    }
+
+----------------------
+-- start HROOT-core --
+----------------------
+
 corecabal :: Cabal
 corecabal = Cabal {
     cabal_pkgname            = CabalName "HROOT-core"
@@ -39,7 +81,7 @@ corecabal = Cabal {
   , cabal_moduleprefix       = "HROOT.Core"
   , cabal_additional_c_incs  = []
   , cabal_additional_c_srcs  = []
-  , cabal_additional_pkgdeps = []
+  , cabal_additional_pkgdeps = [ CabalName "stdcxx" ]
   , cabal_license            = Nothing
   , cabal_licensefile        = Nothing
   , cabal_extraincludedirs   = []
@@ -75,18 +117,6 @@ modImports n ns hs =
     }
   )
 
-deletable :: Class
-deletable =
-  AbstractClass {
-      class_cabal      = corecabal
-    , class_name       = "Deletable"
-    , class_parents    = []
-    , class_protected  = Protected []
-    , class_alias      = Nothing
-    , class_funcs      = [ Destructor Nothing ]
-    , class_vars       = []
-    , class_tmpl_funcs = []
-    }
 
 ----------------
 -- pod struct --
