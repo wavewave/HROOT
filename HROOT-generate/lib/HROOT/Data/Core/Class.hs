@@ -13,6 +13,7 @@ import FFICXX.Generate.Code.Primitive ( bool    , bool_
                                       , intp
                                       , self_
                                       , short   , short_
+                                      , uint    , uint_
                                       , void_
                                       )
 import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) )
@@ -390,6 +391,20 @@ tCollection =
 -- starting D --
 ----------------
 
+tDatime :: Class
+tDatime =
+  coreclass "TDatime"  [deletable]
+  [ Constructor [int "year", int "month", int "day", int "hour", int "min", int "sec"] Nothing
+  , Virtual uint_ "Convert" [bool "toGMT"] Nothing
+  , NonVirtual int_ "GetDay"    [] Nothing
+  , NonVirtual int_ "GetHour"   [] Nothing
+  , NonVirtual int_ "GetMinute" [] Nothing
+  , NonVirtual int_ "GetSecond" [] Nothing
+  , NonVirtual int_ "GetYear"   [] Nothing
+  , NonVirtual int_ "GetMonth"  [] Nothing
+  , Virtual void_ "Set" [uint "tloc" ] (Just "setTDatime")
+  ]
+
 tDictionary :: Class
 tDictionary =
   AbstractClass {
@@ -557,7 +572,7 @@ core_classes =
   , tApplication, tArray, tArrayC, tArrayD, tArrayF, tArrayI, tArrayL, tArrayL64, tArrayS
   , tAtt3D, tAttAxis, tAttBBox, tAttBBox2D, tAttCanvas, tAttFill, tAttLine, tAttMarker, tAttPad, tAttText
   , tClass, tCollection
-  , tDictionary, tDirectory
+  , tDatime, tDictionary, tDirectory
   , tGlobal
   , tKey
   , tNamed
@@ -600,6 +615,7 @@ core_headers =
   , modImports "TAttText"       ["ROOT"] ["TAttText.h"]
   , modImports "TClass"         ["ROOT"] ["TClass.h"]
   , modImports "TCollection"    ["ROOT"] ["TCollection.h"]
+  , modImports "TDatime"        ["ROOT"] ["TDatime.h"]
   , modImports "TDictionary"    ["ROOT"] ["TDictionary.h"]
   , modImports "TDirectory"     ["ROOT"] ["TDirectory.h"]
   , modImports "TGlobal"        ["ROOT"] ["TGlobal.h"]
