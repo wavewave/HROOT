@@ -1,4 +1,7 @@
-packages: HROOT-core/
+packages:
+          ../HROOT-generate/
+optional-packages:
+          HROOT-core/
           HROOT-graf/
           HROOT-hist/
           HROOT-io/

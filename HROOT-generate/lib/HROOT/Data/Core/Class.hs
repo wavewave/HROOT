@@ -17,7 +17,8 @@ import FFICXX.Generate.Code.Primitive ( bool    , bool_
                                       , void_
                                       )
 import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) )
-import FFICXX.Generate.Type.Class     ( Class(..)
+import FFICXX.Generate.Type.Class     ( Arg(..)
+                                      , Class(..)
                                       , CTypes(CTShort,CTDouble,CTUShort)
                                       , Function(..)
                                       , IsConst(..)
@@ -132,10 +133,10 @@ rectangle_t =
     , class_alias      = Nothing
     , class_funcs      = []
     , class_vars       =
-      [ Variable (CT CTUShort NoConst) "fHeight"
-      , Variable (CT CTUShort NoConst) "fWidth"
-      , Variable (CT CTShort NoConst) "fX"
-      , Variable (CT CTShort NoConst) "fY"
+      [ Variable (Arg (CT CTUShort NoConst) "fHeight")
+      , Variable (Arg (CT CTUShort NoConst) "fWidth")
+      , Variable (Arg (CT CTShort NoConst) "fX")
+      , Variable (Arg (CT CTShort NoConst) "fY")
       ]
     , class_tmpl_funcs = []
     }
