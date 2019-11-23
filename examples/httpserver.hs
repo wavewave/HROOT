@@ -6,12 +6,11 @@ module Main where
 
 import Control.Concurrent    ( forkIO, threadDelay )
 import Control.Monad         ( forever, replicateM_, void, when )
+import Data.ByteString.Char8 ( ByteString )
 import Data.IORef            ( newIORef, readIORef, modifyIORef' )
 import Data.String           ( IsString(fromString) )
 import Foreign.C.Types       ( CBool, CDouble, CInt )
-import Foreign.C.String      ( CString, newCString )
 import Foreign.Marshal.Utils ( fromBool )
-import System.IO.Unsafe      ( unsafePerformIO )
 --
 import HROOT
 import STD.Deletable.Interface (delete)
@@ -32,9 +31,6 @@ kUseGeneralPurpose = 101
 kUseSmallest :: CInt
 kUseSmallest = 207
 
-instance IsString CString where
-  fromString s = unsafePerformIO $ newCString s
-
 histfill :: IO CDouble -> IO CDouble-> TH2F ->  IO ()
 histfill dist1 dist2 hist = do
   x <- dist1
@@ -49,9 +45,9 @@ main = do
 
   gsys <- gSystem
 
-  mfile <- newTMemFile ("job1.root"::CString) ("RECREATE"::CString) ("Demo ROOT file with histogram"::CString) kUseGeneralPurpose
+  mfile <- newTMemFile ("job1.root"::ByteString) ("RECREATE"::ByteString) ("Demo ROOT file with histogram"::ByteString) kUseGeneralPurpose
 
-  h2 <- newTH2F ("test"::CString) ("test"::CString) 100 (-5.0) 5.0 100 (-5.0) 5.0
+  h2 <- newTH2F ("test"::ByteString) ("test"::ByteString) 100 (-5.0) 5.0 100 (-5.0) 5.0
   void $ write_ mfile
   tRandom <- newTRandom 65535
 
@@ -64,7 +60,7 @@ main = do
                histfill dist1 dist2 h2
                go (n-1)
 
-  serv <- newTHttpServer ("http:8080?top=job1.root"::CString)
+  serv <- newTHttpServer ("http:8080?top=job1.root"::ByteString)
   tHttpServer_SetReadOnly serv (fromBool True::CBool)
 
   void $ forkIO $ replicateM_ 1000000 $ do

@@ -9,12 +9,9 @@ import Control.Monad         ( forever, replicateM_, when )
 import Data.ByteString.Char8 ( ByteString )
 import qualified Data.ByteString.Char8 as B
 import Data.IORef            ( newIORef, readIORef, modifyIORef' )
-import Data.String           ( IsString(fromString) )
 import Foreign.C.Types       ( CDouble, CInt )
-import Foreign.C.String      ( CString, newCString )
 import Foreign.Marshal.Alloc ( alloca )
 import Foreign.Storable      ( poke )
-import System.IO.Unsafe      ( unsafePerformIO )
 --
 import HROOT
 import STD.Deletable.Interface (delete)

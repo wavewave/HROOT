@@ -5,20 +5,14 @@
 module Main where
 
 import Control.Applicative
-import Data.String             ( IsString(fromString) )
-import Foreign.C.String        ( CString, newCString )
-import System.IO.Unsafe        ( unsafePerformIO )
+import Data.ByteString.Char8   ( ByteString )
 --
 import STD.Deletable.Interface ( delete )
 import HROOT
 
 
-
-instance IsString CString where
-  fromString s = unsafePerformIO $ newCString s
-
 main = do
-  tcanvas <- newTCanvas ("test"::CString) ("test"::CString) 640 480
+  tcanvas <- newTCanvas ("test"::ByteString) ("test"::ByteString) 640 480
 
   t0 <- newTDatime 2002 1 1 0 0 0
   x0 <- convert t0 0
@@ -31,16 +25,16 @@ main = do
   putStrLn $ show x1
   putStrLn $ show x2
 
-  h1 <- newTH1F ("test"::CString) ("test"::CString) 100 (fromIntegral x1) (fromIntegral x2)
+  h1 <- newTH1F ("test"::ByteString) ("test"::ByteString) 100 (fromIntegral x1) (fromIntegral x2)
 
   xaxis <- tH1_GetXaxis (upcastTH1 h1)
-  setTimeOffset xaxis (fromIntegral x0) ("local"::CString)
+  setTimeOffset xaxis (fromIntegral x0) ("local"::ByteString)
   setTimeDisplay xaxis 1
-  setTimeFormat xaxis ("%Y/%m/%d"::CString)
+  setTimeFormat xaxis ("%Y/%m/%d"::ByteString)
 
-  draw h1 (""::CString)
+  draw h1 (""::ByteString)
 
-  saveAs tcanvas ("datetime.pdf"::CString) (""::CString)
+  saveAs tcanvas ("datetime.pdf"::ByteString) (""::ByteString)
 
   delete h1
   delete tcanvas
