@@ -2,8 +2,8 @@
 , fficxxSrc ?
     pkgs.fetchgit {
       url = "git://github.com/wavewave/fficxx.git";
-      rev = "69a2eb906c2ef5c56ba2f79558ee83e91206bde4";
-      sha256 = "0dipx37gc4rfx48n7xn1fjmq8q9zh2cy4vs4ha7i8cgqzls88552";
+      rev = "b168d9580fe740ac7d8d9f0e0b545cec83706289";
+      sha256 = "1qh00jdw7snwk1n9n49606dir9r9b32ax94zqqsw088qh5wypw2w";
     }
 }:
 
