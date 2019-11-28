@@ -17,8 +17,9 @@ import FFICXX.Generate.Type.Class     ( Class(..)
                                       )
 import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       , ModuleUnitImports(..)
+                                      , modImports
                                       )
-import HROOT.Data.Core.Class          ( modImports, deletable, tNamed )
+import HROOT.Data.Core.Class          ( deletable, tNamed )
 import HROOT.Data.RooFit.Class        ( rooAbsData, rooAbsPdf, rooArgSet, rooPrintable
                                       , rooWorkspace
                                       )

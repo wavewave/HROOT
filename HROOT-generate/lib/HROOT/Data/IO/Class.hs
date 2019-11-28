@@ -11,9 +11,10 @@ import FFICXX.Generate.Type.Class     ( Class(..)
                                       )
 import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       , ModuleUnitImports(..)
+                                      , modImports
                                       )
 --
-import HROOT.Data.Core.Class          ( modImports, tDirectory )
+import HROOT.Data.Core.Class          ( tDirectory )
 
 
 iocabal :: Cabal

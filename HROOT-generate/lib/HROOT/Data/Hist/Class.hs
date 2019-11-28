@@ -21,9 +21,9 @@ import FFICXX.Generate.Type.Class     ( Class(..)
                                       )
 import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       , ModuleUnitImports(..)
+                                      , modImports
                                       )
-import HROOT.Data.Core.Class          ( modImports
-                                      , tArrayC, tArrayD, tArrayF, tArrayI, tArrayS
+import HROOT.Data.Core.Class          ( tArrayC, tArrayD, tArrayF, tArrayI, tArrayS
                                       , tAtt3D
                                       , tAttAxis
                                       , tAttFill

@@ -29,8 +29,8 @@ import FFICXX.Generate.Type.Class     ( Arg(..)
                                       )
 import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       , ModuleUnitImports(..)
+                                      , modImports
                                       )
-import FFICXX.Runtime.CodeGen.C       ( HeaderName(..), Namespace(..) )
 
 
 ------------------------
@@ -40,7 +40,7 @@ import FFICXX.Runtime.CodeGen.C       ( HeaderName(..), Namespace(..) )
 stdcxx_cabal :: Cabal
 stdcxx_cabal = Cabal {
     cabal_pkgname            = CabalName "stdcxx"
-  , cabal_version            = "0.5"
+  , cabal_version            = "0.6"
   , cabal_cheaderprefix      = "STD"
   , cabal_moduleprefix       = "STD"
   , cabal_additional_c_incs  = []
@@ -102,20 +102,6 @@ coreclass n ps fs =
     , class_vars       = []
     , class_tmpl_funcs = []
     }
-
-modImports ::
-     String
-  -> [String]
-  -> [HeaderName]
-  -> (ModuleUnit,ModuleUnitImports)
-modImports n ns hs =
-  ( MU_Class n
-  , ModuleUnitImports {
-      muimports_namespaces = map NS ns
-    , muimports_headers    = hs
-    }
-  )
-
 
 ----------------
 -- pod struct --

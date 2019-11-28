@@ -18,9 +18,9 @@ import FFICXX.Generate.Type.Class     ( Class(..)
                                       )
 import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       , ModuleUnitImports(..)
+                                      , modImports
                                       )
-import HROOT.Data.Core.Class          ( modImports
-                                      , deletable
+import HROOT.Data.Core.Class          ( deletable
                                       , tAtt3D, tAttBBox2D, tAttFill, tAttLine, tAttMarker, tAttText
                                       , tNamed
                                       , tObject

@@ -18,8 +18,9 @@ import FFICXX.Generate.Type.Class     ( Class(..)
                                       )
 import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       , ModuleUnitImports(..)
+                                      , modImports
                                       )
-import HROOT.Data.Core.Class          ( modImports, deletable, tNamed, tObject )
+import HROOT.Data.Core.Class          ( deletable, tNamed, tObject )
 import HROOT.Data.Hist.Class          ( tH1 )
 import HROOT.Data.Math.Class          ( tRandom )
 
