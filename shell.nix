@@ -1,10 +1,5 @@
 { pkgs ? import <nixpkgs> {}
-, fficxxSrc ?
-    pkgs.fetchgit {
-      url = "git://github.com/wavewave/fficxx.git";
-      rev = "b168d9580fe740ac7d8d9f0e0b545cec83706289";
-      sha256 = "1qh00jdw7snwk1n9n49606dir9r9b32ax94zqqsw088qh5wypw2w";
-    }
+, fficxxSrc ? (import ./nix/pinned.nix { inherit pkgs; }).fficxxSrc
 }:
 
 with pkgs;

@@ -452,6 +452,15 @@ tKey = coreclass "TKey" [tNamed]
                 , cppclass tDirectory "motherDir"] Nothing
   ]
 
+----------------
+-- starting M --
+----------------
+
+tMutex :: Class
+tMutex = coreclass "TMutex" [tVirtualMutex]
+  [ Constructor [ bool "recursive" ] Nothing
+  ]
+
 
 ----------------
 -- starting N --
@@ -554,6 +563,26 @@ tSystem =
 -- starting V --
 ----------------
 
+tVirtualMutex :: Class
+tVirtualMutex =
+  AbstractClass {
+      class_cabal      = corecabal
+    , class_name       = "TVirtualMutex"
+    , class_parents    = [deletable]
+    , class_protected  = Protected []
+    , class_alias      = Nothing
+    , class_funcs      =
+      [ Virtual    int_  "CleanUp" [] Nothing
+      , Virtual    self_ "Factory" [bool "recursive" ] Nothing
+      , Virtual    int_  "Lock"    [] Nothing
+      , Virtual    int_  "TryLock" [] Nothing
+      , Virtual    int_  "UnLock"  [] Nothing
+      ]
+    , class_vars       = []
+    , class_tmpl_funcs = []
+    }
+
+
 tVirtualPad :: Class
 tVirtualPad =
   coreclass "TVirtualPad" [tObject]
@@ -576,12 +605,13 @@ core_classes =
   , tDatime, tDictionary, tDirectory
   , tGlobal
   , tKey
+  , tMutex
   , tNamed
   , tObjArray, tObject
   , tQObject
   , tROOT
   , tSeqCollection, tStyle, tSystem
-  , tVirtualPad
+  , tVirtualMutex, tVirtualPad
   ]
 
 core_topfunctions :: [TopLevelFunction]
@@ -621,6 +651,7 @@ core_headers =
   , modImports "TDirectory"     ["ROOT"] ["TDirectory.h"]
   , modImports "TGlobal"        ["ROOT"] ["TGlobal.h"]
   , modImports "TKey"           ["ROOT"] ["TKey.h"]
+  , modImports "TMutex"         ["ROOT"] ["TMutex.h"]
   , modImports "TNamed"         ["ROOT"] ["TNamed.h"]
   , modImports "TObjArray"      ["ROOT"] ["TObjArray.h"]
   , modImports "TObject"        ["ROOT"] ["TObject.h"]
@@ -629,6 +660,7 @@ core_headers =
   , modImports "TSeqCollection" ["ROOT"] ["TSeqCollection.h"]
   , modImports "TStyle"         ["ROOT"] ["TStyle.h"]
   , modImports "TSystem"        ["ROOT"] ["TSystem.h"]
+  , modImports "TVirtualMutex"  ["ROOT"] ["TVirtualMutex.h"]
   , modImports "TVirtualPad"    ["ROOT"] ["TVirtualPad.h"]
   ]
 
