@@ -5,7 +5,7 @@
 module Main where
 
 import Control.Concurrent    ( forkIO, forkOn, threadDelay )
-import Control.Concurrent.MVar ( newEmptyMVar, takeMVar )
+-- import Control.Concurrent.MVar ( newMVar, putMVar, takeMVar )
 import Control.Monad         ( forever, replicateM_, void, when )
 import Data.ByteString.Char8 ( ByteString )
 import qualified Data.ByteString.Char8 as B
@@ -27,7 +27,9 @@ main = do
       B.useAsCString "" $ \cs -> do
         poke pargc (0::CInt)
         poke pargv cs
+        -- mutex <- newMVar ()
         mutex <- newTMutex (fromBool False)
+
         gsys <- gSystem
         tapp <- newTApplication ("test"::ByteString) pargc pargv
         tcanvas <- newTCanvas ("Test"::ByteString) ("Test"::ByteString) 640 480
@@ -56,16 +58,16 @@ main = do
 
         forkIO $ forever $ do
           threadDelay (1000000 `div` 60) -- every 1/60 sec
-          lock mutex
+          lock mutex   -- takeMVar mutex
           processEvents gsys
-          unLock mutex
+          unLock mutex -- putMVar mutex ()
 
         forkIO $ forever $ do
           threadDelay (1000000 `div` 60) -- every 1/60 sec
-          lock mutex
+          lock mutex   -- takeMVar mutex
           update tcanvas
           paint tcanvas (""::ByteString)
-          unLock mutex
+          unLock mutex -- putMVar mutex ()
 
         -- idling
         forever $ do
