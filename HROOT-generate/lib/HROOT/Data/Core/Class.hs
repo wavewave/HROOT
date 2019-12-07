@@ -101,6 +101,7 @@ coreclass n ps fs =
     , class_funcs      = fs
     , class_vars       = []
     , class_tmpl_funcs = []
+    , class_has_proxy  = False
     }
 
 ----------------
@@ -125,6 +126,7 @@ rectangle_t =
       , Variable (Arg (CT CTShort NoConst) "fY")
       ]
     , class_tmpl_funcs = []
+    , class_has_proxy  = False
     }
 
 

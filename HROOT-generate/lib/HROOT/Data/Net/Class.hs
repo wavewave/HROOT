@@ -46,6 +46,7 @@ netclass n ps fs =
     , class_funcs      = fs
     , class_vars       = []
     , class_tmpl_funcs = []
+    , class_has_proxy  = False
     }
 
 tHttpServer :: Class
