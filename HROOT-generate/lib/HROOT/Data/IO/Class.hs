@@ -7,7 +7,7 @@ import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) 
 import FFICXX.Generate.Type.Class     ( Class(..)
                                       , Function(..)
                                       , ProtectedMethod(..)
-                                      , TopLevelFunction(..)
+                                      , TopLevel(..)
                                       )
 import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       , ModuleUnitImports(..)
@@ -75,7 +75,7 @@ io_classes =
   , tMemFile
   ]
 
-io_topfunctions :: [TopLevelFunction]
+io_topfunctions :: [TopLevel]
 io_topfunctions = []
 
 io_headers :: [(ModuleUnit,ModuleUnitImports)]

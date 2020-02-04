@@ -13,7 +13,7 @@ import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) 
 import FFICXX.Generate.Type.Class     ( Class(..)
                                       , Function(..)
                                       , ProtectedMethod(..)
-                                      , TopLevelFunction(..)
+                                      , TopLevel(..)
                                       )
 import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       , ModuleUnitImports(..)
@@ -239,7 +239,7 @@ roostats_classes = [ testStatistic
                    , numEventsTestStat
                    ]
 
-roostats_topfunctions :: [TopLevelFunction]
+roostats_topfunctions :: [TopLevel]
 roostats_topfunctions = []
 
 

@@ -7,7 +7,7 @@ import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) 
 import FFICXX.Generate.Type.Class     ( Class(..)
                                       , Function(..)
                                       , ProtectedMethod(..)
-                                      , TopLevelFunction(..)
+                                      , TopLevel(..)
                                       )
 import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       , ModuleUnitImports(..)
@@ -60,7 +60,7 @@ net_classes :: [Class]
 net_classes =
   [ tHttpServer ]
 
-net_topfunctions :: [TopLevelFunction]
+net_topfunctions :: [TopLevel]
 net_topfunctions = []
 
 net_headers :: [(ModuleUnit,ModuleUnitImports)]

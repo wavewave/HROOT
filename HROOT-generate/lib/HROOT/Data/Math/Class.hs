@@ -7,7 +7,7 @@ import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) 
 import FFICXX.Generate.Type.Class     ( Class(..)
                                       , Function(..)
                                       , ProtectedMethod(..)
-                                      , TopLevelFunction(..)
+                                      , TopLevel(..)
                                       )
 import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       , ModuleUnitImports(..)
@@ -71,7 +71,7 @@ math_classes :: [Class]
 math_classes =
   [ tRandom {- , rootFitFitResult -} ]
 
-math_topfunctions :: [TopLevelFunction]
+math_topfunctions :: [TopLevel]
 math_topfunctions = []
 
 math_headers :: [(ModuleUnit,ModuleUnitImports)]

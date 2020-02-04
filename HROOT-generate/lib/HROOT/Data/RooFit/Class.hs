@@ -14,7 +14,7 @@ import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) 
 import FFICXX.Generate.Type.Class     ( Class(..)
                                       , Function(..)
                                       , ProtectedMethod(..)
-                                      , TopLevelFunction(..)
+                                      , TopLevel(..)
                                       )
 import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       , ModuleUnitImports(..)
@@ -261,8 +261,8 @@ roofit_classes = [ rooPrintable
                  , rooGenericPdf
                  ]
 
-roofit_topfunctions :: [TopLevelFunction]
-roofit_topfunctions = [ ]
+roofit_topfunctions :: [TopLevel]
+roofit_topfunctions = []
 
 roofit_headers :: [(ModuleUnit,ModuleUnitImports)]
 roofit_headers =

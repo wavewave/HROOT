@@ -14,7 +14,7 @@ import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) 
 import FFICXX.Generate.Type.Class     ( Class(..)
                                       , Function(..)
                                       , ProtectedMethod(..)
-                                      , TopLevelFunction(..)
+                                      , TopLevel(..)
                                       )
 import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       , ModuleUnitImports(..)
@@ -287,8 +287,8 @@ graf_classes =
   , tView, tView3D
   ]
 
-graf_topfunctions :: [TopLevelFunction]
-graf_topfunctions = [ ]
+graf_topfunctions :: [TopLevel]
+graf_topfunctions = []
 
 
 graf_headers :: [(ModuleUnit,ModuleUnitImports)]

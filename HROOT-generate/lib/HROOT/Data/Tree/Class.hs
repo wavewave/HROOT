@@ -12,7 +12,7 @@ import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) 
 import FFICXX.Generate.Type.Class     ( Class(..)
                                       , Function(..)
                                       , ProtectedMethod(..)
-                                      , TopLevelFunction(..)
+                                      , TopLevel(..)
                                       )
 import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       , ModuleUnitImports(..)
@@ -84,7 +84,7 @@ tree_classes =
   , tTree
   ]
 
-tree_topfunctions :: [TopLevelFunction]
+tree_topfunctions :: [TopLevel]
 tree_topfunctions =
   [
   ]

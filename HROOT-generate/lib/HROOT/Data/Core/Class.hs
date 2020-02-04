@@ -23,7 +23,7 @@ import FFICXX.Generate.Type.Class     ( Arg(..)
                                       , Function(..)
                                       , IsConst(..)
                                       , ProtectedMethod(..)
-                                      , TopLevelFunction(..)
+                                      , TopLevel(..)
                                       , Types(..)
                                       , Variable(..)
                                       )
@@ -602,7 +602,7 @@ core_classes =
   , tVirtualMutex, tVirtualPad
   ]
 
-core_topfunctions :: [TopLevelFunction]
+core_topfunctions :: [TopLevel]
 core_topfunctions =
   [ TopLevelFunction (cppclass_ tROOT)   "GetROOT" [] Nothing
   , TopLevelVariable (cppclass_ tROOT)   "gROOT" Nothing

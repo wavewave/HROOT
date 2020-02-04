@@ -17,7 +17,7 @@ import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) 
 import FFICXX.Generate.Type.Class     ( Class(..)
                                       , Function(..)
                                       , ProtectedMethod(..)
-                                      , TopLevelFunction(..)
+                                      , TopLevel(..)
                                       )
 import FFICXX.Generate.Type.Config    ( ModuleUnit(..)
                                       , ModuleUnitImports(..)
@@ -668,7 +668,7 @@ hist_classes =
   , tMultiGraph
   ]
 
-hist_topfunctions :: [TopLevelFunction]
+hist_topfunctions :: [TopLevel]
 hist_topfunctions = []
 
 hist_headers :: [(ModuleUnit,ModuleUnitImports)]
