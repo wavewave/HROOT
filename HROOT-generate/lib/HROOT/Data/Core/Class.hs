@@ -384,7 +384,7 @@ tColor :: Class
 tColor =
   coreclass "TColor" [tNamed]
   [ Constructor [] (Just "newTColor_")
-  , Constructor [float "r", float "g", float "b", float "a"]
+  , Constructor [float "r", float "g", float "b", float "a"] Nothing
   ]
 
 ----------------
