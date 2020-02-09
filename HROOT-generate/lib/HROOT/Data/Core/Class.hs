@@ -477,8 +477,9 @@ tObject :: Class
 tObject =
   coreclass "TObject" [deletable]
   [ Constructor [] Nothing
+  , Virtual void_ "Clear"  [cstring "option"] Nothing
   -- , Virtual int_ "DistancetoPrimitive" [int "px", int "py"]
-  , Virtual void_    "Draw"    [cstring "option"] Nothing
+  , Virtual void_ "Draw"   [cstring "option"] Nothing
   -- , Virtual void_ "ExecuteEvent" [int "event", int "px", int "py"]
   , Virtual (cppclass_ tObject) "FindObject" [cstring "name"] Nothing
   , Virtual  cstring_ "GetName" [] Nothing
