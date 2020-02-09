@@ -368,13 +368,24 @@ tAttText =
 ----------------
 
 tClass :: Class
-tClass = coreclass "TClass" [tDictionary]
-         [
-         ]
+tClass =
+  coreclass "TClass" [tDictionary]
+  [
+  ]
 
 tCollection :: Class
 tCollection =
-  coreclass "TCollection" [tObject] []
+  coreclass "TCollection" [tObject]
+  [
+  ]
+
+
+tColor :: Class
+tColor =
+  coreclass "TColor" [tNamed]
+  [ Constructor [] (Just "newTColor_")
+  , Constructor [float "r", float "g", float "b", float "a"]
+  ]
 
 ----------------
 -- starting D --
@@ -540,6 +551,7 @@ tStyle =
   , NonVirtual void_ "SetOptLogz" [int "logz"] Nothing
   , NonVirtual void_ "SetOptStat" [int "mode"] Nothing
   , NonVirtual void_ "SetOptTitle" [int "tit"] Nothing
+  , NonVirtual void_ "SetPalette" [int "ncolors"] Nothing
   ]
 
 tSystem :: Class
@@ -590,7 +602,7 @@ core_classes =
   [ rectangle_t
   , tApplication, tArray, tArrayC, tArrayD, tArrayF, tArrayI, tArrayL, tArrayL64, tArrayS
   , tAtt3D, tAttAxis, tAttBBox, tAttBBox2D, tAttCanvas, tAttFill, tAttLine, tAttMarker, tAttPad, tAttText
-  , tClass, tCollection
+  , tClass, tCollection, tColor
   , tDatime, tDictionary, tDirectory
   , tGlobal
   , tKey
@@ -635,6 +647,7 @@ core_headers =
   , modImports "TAttText"       ["ROOT"] ["TAttText.h"]
   , modImports "TClass"         ["ROOT"] ["TClass.h"]
   , modImports "TCollection"    ["ROOT"] ["TCollection.h"]
+  , modImports "TColor"         ["ROOT"] ["TColor.h"]
   , modImports "TDatime"        ["ROOT"] ["TDatime.h"]
   , modImports "TDictionary"    ["ROOT"] ["TDictionary.h"]
   , modImports "TDirectory"     ["ROOT"] ["TDirectory.h"]
