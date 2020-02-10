@@ -19,10 +19,15 @@ main = do
       poke pargv =<< newCString ""
       tapp <- newTApplication ("test"::ByteString) pargc pargv
       tcanvas <- newTCanvas ("Test"::ByteString) ("Test"::ByteString) 1024 768
+      range tcanvas 0 0 1024 1024
       arr <- tColor_GetPalette
       n <- tArray_GetSize (upcastTArray arr)
       for_ [0..n-1] $ \i -> do
         v <- getAt arr i
-        print v
+        print (floor v)
+        let c = fromIntegral (floor v)
+        m <- newTMarker (fromIntegral (i*5)) 512 20
+        setMarkerColor m c
+        draw m (""::ByteString)
       run tapp 1
 
