@@ -255,8 +255,8 @@ tView :: Class
 tView =
   grafclass "TView" [tObject, tAttLine]
   [ Constructor [] Nothing
-  , Virtual void_   "Fronte"         [] Nothing
-  , Virtual void_ "  FrontView"      [cppclass tVirtualPad "pad"] Nothing
+  , Virtual void_   "Front"          [] Nothing
+  , Virtual void_   "FrontView"      [cppclass tVirtualPad "pad"] Nothing
   , Virtual double_ "GetLatitude"    [] Nothing
   , Virtual double_ "GetLongitude"   [] Nothing
   , Virtual double_ "GetPsi"         [] Nothing
