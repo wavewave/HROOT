@@ -325,6 +325,8 @@ tGraph2D =
   , NonVirtual (cppclass_ tAxis) "GetYaxis" [] Nothing
   , NonVirtual (cppclass_ tAxis) "GetZaxis" [] Nothing
   , Virtual void_ "Set" [int "n"] (Just "SetN")
+  , NonVirtual void_ "SetMaximum" [ double "x" ] Nothing
+  , NonVirtual void_ "SetMinimum" [ double "x" ] Nothing
   , Virtual void_ "SetPoint" [int "i", double "x", double "y", double "z"] (Just "SetPointXYZ")
   ]
 
