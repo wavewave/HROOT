@@ -26,7 +26,7 @@ import HROOT.Data.Core.Class          ( deletable
                                       , tObject
                                       , tVirtualPad
                                       )
-import HROOT.Data.Hist.Class          ( tGraph, tGraphErrors )
+import HROOT.Data.Hist.Class          ( tGraph, tGraphErrors, tH1F )
 
 
 
@@ -207,6 +207,7 @@ tPad :: Class
 tPad =
   grafclass "TPad" [tVirtualPad]
   [ Constructor [cstring "name", cstring "title", double "xlow", double "ylow", double "xup", double "yup"] Nothing
+  , Virtual (cppclass_ tH1F) "DrawFrame" [double "xmin", double "ymin", double "xmax", double "ymax", cstring "title"] Nothing
   , Virtual (cppclass_ tView) "GetView" [] Nothing
   , Virtual void_ "SetView" [] (Just "SetView0")
   , Virtual void_ "SetView" [ cppclass tView "view" ] Nothing

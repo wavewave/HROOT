@@ -20,6 +20,7 @@ import FFICXX.Generate.Type.Cabal     ( BuildType(..), Cabal(..), CabalName(..) 
 import FFICXX.Generate.Type.Class     ( Arg(..)
                                       , Class(..)
                                       , CTypes(CTShort,CTDouble,CTUShort)
+                                      -- , CPPTypes(CPTClassRef)
                                       , Function(..)
                                       , IsConst(..)
                                       , ProtectedMethod(..)
@@ -385,6 +386,7 @@ tColor =
   coreclass "TColor" [tNamed]
   [ Constructor [] (Just "newTColor_")
   , Constructor [float "r", float "g", float "b", float "a"] Nothing
+  -- , Static (CPT (CPTClassRef tArrayI) Const) "GetPalette" [] Nothing
   ]
 
 ----------------
