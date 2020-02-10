@@ -321,6 +321,9 @@ tGraph2D =
   histclass "TGraph2D" [tNamed, tAttLine, tAttFill, tAttMarker] (Protected [])
   [ Constructor [] (Just "newTGraph2D_")
   , Constructor [int "n", doublep "x", doublep "y", doublep "z"] Nothing
+  , NonVirtual (cppclass_ tAxis) "GetXaxis" [] Nothing
+  , NonVirtual (cppclass_ tAxis) "GetYaxis" [] Nothing
+  , NonVirtual (cppclass_ tAxis) "GetZaxis" [] Nothing
   , Virtual void_ "Set" [int "n"] (Just "SetN")
   , Virtual void_ "SetPoint" [int "i", double "x", double "y", double "z"] (Just "SetPointXYZ")
   ]
