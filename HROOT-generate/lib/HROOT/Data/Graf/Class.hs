@@ -254,7 +254,10 @@ tTUBE =
 tView :: Class
 tView =
   grafclass "TView" [tObject, tAttLine]
-  [ Virtual double_ "GetLatitude"    [] Nothing
+  [ Constructor [] Nothing
+  , Virtual void_   "Fronte"         [] Nothing
+  , Virtual void_ "  FrontView"      [cppclass tVirtualPad "pad"] Nothing
+  , Virtual double_ "GetLatitude"    [] Nothing
   , Virtual double_ "GetLongitude"   [] Nothing
   , Virtual double_ "GetPsi"         [] Nothing
   , Virtual bool_   "IsViewChanged"  [] Nothing
@@ -264,6 +267,10 @@ tView =
   , Virtual void_   "SetPsi"         [double "psi"      ] Nothing
   , Virtual void_   "SetView"        [double "longitude", double "latitude", double "psi", intref "irep"] (Just "SetView1")
   , Virtual void_   "SetViewChanged" [bool "flag"] Nothing
+  , Virtual void_   "Side"           [] Nothing
+  , Virtual void_   "SideView"       [cppclass tVirtualPad "pad"] Nothing
+  , Virtual void_   "Top"            [] Nothing
+  , Virtual void_   "TopView" [cppclass tVirtualPad "pad"] Nothing
   ]
 
 
