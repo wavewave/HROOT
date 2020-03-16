@@ -260,8 +260,7 @@ tView =
   , class_protected = Protected []
   , class_alias = Nothing
   , class_funcs =
-      [ Constructor [] Nothing
-      , Virtual void_   "Front"          [] Nothing
+      [ Virtual void_   "Front"          [] Nothing
       , Virtual void_   "FrontView"      [cppclass tVirtualPad "pad"] Nothing
       , Virtual double_ "GetLatitude"    [] Nothing
       , Virtual double_ "GetLongitude"   [] Nothing
