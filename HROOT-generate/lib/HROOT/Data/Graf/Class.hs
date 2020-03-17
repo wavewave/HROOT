@@ -253,7 +253,7 @@ tTUBE =
 
 tView :: Class
 tView =
-  AbstractClass
+  Class
   { class_cabal = grafcabal
   , class_name  = "TView"
   , class_parents = [tObject, tAttLine]
@@ -279,6 +279,7 @@ tView =
       ]
   , class_vars = []
   , class_tmpl_funcs = []
+  , class_has_proxy = False
   }
 
 tView3D :: Class
