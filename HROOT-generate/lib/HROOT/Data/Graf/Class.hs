@@ -92,6 +92,12 @@ tAttImage =
 -- starting B --
 ----------------
 
+tBox :: Class
+tBox =
+  Class "TBox" [tObject, tAttLine, tAttFill]
+  [ Constructor [double "x1", double "y1", double "x2", double "y2"]
+  ]
+
 tBRIK :: Class
 tBRIK =
   grafclass "TBRIK" [tShape]
@@ -254,8 +260,7 @@ tTUBE =
 tView :: Class
 tView =
   grafclass "TView" [tObject, tAttLine]
-  [ Constructor [] Nothing
-  , Virtual void_   "Front"          [] Nothing
+  [ Virtual void_   "Front"          [] Nothing
   , Virtual void_   "FrontView"      [cppclass tVirtualPad "pad"] Nothing
   , Virtual double_ "GetLatitude"    [] Nothing
   , Virtual double_ "GetLongitude"   [] Nothing
@@ -283,7 +288,7 @@ tView3D =
 graf_classes :: [Class]
 graf_classes =
   [ tArc, tArrow, tAttImage
-  , tBRIK
+  , tBox, tBRIK
   , tCanvas, tCrown, tCutG
   , tEllipse
   , tGaxis, tGraphPolar, tGraphQQ
