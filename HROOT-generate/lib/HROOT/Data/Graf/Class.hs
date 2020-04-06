@@ -95,7 +95,7 @@ tAttImage =
 tBox :: Class
 tBox =
   grafclass "TBox" [tObject, tAttLine, tAttFill]
-  [ Constructor [double "x1", double "y1", double "x2", double "y2"]
+  [ Constructor [double "x1", double "y1", double "x2", double "y2"] Nothing
   ]
 
 tBRIK :: Class
