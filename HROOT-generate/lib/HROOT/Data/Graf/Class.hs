@@ -318,6 +318,7 @@ graf_headers =
   [ modImports "TArc"        ["ROOT"] ["TArc.h"]
   , modImports "TArrow"      ["ROOT"] ["TArrow.h"]
   , modImports "TAttImage"   ["ROOT"] ["TAttImage.h"]
+  , modImports "TBox"        ["ROOT"] ["TBox.h"]
   , modImports "TBRIK"       ["ROOT"] ["TBRIK.h"]
   , modImports "TCanvas"     ["ROOT"] ["TCanvas.h"]
   , modImports "TCrown"      ["ROOT"] ["TCrown.h"]
