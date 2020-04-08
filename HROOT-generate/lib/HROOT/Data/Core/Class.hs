@@ -588,7 +588,7 @@ tVirtualMutex =
 
 tVirtualPad :: Class
 tVirtualPad =
-  coreclass "TVirtualPad" [tObject]
+  coreclass "TVirtualPad" [tObject, tAttLine, tAttFill, tAttPad, tQObject]
   [ Virtual self_ "cd" [int "subpadnumber"] Nothing
   , Virtual void_ "Divide" [int "nx", int "ny", float "xmargin", float "ymargin", int "color" ] (Just "divide_tvirtualpad")
   , Virtual void_ "Modified" [bool "flag"] Nothing

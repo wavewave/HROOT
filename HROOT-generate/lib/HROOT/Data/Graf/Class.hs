@@ -124,7 +124,6 @@ tCrown =
   [ Constructor [double "x1", double "y1", double "radin", double "radout", double "phimin", double "phimax"] Nothing
   ]
 
-
 tCutG :: Class
 tCutG =
   grafclass "TCutG" [tGraph]
