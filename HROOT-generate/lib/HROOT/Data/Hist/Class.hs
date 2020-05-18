@@ -93,6 +93,7 @@ tAxis =
   , NonVirtual (cppclass_ tArrayD) "GetXbins" [] Nothing
   , NonVirtual double_ "GetXmax" [] Nothing
   , NonVirtual double_ "GetXmin" [] Nothing
+  , Virtual void_ "SetLimits" [ double "xmin", double "xmax" ] Nothing
   , Virtual void_ "SetTimeDisplay" [ int "value" ] Nothing
   , Virtual void_ "SetTimeFormat" [ cstring "format" ] Nothing
   , Virtual void_ "SetTimeOffset" [double "toffset", cstring "option"] Nothing
