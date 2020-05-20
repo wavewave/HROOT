@@ -348,8 +348,8 @@ tGraphErrors :: Class
 tGraphErrors =
   histclass "TGraphErrors" [tGraph] (Protected [])
   [ Constructor [int "n", doublep "x", doublep "y", doublep "ex", doublep "ey"] Nothing
+  , Virtual void_ "SetPointError" [int "i", double "ex", double "ey"] Nothing
   ]
-
 
 ----------------
 -- starting H --
