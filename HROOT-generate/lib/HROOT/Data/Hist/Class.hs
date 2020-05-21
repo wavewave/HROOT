@@ -336,6 +336,7 @@ tGraphAsymmErrors :: Class
 tGraphAsymmErrors =
   histclass "TGraphAsymmErrors" [tGraph] (Protected [])
   [ Constructor [int "n", doublep "x", doublep "y", doublep "exl", doublep "exh", doublep "eyl", doublep "eyh" ] Nothing
+  , Virtual void_ "SetPointError" [int "i", double "exl", double "exh", double "eyl", double "eyh"] (Just "SetPointErrorA")
   ]
 
 tGraphBentErrors :: Class
