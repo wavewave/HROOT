@@ -1,4 +1,14 @@
 rm -rf dist-newstyle
+rm -rf HROOT
+rm -rf HROOT-core
+rm -rf HROOT-graf
+rm -rf HROOT-hist
+rm -rf HROOT-io
+rm -rf HROOT-math
+rm -rf HROOT-net
+rm -rf HROOT-RooFit
+rm -rf HROOT-RooFit-RooStats
+rm -rf HROOT-tree
 cabal new-build HROOT-generate
 cabal new-run -- HROOT-generate ../HROOT-generate/template
 cabal new-build HROOT
