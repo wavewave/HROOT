@@ -1,4 +1,5 @@
 rm -rf dist-newstyle
+cabal new-build HROOT-generate
 cabal new-run -- HROOT-generate ../HROOT-generate/template
 cabal new-build HROOT
 cabal new-exec -- ghc random1d.hs

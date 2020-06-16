@@ -74,22 +74,14 @@ Library
                  unordered-containers
 
   Exposed-Modules:
-                   -- HROOT.Generate.MakePkg
-                   -- HROOT.Data.Core.Annotate
                    HROOT.Data.Core.Class
-                   -- HROOT.Data.Hist.Annotate
                    HROOT.Data.Hist.Class
-                   -- HROOT.Data.Graf.Annotate
                    HROOT.Data.Graf.Class
-                   -- HROOT.Data.Math.Annotate
                    HROOT.Data.Math.Class
                    HROOT.Data.Net.Class
-                   -- HROOT.Data.IO.Annotate
                    HROOT.Data.IO.Class
-                   -- HROOT.Data.RooFit.Annotate
                    HROOT.Data.RooFit.Class
                    HROOT.Data.RooFit.RooStats.Class
-                   -- HROOT.Data.Tree.Annotate
                    HROOT.Data.Tree.Class
   Other-Modules:
                    Paths_HROOT_generate
