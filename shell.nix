@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {}
+{ pkgs ? import ./nix/pinnedNixpkgs.nix {}
 , fficxxSrc ? (import ./nix/pinned.nix { inherit pkgs; }).fficxxSrc
 }:
 
