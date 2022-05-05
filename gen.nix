@@ -1,43 +1,27 @@
-{ pkgs, fficxxSrc }:
+{ pkgs }:
 
 with pkgs;
 
 let
 
-  newHaskellPackages0 = haskellPackages.override {
-    overrides = self: super: {
-      "fficxx-runtime" = self.callCabal2nix "fficxx-runtime" (fficxxSrc + "/fficxx-runtime") {};
-      "fficxx"         = self.callCabal2nix "fficxx"         (fficxxSrc + "/fficxx")         {};
-    };
-  };
+  # see these issues and discussions:
+  # - https://github.com/NixOS/nixpkgs/issues/16394
+  # - https://github.com/NixOS/nixpkgs/issues/25887
+  # - https://github.com/NixOS/nixpkgs/issues/26561
+  # - https://discourse.nixos.org/t/nix-haskell-development-2020/6170
+  newHaskellPackages = pkgs.haskellPackages.override (old: {
+    overrides = lib.composeExtensions (old.overrides or (_: _: { }))
+      (self: super: {
+        "HROOT-generate" =
+          self.callCabal2nix "HROOT-generate" ./HROOT-generate { };
+      });
+  });
 
-  stdcxxNix = import (fficxxSrc + "/stdcxx-gen/default.nix") {
-    inherit stdenv;
-    haskellPackages = newHaskellPackages0;
-  };
+  hsenv = newHaskellPackages.ghcWithPackages (p: with p; [ HROOT-generate ]);
 
-  newHaskellPackages = haskellPackages.override {
-    overrides = self: super: {
-      "fficxx-runtime" = self.callCabal2nix "fficxx-runtime" (fficxxSrc + "/fficxx-runtime") {};
-      "fficxx"         = self.callCabal2nix "fficxx"         (fficxxSrc + "/fficxx")         {};
-      "stdcxx"         = self.callPackage stdcxxNix {};
-
-      "HROOT-generate" = self.callCabal2nix "HROOT-generate" ./HROOT-generate { };
-    };
-  };
-
-  hsenv = newHaskellPackages.ghcWithPackages (p: with p; [
-    HROOT-generate
-  ]);
-
-in
-
-stdenv.mkDerivation {
+in stdenv.mkDerivation {
   name = "HROOT-src";
-  buildInputs = [
-    hsenv
-    root
-  ];
+  buildInputs = [ hsenv root ];
   src = ./.;
   buildPhase = ''
     HROOT-generate

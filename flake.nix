@@ -15,10 +15,7 @@
       };
 
       finalHaskellOverlay = self: super:
-        (import ./default.nix {
-          inherit pkgs;
-          fficxxSrc = fficxx;
-        } self super);
+        (import ./default.nix { inherit pkgs; } self super);
 
       newHaskellPackages = pkgs.haskellPackages.extend finalHaskellOverlay;
 
