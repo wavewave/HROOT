@@ -1,0 +1,49 @@
+{
+  "nodes": {
+    "fficxx": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1651690367,
+        "narHash": "sha256-BdNHDse/RnTU6zLsNVrrqGvOX9ZN/X+vn+SKv6Xq1fQ=",
+        "owner": "wavewave",
+        "repo": "fficxx",
+        "rev": "388966e43f10a1f7370f61d1ab12a818804adede",
+        "type": "github"
+      },
+      "original": {
+        "owner": "wavewave",
+        "ref": "0.6",
+        "repo": "fficxx",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1620055814,
+        "narHash": "sha256-8LEHoYSJiL901bTMVatq+rf8y7QtWuZhwwpKE2fyaRY=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "1db42b7fe3878f3f5f7a4f2dc210772fd080e205",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-20.03",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "fficxx": "fficxx",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
