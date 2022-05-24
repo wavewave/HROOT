@@ -165,8 +165,8 @@ makeUmbrellaCabal =
               , ("csrcFiles", "")
               , ("includeFiles", "")
               , ("cppFiles", "")
-              , ("exposedModules", unlinesWithIndent $ map T.pack $ genExposedModules pkg_summarymodule ([],[]))
-              , ("otherModules"  , unlinesWithIndent $ map T.pack $ genOtherModules [])
+              , ("exposedModules", cabalIndentation <> "HROOT")
+              , ("otherModules"  , "")
               , ("extralibdirs",  "" )  -- this need to be changed
               , ("extraincludedirs", "" )  -- this need to be changed
               , ("extraLibraries", "")
