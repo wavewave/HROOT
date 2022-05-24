@@ -1,0 +1,17 @@
+
+packages:
+          /home/wavewave/repo/src/fficxx/fficxx/fficxx.cabal
+          /home/wavewave/repo/src/fficxx/fficxx-runtime/fficxx-runtime.cabal
+optional-packages:
+          stdcxx/
+          ../HROOT-generate/        
+          HROOT-core/
+          HROOT-graf/
+          HROOT-hist/
+          HROOT-io/
+	  HROOT-math/
+	  HROOT-net/
+	  HROOT-tree/
+	  HROOT-RooFit/
+	  HROOT-RooFit-RooStats/
+          HROOT/

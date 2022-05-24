@@ -3,7 +3,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-20.03";
     fficxx = {
-      url = "github:wavewave/fficxx/0.6";
+      url = "/home/wavewave/repo/src/fficxx"; # "github:wavewave/fficxx/0.6";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -38,13 +38,20 @@
         });
       };
 
-      devShell.x86_64-linux = with pkgs;
-        let
-          hsenv = haskellPackages.ghcWithPackages
+      devShells.x86_64-linux = {
+        "default" = let
+          hsenv = pkgs.haskellPackages.ghcWithPackages
             (p: [ p.cabal-install p.fficxx p.fficxx-runtime p.stdcxx ]);
-        in mkShell {
-          buildInputs = [ hsenv root ];
+        in pkgs.mkShell {
+          buildInputs = [ hsenv pkgs.root ];
           shellHook = "";
         };
+        "codevelop" = pkgs.haskellPackages.shellFor {
+          packages = ps: [ ps.fficxx ps.fficxx-runtime ];
+          buildInputs = [ pkgs.cabal-install pkgs.root ];
+          withHoogle = false;
+        };
+
+      };
     };
 }
