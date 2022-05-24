@@ -1,4 +1,6 @@
-rm -rf dist-newstyle
+
+# delete only generated
+rm -rf stdcxx
 rm -rf HROOT
 rm -rf HROOT-core
 rm -rf HROOT-graf
@@ -9,12 +11,11 @@ rm -rf HROOT-net
 rm -rf HROOT-RooFit
 rm -rf HROOT-RooFit-RooStats
 rm -rf HROOT-tree
-cabal new-build HROOT-generate
-cabal new-run -- HROOT-generate ../HROOT-generate/template
-cabal new-build HROOT
-cabal new-exec -- ghc random1d.hs
-cabal new-exec -- ghc random2dApp.hs
-cabal new-exec -- ghc graph2d.hs
-cabal new-exec -- ghc httpserver.hs
-cabal new-exec -- ghc datetime.hs
-cabal new-exec -- ghc -threaded random2dApp_multithread.hs
+
+cabal v2-build fficxx
+cabal v2-exec runhaskell ../../fficxx/stdcxx-gen/Gen.hs
+cabal v2-build stdcxx
+cabal v2-build HROOT-generate
+cabal v2-run -- HROOT-generate ../HROOT-generate/template
+cabal v2-build HROOT
+

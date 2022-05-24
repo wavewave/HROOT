@@ -1,6 +1,9 @@
-packages:
-          ../HROOT-generate/
+
 optional-packages:
+          ../fficxx/fficxx/fficxx.cabal
+          ../fficxx/fficxx-runtime/fficxx-runtime.cabal
+          stdcxx/
+          ../HROOT-generate/        
           HROOT-core/
           HROOT-graf/
           HROOT-hist/
