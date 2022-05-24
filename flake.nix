@@ -3,7 +3,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-20.03";
     fficxx = {
-      url = "/home/wavewave/repo/src/fficxx"; # "github:wavewave/fficxx/0.6";
+      url = "github:wavewave/fficxx/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

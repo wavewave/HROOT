@@ -7,14 +7,18 @@
         ]
       },
       "locked": {
-        "lastModified": 1653396291,
-        "narHash": "sha256-V7Bm2cnUyIRn9Db68AMdJBgJdkFHaHJWjPxVyM77eTE=",
-        "type": "git",
-        "url": "file:///home/wavewave/repo/src/fficxx"
+        "lastModified": 1653402109,
+        "narHash": "sha256-hZcDrRB4/sKhvc612oGMhDTxjLbTv57/ft7NXpOzoVw=",
+        "owner": "wavewave",
+        "repo": "fficxx",
+        "rev": "5062119a2cf6b5a7afb75703f85396928c9a3042",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/wavewave/repo/src/fficxx"
+        "owner": "wavewave",
+        "ref": "master",
+        "repo": "fficxx",
+        "type": "github"
       }
     },
     "nixpkgs": {
