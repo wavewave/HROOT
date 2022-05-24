@@ -25,7 +25,7 @@ import FFICXX.Generate.Type.Class     ( Arg(..)
                                       , IsConst(..)
                                       , ProtectedMethod(..)
                                       , TopLevel(..)
-                                      -- , TLOrdinary(..)
+                                      , TLOrdinary(..)
                                       , Types(..)
                                       , Variable(..)
                                       )
@@ -618,13 +618,12 @@ core_classes =
   , tVirtualMutex, tVirtualPad
   ]
 
--- TLOrdinary later
 core_topfunctions :: [TopLevel]
 core_topfunctions =
-  [ TopLevelFunction (cppclass_ tROOT)   "GetROOT" [] Nothing
-  , TopLevelVariable (cppclass_ tROOT)   "gROOT" Nothing
-  , TopLevelVariable (cppclass_ tSystem) "gSystem" Nothing
-  , TopLevelVariable (cppclass_ tStyle)  "gStyle" Nothing
+  [ TLOrdinary (TopLevelFunction (cppclass_ tROOT)   "GetROOT" [] Nothing)
+  , TLOrdinary (TopLevelVariable (cppclass_ tROOT)   "gROOT" Nothing)
+  , TLOrdinary (TopLevelVariable (cppclass_ tSystem) "gSystem" Nothing)
+  , TLOrdinary (TopLevelVariable (cppclass_ tStyle)  "gStyle" Nothing)
   ]
 
 core_headers :: [(ModuleUnit,ModuleUnitImports)]
