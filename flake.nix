@@ -1,7 +1,7 @@
 {
   description = "HROOT";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-20.03";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-21.11";
     fficxx = {
       url = "github:wavewave/fficxx/master";
       inputs.nixpkgs.follows = "nixpkgs";
