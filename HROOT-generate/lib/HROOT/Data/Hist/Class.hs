@@ -363,7 +363,7 @@ tH1 =
   [ Virtual void_ "Add" [cppclass tH1 "h1", double "c1"] Nothing
   , Virtual void_ "AddBinContent" [int "bin", double "w"] Nothing
   , Virtual double_ "Chi2Test" [cppclass tH1 "h2", cstring "option", doublep "res"] Nothing
-  , Virtual double_ "ComputeIntegral" [] Nothing
+  -- , Virtual double_ "ComputeIntegral" [] Nothing
   , Virtual void_ "DirectoryAutoAdd" [cppclass tDirectory "dir"] Nothing
 
   , Virtual void_ "Divide" [cppclass tH1 "h1", cppclass tH1 "h2", double "c1", double "c2", cstring "option"] Nothing
@@ -456,10 +456,10 @@ tH1 =
   , NonVirtual (cppclass_ tAxis) "GetXaxis" [] Nothing
   , NonVirtual (cppclass_ tAxis) "GetYaxis" [] Nothing
   , NonVirtual (cppclass_ tAxis) "GetZaxis" [] Nothing
-  , Virtual double_ "Integral" [int "binx1", int "binx2", cstring "option"] (Just "integral1")
+  -- , Virtual double_ "Integral" [int "binx1", int "binx2", cstring "option"] (Just "integral1")
   -- IntegralAndError
-  , Virtual double_ "Interpolate" [double "x"] (Just "interpolate1")
-  , Virtual double_ "Interpolate" [double "x", double "y"] (Just "interpolate2")
+  -- , Virtual double_ "Interpolate" [double "x"] (Just "interpolate1")
+  -- , Virtual double_ "Interpolate" [double "x", double "y"] (Just "interpolate2")
   , Virtual double_ "Interpolate" [double "x", double "y", double "z"] (Just "interpolate3")
   , NonVirtual bool_ "IsBinOverflow" [int "bin"] Nothing
   , NonVirtual bool_ "IsBinUnderflow" [int "bin"] Nothing
