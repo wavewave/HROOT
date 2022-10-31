@@ -30,7 +30,10 @@
           pkgs.root;
 
         haskellOverlay = final: self: super:
-          (import ./default.nix { pkgs = final; } self super);
+          (import ./default.nix {
+            pkgs = final;
+            inherit root;
+          } self super);
 
         hpkgsFor = compiler:
           pkgs.haskell.packages.${compiler}.extend (hself: hsuper:
@@ -45,13 +48,24 @@
 
         mkShellFor = compiler:
           let
-            hsenv = (hpkgsFor compiler).ghcWithPackages
-              (p: [ p.cabal-install p.fficxx p.fficxx-runtime p.stdcxx ]);
-          in pkgs.mkShell {
-            buildInputs = [ hsenv root pkgs.nixfmt ];
-            shellHook = "";
+            hsenv = withHROOT:
+              (hpkgsFor compiler).ghcWithPackages (p:
+                [ p.cabal-install p.fficxx p.fficxx-runtime p.stdcxx ]
+                ++ (pkgs.lib.optional withHROOT p.HROOT));
+          in {
+            env = pkgs.mkShell {
+              buildInputs = [ (hsenv true) root pkgs.nixfmt ];
+              shellHook = ''
+                export MACOSX_DEPLOYMENT_TARGET="10.16"
+              '';
+            };
+            dev = pkgs.mkShell {
+              buildInputs = [ (hsenv false) root pkgs.nixfmt ];
+              shellHook = ''
+                export MACOSX_DEPLOYMENT_TARGET="10.16"
+              '';
+            };
           };
-
         supportedCompilers = [ "ghc902" "ghc924" "ghc942" ];
       in {
         packages =
@@ -59,5 +73,6 @@
 
         devShells =
           pkgs.lib.genAttrs supportedCompilers (compiler: mkShellFor compiler);
+
       });
 }
