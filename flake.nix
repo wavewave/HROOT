@@ -1,7 +1,7 @@
 {
   description = "HROOT";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/master";
     flake-utils.url = "github:numtide/flake-utils";
     fficxx = {
       url = "github:wavewave/fficxx/master";
@@ -52,19 +52,18 @@
               (hpkgsFor compiler).ghcWithPackages (p:
                 [ p.cabal-install p.fficxx p.fficxx-runtime p.stdcxx ]
                 ++ (pkgs.lib.optional withHROOT p.HROOT));
+            shBuildInputs = withHROOT: [ (hsenv withHROOT) root pkgs.nixfmt ];
+            mkShell = withHROOT:
+              pkgs.mkShell {
+                buildInputs = shBuildInputs withHROOT;
+                shellHook = if system == "aarch64-darwin" then
+                  ''export MACOSX_DEPLOYMENT_TARGET="10.16"''
+                else
+                  null;
+              };
           in {
-            env = pkgs.mkShell {
-              buildInputs = [ (hsenv true) root pkgs.nixfmt ];
-              shellHook = ''
-                export MACOSX_DEPLOYMENT_TARGET="10.16"
-              '';
-            };
-            dev = pkgs.mkShell {
-              buildInputs = [ (hsenv false) root pkgs.nixfmt ];
-              shellHook = ''
-                export MACOSX_DEPLOYMENT_TARGET="10.16"
-              '';
-            };
+            env = mkShell true;
+            dev = mkShell false;
           };
         supportedCompilers = [ "ghc902" "ghc924" "ghc942" ];
       in {

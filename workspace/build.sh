@@ -12,10 +12,10 @@ rm -rf HROOT-RooFit
 rm -rf HROOT-RooFit-RooStats
 rm -rf HROOT-tree
 
-cabal v2-build fficxx
-cabal v2-exec runhaskell ../../fficxx/stdcxx-gen/Gen.hs
-cabal v2-build stdcxx
-cabal v2-build HROOT-generate
-cabal v2-run -- HROOT-generate ../HROOT-generate/template
-cabal v2-build HROOT
+cabal build fficxx
+cabal exec runhaskell ../../fficxx/stdcxx-gen/Gen.hs
+cabal build stdcxx
+cabal build HROOT-generate
+cabal run -- HROOT-generate ../HROOT-generate/template
+cabal build HROOT
 
