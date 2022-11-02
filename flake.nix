@@ -50,9 +50,9 @@
           let
             hsenv = withHROOT:
               (hpkgsFor compiler).ghcWithPackages (p:
-                [ p.cabal-install p.fficxx p.fficxx-runtime p.stdcxx ]
+                [ p.cabal-install p.fficxx p.fficxx-runtime p.stdcxx p.dotgen ]
                 ++ (pkgs.lib.optional withHROOT p.HROOT));
-            shBuildInputs = withHROOT: [ (hsenv withHROOT) root pkgs.nixfmt ];
+            shBuildInputs = withHROOT: [ (hsenv withHROOT) root pkgs.nixfmt pkgs.graphviz ];
             mkShell = withHROOT:
               pkgs.mkShell {
                 buildInputs = shBuildInputs withHROOT;

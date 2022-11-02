@@ -1,4 +1,3 @@
-
 optional-packages:
           ../fficxx/fficxx/fficxx.cabal
           ../fficxx/fficxx-runtime/fficxx-runtime.cabal
@@ -8,9 +7,9 @@ optional-packages:
           HROOT-graf/
           HROOT-hist/
           HROOT-io/
-	  HROOT-math/
-	  HROOT-net/
-	  HROOT-tree/
-	  HROOT-RooFit/
-	  HROOT-RooFit-RooStats/
+          HROOT-math/
+          HROOT-net/
+          HROOT-tree/
+          HROOT-RooFit/
+          HROOT-RooFit-RooStats/
           HROOT/
