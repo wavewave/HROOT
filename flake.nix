@@ -16,19 +16,6 @@
           config.allowBroken = true;
         };
 
-        #root = if system == "aarch64-darwin" then
-        #  (pkgs.root.override { tbb = null; }).overrideAttrs (old: rec {
-        #    cmakeFlags = [ "-Dbuiltin_tbb=OFF" ]
-        #      ++ (builtins.map (x: if (x == "-Dimt=ON") then "-Dimt=OFF" else x)
-        #        old.cmakeFlags);
-        #    preBuild = ''
-        #      export MACOSX_DEPLOYMENT_TARGET="10.16"
-        #      echo "PRE BUILD HOOK IS CALLED"
-        #    '';
-        #  })
-        #else
-        #  pkgs.root;
-
         haskellOverlay = final: self: super:
           (import ./default.nix {
             pkgs = final;
@@ -63,8 +50,8 @@
             mkShell = withHROOT:
               pkgs.mkShell {
                 buildInputs = shBuildInputs withHROOT;
-                shellHook = if system == "aarch64-darwin" then
-                  ''export MACOSX_DEPLOYMENT_TARGET="10.16"''
+                shellHook = if system == "aarch64-darwin" || system == "x86_64-darwin" then
+                   ''export MACOSX_DEPLOYMENT_TARGET="10.16"''
                 else
                   null;
               };
