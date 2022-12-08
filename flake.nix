@@ -1,7 +1,7 @@
 {
   description = "HROOT";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/master";
     flake-utils.url = "github:numtide/flake-utils";
     fficxx = {
       url = "github:wavewave/fficxx/master";
@@ -12,49 +12,60 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
-          overlays = [ fficxx.overlay.${system} ];
           inherit system;
+          config.allowBroken = true;
         };
 
-        finalHaskellOverlay = self: super:
-          (import ./default.nix { inherit pkgs; } self super);
+        haskellOverlay = final: self: super:
+          (import ./default.nix {
+            pkgs = final;
+            inherit (final) root;
+          } self super);
 
-        newHaskellPackages = pkgs.haskellPackages.extend finalHaskellOverlay;
+        hpkgsFor = compiler:
+          pkgs.haskell.packages.${compiler}.extend (hself: hsuper:
+            (fficxx.haskellOverlay.${system} pkgs hself hsuper
+              // haskellOverlay pkgs hself hsuper));
 
-      in {
-        packages = {
-          inherit (newHaskellPackages)
+        mkPackages = compiler: {
+          inherit (hpkgsFor compiler)
             HROOT HROOT-core HROOT-graf HROOT-hist HROOT-io HROOT-math HROOT-net
             HROOT-tree HROOT-RooFit HROOT-RooFit-RooStats;
         };
 
-        # see these issues and discussions:
-        # - https://github.com/NixOS/nixpkgs/issues/16394
-        # - https://github.com/NixOS/nixpkgs/issues/25887
-        # - https://github.com/NixOS/nixpkgs/issues/26561
-        # - https://discourse.nixos.org/t/nix-haskell-development-2020/6170
-        overlay = final: prev: {
-          haskellPackages = prev.haskellPackages.override (old: {
-            overrides = final.lib.composeExtensions (old.overrides or (_: _: { }))
-              finalHaskellOverlay;
-          });
-        };
-
-        devShells = {
-          "default" = let
-            hsenv = pkgs.haskellPackages.ghcWithPackages
-              (p: [ p.cabal-install p.fficxx p.fficxx-runtime p.stdcxx ]);
-          in pkgs.mkShell {
-            buildInputs = [ hsenv pkgs.root ];
-            shellHook = "";
+        mkShellFor = compiler:
+          let
+            hsenv = withHROOT:
+              (hpkgsFor compiler).ghcWithPackages (p:
+                [ p.fficxx p.fficxx-runtime p.stdcxx p.dotgen ]
+                ++ (pkgs.lib.optional withHROOT p.HROOT));
+            shBuildInputs = withHROOT: [
+              (hsenv withHROOT)
+              pkgs.cabal-install
+              pkgs.root
+              pkgs.nixfmt
+              pkgs.graphviz
+              pkgs.ormolu              
+            ];
+            mkShell = withHROOT:
+              pkgs.mkShell {
+                buildInputs = shBuildInputs withHROOT;
+                shellHook = if system == "aarch64-darwin" || system == "x86_64-darwin" then
+                   ''export MACOSX_DEPLOYMENT_TARGET="10.16"''
+                else
+                  null;
+              };
+          in {
+            env = mkShell true;
+            dev = mkShell false;
           };
-          "codevelop" = pkgs.haskellPackages.shellFor {
-            packages = ps: [ ps.fficxx ps.fficxx-runtime ];
-            buildInputs = [ pkgs.cabal-install pkgs.root ];
-            withHoogle = false;
-          };
+        supportedCompilers = [ "ghc902" "ghc924" "ghc942" ];
+      in {
+        packages =
+          pkgs.lib.genAttrs supportedCompilers (compiler: hpkgsFor compiler);
 
-        };
-      }
-  );
+        devShells =
+          pkgs.lib.genAttrs supportedCompilers (compiler: mkShellFor compiler);
+
+      });
 }

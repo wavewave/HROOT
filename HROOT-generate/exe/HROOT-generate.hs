@@ -7,12 +7,15 @@ module Main where
 
 import Control.Applicative ()
 import Control.Monad (liftM3)
+import Data.Array (listArray)
 import Data.Data (Data)
+import Data.Function (on)
 import qualified Data.HashMap.Strict as HM
-import Data.List (intercalate)
+import qualified Data.List as L
 import Data.Monoid (mempty)
 import Data.Text (Text)
 import qualified Data.Text as T
+import Data.Tree (drawForest)
 import Data.Typeable (Typeable)
 --
 import FFICXX.Generate.Builder (copyFileWithMD5Check, simpleBuilder)
@@ -27,13 +30,9 @@ import FFICXX.Generate.Config
   ( FFICXXConfig (..),
     SimpleBuilderConfig (..),
   )
-import FFICXX.Generate.ContentMaker ()
-import FFICXX.Generate.Dependency ()
+import FFICXX.Generate.Dependency.Graph (constructDepGraph)
 import FFICXX.Generate.Type.Cabal (CabalName (..))
-import FFICXX.Generate.Type.Class ()
 import FFICXX.Generate.Type.Config (ModuleUnitMap (..))
-import FFICXX.Generate.Type.Module ()
-import FFICXX.Generate.Type.PackageInterface ()
 import FFICXX.Generate.Util
   ( conn,
     connRet,
@@ -42,7 +41,7 @@ import FFICXX.Generate.Util
     intercalateWith,
     subst,
   )
---
+import FFICXX.Generate.Util.DepGraph (drawDepGraph)
 import HROOT.Data.Core.Class
   ( core_classes,
     core_extraDep,
@@ -115,12 +114,46 @@ import HROOT.Data.Tree.Class
     tree_topfunctions,
     treecabal,
   )
+import qualified Options.Applicative as OA
 import qualified Paths_HROOT_generate as H
-import System.Console.CmdArgs (cmdArgs, modes)
 import System.Directory (createDirectoryIfMissing, getCurrentDirectory)
 import System.Environment (getArgs)
 import System.FilePath ((<.>), (</>))
-import System.IO (IOMode (..), hPutStrLn, withFile)
+import System.IO (IOMode (..), hPutStrLn, stdout, withFile)
+
+--
+-- Command line arguments
+--
+
+data CLIMode
+  = Gen (Maybe FilePath)
+  | DepGraph (Maybe FilePath)
+
+genMode :: OA.Mod OA.CommandFields CLIMode
+genMode =
+  OA.command "gen" $
+    OA.info
+      ( Gen
+          <$> OA.optional
+            (OA.strOption (OA.long "template" <> OA.short 't' <> OA.help "template directory"))
+      )
+      (OA.progDesc "Generate source code")
+
+depGraphMode :: OA.Mod OA.CommandFields CLIMode
+depGraphMode =
+  OA.command "depgraph" $
+    OA.info
+      ( DepGraph
+          <$> OA.optional
+            (OA.strOption (OA.long "dotfile" <> OA.short 'f' <> OA.help "output dot file"))
+      )
+      (OA.progDesc "Generate dependency graph")
+
+optsParser :: OA.ParserInfo CLIMode
+optsParser =
+  OA.info
+    (OA.subparser (genMode <> depGraphMode) OA.<**> OA.helper)
+    OA.fullDesc
 
 ---------------------------------
 -- for umbrella package
@@ -156,7 +189,7 @@ makeUmbrellaCabal =
       setupdeps = [CabalName "Cabal", CabalName "base", CabalName "process"]
       deps
         | null pkg_deps = ""
-        | otherwise = "base, " ++ intercalate ", " pkg_deps
+        | otherwise = "base, " ++ L.intercalate ", " pkg_deps
       str =
         subst cabalTemplate . contextT $
           [ ("pkgname", pkgname),
@@ -172,7 +205,7 @@ makeUmbrellaCabal =
             ("sourcerepository", ""),
             ( "buildtype",
               "Build-Type: Custom\ncustom-setup\n  setup-depends: "
-                <> T.pack (intercalate ", " (map unCabalName setupdeps))
+                <> T.pack (L.intercalate ", " (map unCabalName setupdeps))
                 <> "\n"
             ),
             ("cxxOptions", "-std=c++17"),
@@ -235,15 +268,10 @@ makeUmbrellaPackage config mods = do
   copyFileWithMD5Check (workingDir </> cabalFileName) (installDir </> cabalFileName)
   copyFileWithMD5Check (workingDir </> pkg_summarymodule <.> "hs") (installDir </> "src" </> pkg_summarymodule <.> "hs")
 
-main :: IO ()
-main = do
-  args <- getArgs
+gen :: FilePath -> IO ()
+gen tmpldir = do
+  -- args <- getArgs
   cwd <- getCurrentDirectory
-  tmpldir <-
-    if length args == 1
-      then pure (args !! 0)
-      else H.getDataDir >>= pure . (</> "template")
-
   let mkcfg name =
         FFICXXConfig
           { fficxxconfig_workingDir = cwd </> "tmp" </> name </> "working",
@@ -389,3 +417,29 @@ main = do
       "HROOT.Net",
       "HROOT.Tree"
     ]
+
+main :: IO ()
+main = do
+  mode <- OA.execParser optsParser
+  case mode of
+    Gen mtmplDir -> do
+      tmplDir <-
+        case mtmplDir of
+          Nothing -> H.getDataDir >>= pure . (</> "template")
+          Just tdir -> pure tdir
+      gen tmplDir
+    DepGraph mdotFile -> do
+      let allclasses = fmap Right core_classes
+          drawAction h = do
+            hPutStrLn h $
+              drawDepGraph allclasses core_topfunctions
+      {-
+        let (syms, m) = constructDepGraph allclasses toplevelfunctions
+            n = length syms
+            bounds = (0, n - 1)
+            gr = listArray bounds $ fmap (\i -> fromMaybe [] (L.lookup i m)) [0..n-1]
+        putStrLn $ drawForest (fmap (fmap show) (G.scc gr))
+      -}
+      case mdotFile of
+        Nothing -> drawAction stdout
+        Just dotFile -> withFile dotFile WriteMode drawAction

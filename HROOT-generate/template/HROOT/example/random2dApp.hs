@@ -3,48 +3,46 @@
 module Main where
 
 import Control.Monad
-import Data.ByteString.Char8 (ByteString,useAsCString)
+import Data.ByteString.Char8 (ByteString, useAsCString)
 import Foreign.C.String
 import Foreign.C.Types
 import Foreign.Marshal.Alloc (alloca)
 import Foreign.Marshal.Array (withArray)
 import Foreign.Storable
-
 import HROOT
 
-main :: IO () 
+main :: IO ()
 main = do
-  ys <- mapM (\x->useAsCString x return) ["test"]
+  ys <- mapM (\x -> useAsCString x return) ["test"]
   withArray ys $ \pargv -> do
     alloca $ \pargc -> do
-      poke pargc 0      
+      poke pargc 0
 
       tapp <- newTApplication ("test" :: ByteString) pargc pargv
       tcanvas <- newTCanvas ("Test" :: ByteString) ("Test" :: ByteString) 640 480
-      h2 <- newTH2F ("test" :: ByteString) ("test" :: ByteString) 100 (-5.0) 5.0 100 (-5.0) 5.0 
+      h2 <- newTH2F ("test" :: ByteString) ("test" :: ByteString) 100 (-5.0) 5.0 100 (-5.0) 5.0
       trandom <- newTRandom 65535
 
-      let dist1 = gaus trandom 0 2 
-          dist2 = gaus trandom 0 2 
+      let dist1 = gaus trandom 0 2
+          dist2 = gaus trandom 0 2
 
-      let go n | n < 0 = return () 
-               | otherwise = do 
-                   histfill dist1 dist2 h2
-                   go (n-1) 
+      let go n
+            | n < 0 = return ()
+            | otherwise = do
+              histfill dist1 dist2 h2
+              go (n - 1)
 
       go 1000000
       draw h2 ("lego" :: ByteString)
-      run tapp 1 
+      run tapp 1
       delete h2
       delete tcanvas
       delete trandom
       delete tapp
 
-
-
-histfill :: IO CDouble -> IO CDouble-> TH2F ->  IO () 
-histfill dist1 dist2 hist = do 
+histfill :: IO CDouble -> IO CDouble -> TH2F -> IO ()
+histfill dist1 dist2 hist = do
   x <- dist1
   y <- dist2
-  fill2 hist x y 
-  return () 
+  fill2 hist x y
+  return ()
