@@ -16,23 +16,23 @@
           config.allowBroken = true;
         };
 
-        root = if system == "aarch64-darwin" then
-          (pkgs.root.override { tbb = null; }).overrideAttrs (old: rec {
-            cmakeFlags = [ "-Dbuiltin_tbb=OFF" ]
-              ++ (builtins.map (x: if (x == "-Dimt=ON") then "-Dimt=OFF" else x)
-                old.cmakeFlags);
-            preBuild = ''
-              export MACOSX_DEPLOYMENT_TARGET="10.16"
-              echo "PRE BUILD HOOK IS CALLED"
-            '';
-          })
-        else
-          pkgs.root;
+        #root = if system == "aarch64-darwin" then
+        #  (pkgs.root.override { tbb = null; }).overrideAttrs (old: rec {
+        #    cmakeFlags = [ "-Dbuiltin_tbb=OFF" ]
+        #      ++ (builtins.map (x: if (x == "-Dimt=ON") then "-Dimt=OFF" else x)
+        #        old.cmakeFlags);
+        #    preBuild = ''
+        #      export MACOSX_DEPLOYMENT_TARGET="10.16"
+        #      echo "PRE BUILD HOOK IS CALLED"
+        #    '';
+        #  })
+        #else
+        #  pkgs.root;
 
         haskellOverlay = final: self: super:
           (import ./default.nix {
             pkgs = final;
-            inherit root;
+            inherit (final) root;
           } self super);
 
         hpkgsFor = compiler:
@@ -50,9 +50,16 @@
           let
             hsenv = withHROOT:
               (hpkgsFor compiler).ghcWithPackages (p:
-                [ p.cabal-install p.fficxx p.fficxx-runtime p.stdcxx p.dotgen ]
+                [ p.fficxx p.fficxx-runtime p.stdcxx p.dotgen ]
                 ++ (pkgs.lib.optional withHROOT p.HROOT));
-            shBuildInputs = withHROOT: [ (hsenv withHROOT) root pkgs.nixfmt pkgs.graphviz ];
+            shBuildInputs = withHROOT: [
+              (hsenv withHROOT)
+              pkgs.cabal-install
+              pkgs.root
+              pkgs.nixfmt
+              pkgs.graphviz
+              pkgs.ormolu              
+            ];
             mkShell = withHROOT:
               pkgs.mkShell {
                 buildInputs = shBuildInputs withHROOT;

@@ -11,7 +11,7 @@ in stdenv.mkDerivation {
   buildInputs = [ hsenv ];
   src = ./.;
   buildPhase = ''
-    HROOT-generate
+    HROOT-generate gen
   '';
   installPhase = ''
     mkdir -p $out

@@ -16,6 +16,7 @@ cabal build fficxx
 cabal exec runhaskell ../../fficxx/stdcxx-gen/Gen.hs
 cabal build stdcxx
 cabal build HROOT-generate
-cabal run -- HROOT-generate ../HROOT-generate/template
+cabal run -- HROOT-generate gen -t ../HROOT-generate/template
+#cabal build HROOT-core
 cabal build HROOT
 
