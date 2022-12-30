@@ -90,13 +90,12 @@ Executable HROOT-generate
   Main-is: HROOT-generate.hs
   hs-source-dirs: exe
   ghc-options: 	-Wall -Werror -O2 -threaded -funbox-strict-fields -fno-warn-unused-do-bind
-  ghc-prof-options: -fprof-cafs -fprof-auto
   Build-Depends: array,
                  base>4,
                  Cabal,
                  containers,
                  directory,
-                 fficxx >= 0.6.999,
+                 fficxx >= 0.7,
                  filepath>1,
                  mtl>2,
                  optparse-applicative,
