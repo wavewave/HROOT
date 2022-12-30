@@ -3,12 +3,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/master";
     flake-utils.url = "github:numtide/flake-utils";
-    fficxx = {
-      url = "github:wavewave/fficxx/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
-  outputs = { self, nixpkgs, flake-utils, fficxx }:
+  outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -22,10 +18,19 @@
             inherit (final) root;
           } self super);
 
+        fficxx-version = "0.7.0.0";
+
         hpkgsFor = compiler:
           pkgs.haskell.packages.${compiler}.extend (hself: hsuper:
-            (fficxx.haskellOverlay.${system} pkgs hself hsuper
-              // haskellOverlay pkgs hself hsuper));
+            {
+              "fficxx" = hself.callHackage "fficxx" fficxx-version { };
+              "fficxx-runtime" =
+                hself.callHackage "fficxx-runtime" fficxx-version { };
+              "stdcxx" = hself.callHackage "stdcxx" fficxx-version { };
+              "template" = pkgs.haskell.lib.doJailbreak hsuper.template;
+              "ormolu" = pkgs.haskell.lib.overrideCabal hsuper.ormolu
+                (drv: { enableSeparateBinOutput = false; });
+            } // haskellOverlay pkgs hself hsuper);
 
         mkPackages = compiler: {
           inherit (hpkgsFor compiler)
@@ -48,7 +53,8 @@
               pkgs.root
               pkgs.nixfmt
               pkgs.graphviz
-              pkgs.ormolu
+              # this is due to https://github.com/NixOS/nixpkgs/issues/140774
+              (hpkgsFor "ghc924").ormolu
             ];
             mkShell = withHROOT:
               pkgs.mkShell {
