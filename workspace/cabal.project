@@ -1,7 +1,4 @@
 optional-packages:
-          ../fficxx/fficxx
-          ../fficxx/fficxx-runtime
-          stdcxx/
           ../HROOT-generate/        
           HROOT-core/
           HROOT-graf/

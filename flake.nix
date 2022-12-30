@@ -42,7 +42,7 @@
           let
             hsenv = withHROOT:
               (hpkgsFor compiler).ghcWithPackages (p:
-                [ p.fficxx p.fficxx-runtime p.stdcxx p.dotgen ]
+                [ p.fficxx p.fficxx-runtime p.stdcxx p.optparse-applicative p.dotgen ]
                 ++ (pkgs.lib.optional withHROOT p.HROOT));
             pyenv = pkgs.python3.withPackages
               (p: [ p.sphinx p.sphinx_rtd_theme p.myst-parser ]);
