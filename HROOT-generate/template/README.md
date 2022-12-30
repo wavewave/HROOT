@@ -1,23 +1,8 @@
 HROOT
 =====
 
-Installation from Hackage
--------------------------
+Haskell binding to ROOT.
+ROOT is a modular scientific software toolkit providing all the functionalities needed to deal with big data processing,
+statistical analysis, visualisation and storage, written in C++.
 
-* cabal install HROOT
-
-
-Installation from github source code 
-------------------------------------
-
-* install ROOT
-* download wavewave/fficxx
-* download wavewave/HROOT-generate
-* download wavewave/HROOT
-* install fficxx 
-* install HROOT-generate
-* modify HROOT.conf in HROOT-generate (directory configuration must be adjusted to the corresponding downloaded source code location. )
-* install HROOT
-
-
-
+HROOT is tested with ROOT 6.26.
