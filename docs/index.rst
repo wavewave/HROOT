@@ -14,13 +14,19 @@ HROOT is a haskell binding to the `ROOT <https://root.cern.ch>`_ library. A hask
 
 ## Development and testing
 
-However, if one wants to test this only in this repo, try:
+For dev-shell, try:
 
 ```
-$ nix develop .#
+$ nix develop .#ghc942.dev
 $ cd workspace
 $ ./build.sh
 ```
+
+For those who use HROOT as library directly, try
+```
+$ nix develop .#ghc942.env
+```
+and in the shell, one can see all HROOT-* (including HROOT) packages are available.
 
 .. toctree::
    :maxdepth: 2

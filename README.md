@@ -6,18 +6,18 @@ Haskell binding to [ROOT](https://root.cern.ch).
 
 HROOT is a haskell binding to the [ROOT](https://root.cern.ch) library. A haskell script called HROOT-generate using [fficxx](https://github.com/wavewave/fficxx) generates HROOT packages. Once generated, each package can be directly installable as a cabal package. Currently, C++ interface is defined as a haskell data structure as one can see, for example, in the module [HROOT.Data.Core.Class](HROOT-generate/lib/HROOT/Data/Core/Class.hs).
 
-## fficxx-projects
-
-fficxx-generated Haskell binding projects are collected in a meta-repo
-[fficxx-projects](https://github.com/wavewave/fficxx-projects). It is convenient for users
-to check out the repo and test HROOT in that environment as described there.
-
 ## Development and testing
 
-However, if one wants to test this only in this repo, try:
+For dev-shell, try:
 
 ```
-$ nix develop .#
+$ nix develop .#ghc942.dev
 $ cd workspace
 $ ./build.sh
 ```
+
+For those who use HROOT as library directly, try
+```
+$ nix develop .#ghc942.env
+```
+and in the shell, one can see all HROOT-* (including HROOT) packages are available.
