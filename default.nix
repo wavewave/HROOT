@@ -2,11 +2,10 @@
 
 hself: hsuper:
 
-let
-
-  HROOT-src = (pkgs.callPackage ./gen.nix { }) hself;
+let HROOT-src = (pkgs.callPackage ./gen.nix { }) hself;
 
 in rec {
+
   "HROOT-generate" = hself.callCabal2nix "HROOT-generate" ./HROOT-generate { };
   "HROOT" = pkgs.haskell.lib.overrideCabal
     (hself.callCabal2nix "HROOT" (HROOT-src + "/HROOT") { }) {
