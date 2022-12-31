@@ -196,7 +196,7 @@ makeUmbrellaCabal =
             ("version", version),
             ("synopsis", pkg_synopsis),
             ("description", pkg_description),
-            ("homepage", "http://ianwookim.org/HROOT"),
+            ("homepage", "https://wavewave.github.io/HROOT"),
             ("licenseField", "license: LGPL-2.1-or-later"),
             ("licenseFileField", "license-file: LICENSE"),
             ("author", "Ian-Woo Kim"),
@@ -238,7 +238,7 @@ makeUmbrellaPackage config mods = do
       installDir = fficxxconfig_installBaseDir config
       workingDir = fficxxconfig_workingDir config
       staticDir = fficxxconfig_staticFileDir config
-      staticFiles = ["CHANGES", "Config.hs", "LICENSE", "README.md", "Setup.lhs"]
+      staticFiles = ["CHANGES", "Config.hs", "LICENSE", "README.md", "Setup.hs"]
   putStrLn "cabal file generation"
   --
   createDirectoryIfMissing True installDir
@@ -276,8 +276,9 @@ gen tmpldir = do
         FFICXXConfig
           { fficxxconfig_workingDir = cwd </> "tmp" </> name </> "working",
             fficxxconfig_installBaseDir = cwd </> name,
-            fficxxconfig_staticFileDir = tmpldir </> name
+            fficxxconfig_staticFileDir = tmpldir
           }
+      staticFiles = ["CHANGES", "Config.hs", "LICENSE", "README.md", "Setup.hs"]
       sbc_core =
         SimpleBuilderConfig
           { sbcTopModule = "HROOT.Core",
@@ -289,7 +290,7 @@ gen tmpldir = do
             sbcExtraLibs = core_extraLib,
             sbcCxxOpts = ["-std=c++17"],
             sbcExtraDeps = core_extraDep,
-            sbcStaticFiles = ["CHANGES", "Config.hs", "LICENSE", "Setup.lhs"]
+            sbcStaticFiles = staticFiles
           }
       sbc_graf =
         SimpleBuilderConfig
@@ -302,7 +303,7 @@ gen tmpldir = do
             sbcExtraLibs = graf_extraLib,
             sbcCxxOpts = ["-std=c++17"],
             sbcExtraDeps = graf_extraDep,
-            sbcStaticFiles = ["CHANGES", "Config.hs", "LICENSE", "Setup.lhs"]
+            sbcStaticFiles = staticFiles
           }
       sbc_hist =
         SimpleBuilderConfig
@@ -315,7 +316,7 @@ gen tmpldir = do
             sbcExtraLibs = hist_extraLib,
             sbcCxxOpts = ["-std=c++17"],
             sbcExtraDeps = hist_extraDep,
-            sbcStaticFiles = ["CHANGES", "Config.hs", "LICENSE", "Setup.lhs"]
+            sbcStaticFiles = staticFiles
           }
       sbc_io =
         SimpleBuilderConfig
@@ -328,7 +329,7 @@ gen tmpldir = do
             sbcExtraLibs = io_extraLib,
             sbcCxxOpts = ["-std=c++17"],
             sbcExtraDeps = io_extraDep,
-            sbcStaticFiles = ["CHANGES", "Config.hs", "LICENSE", "Setup.lhs"]
+            sbcStaticFiles = staticFiles
           }
       sbc_math =
         SimpleBuilderConfig
@@ -341,7 +342,7 @@ gen tmpldir = do
             sbcExtraLibs = math_extraLib,
             sbcCxxOpts = ["-std=c++17"],
             sbcExtraDeps = math_extraDep,
-            sbcStaticFiles = ["CHANGES", "Config.hs", "LICENSE", "Setup.lhs"]
+            sbcStaticFiles = staticFiles
           }
       sbc_net =
         SimpleBuilderConfig
@@ -354,7 +355,7 @@ gen tmpldir = do
             sbcExtraLibs = net_extraLib,
             sbcCxxOpts = ["-std=c++17"],
             sbcExtraDeps = net_extraDep,
-            sbcStaticFiles = ["CHANGES", "Config.hs", "LICENSE", "Setup.lhs"]
+            sbcStaticFiles = staticFiles
           }
       sbc_tree =
         SimpleBuilderConfig
@@ -367,7 +368,7 @@ gen tmpldir = do
             sbcExtraLibs = tree_extraLib,
             sbcCxxOpts = ["-std=c++17"],
             sbcExtraDeps = tree_extraDep,
-            sbcStaticFiles = ["CHANGES", "Config.hs", "LICENSE", "Setup.lhs"]
+            sbcStaticFiles = staticFiles
           }
       sbc_roofit =
         SimpleBuilderConfig
@@ -380,7 +381,7 @@ gen tmpldir = do
             sbcExtraLibs = roofit_extraLib,
             sbcCxxOpts = ["-std=c++17"],
             sbcExtraDeps = roofit_extraDep,
-            sbcStaticFiles = ["CHANGES", "Config.hs", "LICENSE", "Setup.lhs"]
+            sbcStaticFiles = staticFiles
           }
       sbc_roostats =
         SimpleBuilderConfig
@@ -393,7 +394,7 @@ gen tmpldir = do
             sbcExtraLibs = roostats_extraLib,
             sbcCxxOpts = ["-std=c++17"],
             sbcExtraDeps = roostats_extraDep,
-            sbcStaticFiles = ["CHANGES", "Config.hs", "LICENSE", "Setup.lhs"]
+            sbcStaticFiles = staticFiles
           }
 
   simpleBuilder (mkcfg "HROOT-core") sbc_core
