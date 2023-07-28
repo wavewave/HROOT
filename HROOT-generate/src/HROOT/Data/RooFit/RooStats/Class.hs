@@ -37,7 +37,7 @@ roostatscabal :: Cabal
 roostatscabal =
   Cabal
     { cabal_pkgname = CabalName "HROOT-RooFit-RooStats",
-      cabal_version = "0.10.0.1",
+      cabal_version = "0.10.0.3",
       cabal_cheaderprefix = "HROOTRooFitRooStats",
       cabal_moduleprefix = "HROOT.RooFit.RooStats",
       cabal_additional_c_incs = [],

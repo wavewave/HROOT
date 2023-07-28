@@ -53,7 +53,7 @@ histcabal :: Cabal
 histcabal =
   Cabal
     { cabal_pkgname = CabalName "HROOT-hist",
-      cabal_version = "0.10.0.1",
+      cabal_version = "0.10.0.3",
       cabal_cheaderprefix = "HROOTHist",
       cabal_moduleprefix = "HROOT.Hist",
       cabal_additional_c_incs = [],

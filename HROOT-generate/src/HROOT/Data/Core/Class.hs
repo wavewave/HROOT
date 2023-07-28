@@ -90,7 +90,7 @@ corecabal :: Cabal
 corecabal =
   Cabal
     { cabal_pkgname = CabalName "HROOT-core",
-      cabal_version = "0.10.0.1",
+      cabal_version = "0.10.0.3",
       cabal_cheaderprefix = "HROOTCore",
       cabal_moduleprefix = "HROOT.Core",
       cabal_additional_c_incs = [],

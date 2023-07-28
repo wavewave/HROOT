@@ -173,7 +173,7 @@ makeUmbrellaCabal :: String
 makeUmbrellaCabal =
   let pkgname = "HROOT"
       -- TODO: this should be factored out.
-      version = "0.10.0.1"
+      version = "0.10.0.3"
       pkg_summarymodule = "HROOT"
       pkg_deps =
         [ "HROOT-core",
