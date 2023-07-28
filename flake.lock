@@ -1,5 +1,29 @@
 {
   "nodes": {
+    "fficxx": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1690582437,
+        "narHash": "sha256-GFcfVYDeJ3F2Rgjm2PfUVMvBAycWCEWPZFkE/5yECV8=",
+        "owner": "wavewave",
+        "repo": "fficxx",
+        "rev": "f32cb4e1149d43b778a3772f6c033b3da70635b4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "wavewave",
+        "ref": "master",
+        "repo": "fficxx",
+        "type": "github"
+      }
+    },
     "flake-utils": {
       "locked": {
         "lastModified": 1667395993,
@@ -33,6 +57,7 @@
     },
     "root": {
       "inputs": {
+        "fficxx": "fficxx",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs"
       }
