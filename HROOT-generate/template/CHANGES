@@ -1,5 +1,10 @@
 # Changelog for HROOT
 
+## 0.10.0.3
+- update fficxx to 0.7.0.1. dependency removed. (#21)
+
+## 0.10.0.2
+
 ## 0.10.0.1
 - Use hackage-version of fficxx (#18)
 - Generate docs in CI (#17)

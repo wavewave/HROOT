@@ -29,7 +29,7 @@ treecabal :: Cabal
 treecabal =
   Cabal
     { cabal_pkgname = CabalName "HROOT-tree",
-      cabal_version = "0.10.0.1",
+      cabal_version = "0.10.0.3",
       cabal_cheaderprefix = "HROOTTree",
       cabal_moduleprefix = "HROOT.Tree",
       cabal_additional_c_incs = [],

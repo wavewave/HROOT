@@ -22,7 +22,7 @@ netcabal :: Cabal
 netcabal =
   Cabal
     { cabal_pkgname = CabalName "HROOT-net",
-      cabal_version = "0.10.0.1",
+      cabal_version = "0.10.0.3",
       cabal_cheaderprefix = "HROOTNet",
       cabal_moduleprefix = "HROOT.Net",
       cabal_additional_c_incs = [],

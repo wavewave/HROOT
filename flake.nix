@@ -3,8 +3,14 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/master";
     flake-utils.url = "github:numtide/flake-utils";
+    fficxx = {
+      url = "github:wavewave/fficxx/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+
   };
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils, fficxx }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -18,19 +24,21 @@
             inherit (final) root;
           } self super);
 
-        fficxx-version = "0.7.0.0";
+        #fficxx-version = "0.7.0.1";
 
         hpkgsFor = compiler:
           pkgs.haskell.packages.${compiler}.extend (hself: hsuper:
-            {
-              "fficxx" = hself.callHackage "fficxx" fficxx-version { };
-              "fficxx-runtime" =
-                hself.callHackage "fficxx-runtime" fficxx-version { };
-              "stdcxx" = hself.callHackage "stdcxx" fficxx-version { };
-              "template" = pkgs.haskell.lib.doJailbreak hsuper.template;
-              "ormolu" = pkgs.haskell.lib.overrideCabal hsuper.ormolu
-                (drv: { enableSeparateBinOutput = false; });
-            } // haskellOverlay pkgs hself hsuper);
+            (fficxx.haskellOverlay.${system} pkgs hself hsuper //
+              # temporarily commented out until the hackage is updated.
+              {
+                #"fficxx" = hself.callHackage "fficxx" fficxx-version { };
+                #"fficxx-runtime" =
+                #  hself.callHackage "fficxx-runtime" fficxx-version { };
+                #"stdcxx" = hself.callHackage "stdcxx" fficxx-version { };
+                #"template" = pkgs.haskell.lib.doJailbreak hsuper.template;
+                "ormolu" = pkgs.haskell.lib.overrideCabal hsuper.ormolu
+                  (drv: { enableSeparateBinOutput = false; });
+              } // haskellOverlay pkgs hself hsuper));
 
         mkPackages = compiler: {
           inherit (hpkgsFor compiler)
@@ -42,8 +50,13 @@
           let
             hsenv = withHROOT:
               (hpkgsFor compiler).ghcWithPackages (p:
-                [ p.fficxx p.fficxx-runtime p.stdcxx p.optparse-applicative p.dotgen ]
-                ++ (pkgs.lib.optional withHROOT p.HROOT));
+                [
+                  p.fficxx
+                  p.fficxx-runtime
+                  p.stdcxx
+                  p.optparse-applicative
+                  p.dotgen
+                ] ++ (pkgs.lib.optional withHROOT p.HROOT));
             pyenv = pkgs.python3.withPackages
               (p: [ p.sphinx p.sphinx_rtd_theme p.myst-parser ]);
             shBuildInputs = withHROOT: [
@@ -59,11 +72,13 @@
             mkShell = withHROOT:
               pkgs.mkShell {
                 buildInputs = shBuildInputs withHROOT;
-                shellHook = if system == "aarch64-darwin" || system
+                shellHook = ''
+                  export PS1="\n[HROOT:\w]$ \0"
+                '' + (if system == "aarch64-darwin" || system
                 == "x86_64-darwin" then
                   ''export MACOSX_DEPLOYMENT_TARGET="10.16"''
                 else
-                  null;
+                  null);
               };
           in {
             env = mkShell true;

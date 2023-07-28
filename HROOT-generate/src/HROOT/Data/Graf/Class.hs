@@ -46,7 +46,7 @@ grafcabal :: Cabal
 grafcabal =
   Cabal
     { cabal_pkgname = CabalName "HROOT-graf",
-      cabal_version = "0.10.0.1",
+      cabal_version = "0.10.0.3",
       cabal_cheaderprefix = "HROOTGraf",
       cabal_moduleprefix = "HROOT.Graf",
       cabal_additional_c_incs = [],

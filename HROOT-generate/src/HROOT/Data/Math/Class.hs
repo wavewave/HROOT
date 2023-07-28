@@ -21,7 +21,7 @@ mathcabal :: Cabal
 mathcabal =
   Cabal
     { cabal_pkgname = CabalName "HROOT-math",
-      cabal_version = "0.10.0.1",
+      cabal_version = "0.10.0.3",
       cabal_cheaderprefix = "HROOTMath",
       cabal_moduleprefix = "HROOT.Math",
       cabal_additional_c_incs = [],

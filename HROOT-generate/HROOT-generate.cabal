@@ -1,6 +1,6 @@
 Cabal-Version:  3.0
 Name:		HROOT-generate
-Version:	0.10.0.2
+Version:	0.10.0.3
 Synopsis:	automatic HROOT binding generation
 Description: 	automatic HROOT binding generation
 License:        LGPL-2.1-or-later
@@ -23,8 +23,8 @@ Library
                  cmdargs,
                  containers,
                  directory,
-                 fficxx >= 0.7,
-                 fficxx-runtime >= 0.7,
+                 fficxx >= 0.7.0.1,
+                 fficxx-runtime >= 0.7.0.1,
                  filepath>1,
                  haskell-src-exts,
                  mtl>2,
@@ -57,7 +57,7 @@ Executable HROOT-generate
                  Cabal,
                  containers,
                  directory,
-                 fficxx >= 0.7,
+                 fficxx >= 0.7.0.1,
                  filepath>1,
                  mtl>2,
                  optparse-applicative,

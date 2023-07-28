@@ -9,9 +9,9 @@
 import sphinx_rtd_theme
 
 project = 'HROOT'
-copyright = '2011-2022, Ian-Woo Kim'
+copyright = '2011-2023, Ian-Woo Kim'
 author = 'Ian-Woo Kim'
-release = '0.10.0.1'
+release = '0.10.0.3'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

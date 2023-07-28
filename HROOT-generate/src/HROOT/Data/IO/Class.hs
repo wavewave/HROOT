@@ -22,7 +22,7 @@ iocabal :: Cabal
 iocabal =
   Cabal
     { cabal_pkgname = CabalName "HROOT-io",
-      cabal_version = "0.10.0.1",
+      cabal_version = "0.10.0.3",
       cabal_cheaderprefix = "HROOTIO",
       cabal_moduleprefix = "HROOT.IO",
       cabal_additional_c_incs = [],
