@@ -42,8 +42,13 @@
           let
             hsenv = withHROOT:
               (hpkgsFor compiler).ghcWithPackages (p:
-                [ p.fficxx p.fficxx-runtime p.stdcxx p.optparse-applicative p.dotgen ]
-                ++ (pkgs.lib.optional withHROOT p.HROOT));
+                [
+                  p.fficxx
+                  p.fficxx-runtime
+                  p.stdcxx
+                  p.optparse-applicative
+                  p.dotgen
+                ] ++ (pkgs.lib.optional withHROOT p.HROOT));
             pyenv = pkgs.python3.withPackages
               (p: [ p.sphinx p.sphinx_rtd_theme p.myst-parser ]);
             shBuildInputs = withHROOT: [
@@ -59,11 +64,13 @@
             mkShell = withHROOT:
               pkgs.mkShell {
                 buildInputs = shBuildInputs withHROOT;
-                shellHook = if system == "aarch64-darwin" || system
+                shellHook = ''
+                  export PS1="\n[HROOT:\w]$ \0"
+                '' + (if system == "aarch64-darwin" || system
                 == "x86_64-darwin" then
                   ''export MACOSX_DEPLOYMENT_TARGET="10.16"''
                 else
-                  null;
+                  null);
               };
           in {
             env = mkShell true;
